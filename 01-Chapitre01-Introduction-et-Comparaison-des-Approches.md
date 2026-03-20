@@ -577,7 +577,7 @@ Le RL est préféré lorsque :
 
 <br/>
 
-Ce quiz évalue votre compréhension des bases de l'apprentissage par renforcement.
+Ce quiz évalue votre compréhension des bases de l'apprentissage par renforcement. Répondez à chaque question, puis cliquez sur **💡 Voir la solution** pour vérifier votre réponse.
 
 ---
 
@@ -590,6 +590,15 @@ b) L'apprentissage supervisé repose sur l'interaction avec un environnement
 c) L'apprentissage par renforcement repose sur des essais et erreurs
 d) L'apprentissage par renforcement ne nécessite pas de données
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+Le RL repose sur les **essais et erreurs** : l'agent essaie des actions, observe les résultats et ajuste sa stratégie. Il n'a pas besoin de données étiquetées fournies à l'avance, contrairement à l'apprentissage supervisé.
+
+</details>
+
 ---
 
 **Question 2 :** Quel est le principal objectif d'un agent dans l'apprentissage par renforcement ?
@@ -598,6 +607,15 @@ a) Maximiser la récompense immédiate
 b) Minimiser le nombre d'actions effectuées
 c) Maximiser les récompenses cumulées sur le long terme
 d) Suivre un ensemble de règles prédéfinies
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+L'agent ne cherche pas uniquement une récompense immédiate — il optimise sa stratégie pour **maximiser la somme des récompenses sur la durée**. C'est ce qu'on appelle le **retour cumulé** (return).
+
+</details>
 
 ---
 
@@ -610,6 +628,15 @@ b) Prendre une action, observer le nouvel état, ajuster la stratégie
 c) Observer l'environnement, mémoriser les données, agir
 d) Collecter des données, entraîner un modèle, tester les résultats
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+Le cycle fondamental du RL est : **action → observation du nouvel état → ajustement de la stratégie**. Ce cycle se répète en continu jusqu'à ce que l'agent converge vers une politique optimale.
+
+</details>
+
 ---
 
 **Question 4 :** Dans le cadre du RL, que représente l'**environnement** ?
@@ -618,6 +645,15 @@ a) Un ensemble de données utilisées pour entraîner un modèle
 b) Un système interactif où l'agent évolue et prend des décisions
 c) Une liste d'actions possibles
 d) Une fonction qui retourne toujours une récompense positive
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+L'environnement est le **système interactif** avec lequel l'agent interagit. C'est lui qui retourne l'état suivant et la récompense après chaque action. Il peut être un jeu vidéo, un simulateur physique, un marché financier, etc.
+
+</details>
 
 ---
 
@@ -630,6 +666,15 @@ b) L'agent connaît déjà la solution et la teste plusieurs fois
 c) L'agent suit un algorithme fixe sans exploration
 d) L'agent choisit toujours l'action qui a donné la meilleure récompense immédiate
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+L'agent **n'a aucune connaissance initiale** de la bonne stratégie. Il teste différentes actions, observe les récompenses ou pénalités reçues, et met à jour sa politique progressivement. C'est exactement le même processus qu'un enfant qui apprend à marcher.
+
+</details>
+
 ---
 
 **Question 6 :** Pourquoi le RL est-il particulièrement adapté aux **décisions séquentielles** ?
@@ -639,6 +684,15 @@ b) Parce que l'agent apprend uniquement à partir d'exemples fournis par un huma
 c) Parce que chaque action affecte l'environnement et les futures décisions de l'agent
 d) Parce que l'agent reçoit une récompense uniquement à la dernière étape
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+Dans le RL, **chaque action modifie l'état de l'environnement** et donc les options disponibles pour les décisions suivantes. C'est pourquoi il est idéal pour les jeux d'échecs, la robotique ou la conduite autonome, où chaque mouvement a des conséquences futures.
+
+</details>
+
 ---
 
 **Question 7 :** Qu'entend-on par **maximisation des récompenses cumulées** ?
@@ -647,6 +701,15 @@ a) L'agent cherche uniquement la récompense immédiate la plus élevée
 b) L'agent optimise son comportement pour obtenir le plus de récompenses sur la durée
 c) L'agent doit recevoir une récompense à chaque action pour fonctionner
 d) L'agent choisit toujours des actions aléatoires pour explorer toutes les possibilités
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+Le RL optimise les récompenses **sur la durée**, pas seulement à court terme. Un agent peut même accepter une pénalité immédiate si cela lui permet d'obtenir une grande récompense future — c'est le principe de la **planification à long terme**.
+
+</details>
 
 ---
 
@@ -659,6 +722,15 @@ b) Que chaque déplacement le rapproche ou l'éloigne du diamant
 c) Que toutes les actions mènent au même résultat
 d) Qu'il doit mémoriser chaque position visitée
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+L'agent apprend progressivement que **certains déplacements le rapprochent du diamant** (récompense positive) et d'autres l'en éloignent ou le font tomber dans un piège (pénalité). Sa politique converge vers le chemin optimal.
+
+</details>
+
 ---
 
 **Question 9 :** Pourquoi compare-t-on le RL au fonctionnement d'un **robot aspirateur** ?
@@ -667,6 +739,15 @@ a) Parce qu'il suit toujours un chemin prédéfini
 b) Parce qu'il apprend à optimiser ses déplacements en testant différentes routes
 c) Parce qu'il ne change jamais son comportement après une erreur
 d) Parce qu'il utilise des capteurs pour éviter les obstacles
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+Un robot aspirateur intelligent n'a pas de carte prédéfinie de la maison. Il **explore, détecte les obstacles, et apprend progressivement à optimiser ses trajets** pour nettoyer plus efficacement — exactement le principe du RL.
+
+</details>
 
 ---
 
@@ -677,22 +758,14 @@ b) Traitement d'images, reconnaissance vocale
 c) Gestion de bases de données, compression de fichiers
 d) Traduction automatique, création de contenu
 
----
+<details>
+<summary>💡 Voir la solution</summary>
 
-### Réponses — Quiz 1
+✅ **Réponse : a)**
 
-| Question | Réponse | Explication |
-|---|---|---|
-| 1 | **c)** | Le RL repose sur les essais et erreurs, pas sur des données étiquetées prédéfinies. |
-| 2 | **c)** | L'agent maximise les récompenses cumulées sur le long terme, pas juste l'immédiat. |
-| 3 | **b)** | Le cycle : action → nouvel état → ajustement de la stratégie. |
-| 4 | **b)** | L'environnement est le système interactif où l'agent évolue et prend des décisions. |
-| 5 | **a)** | L'agent essaie différentes actions et apprend en fonction des résultats obtenus. |
-| 6 | **c)** | Chaque action modifie l'état et influence les décisions futures. |
-| 7 | **b)** | Le RL optimise les récompenses sur la durée, pas juste à court terme. |
-| 8 | **b)** | L'agent apprend que certains déplacements le rapprochent du diamant et d'autres non. |
-| 9 | **b)** | Le robot aspirateur apprend à optimiser ses déplacements par expérience. |
-| 10 | **a)** | Jeux vidéo, robotique, finance et logistique sont les domaines phares du RL. |
+Le RL excelle dans les domaines où les **décisions séquentielles** et l'**adaptation à des environnements dynamiques** sont essentielles : jeux vidéo (AlphaGo, AlphaStar), robotique industrielle, trading algorithmique, conduite autonome, et gestion logistique.
+
+</details>
 
 </details>
 
@@ -707,7 +780,7 @@ d) Traduction automatique, création de contenu
 
 <br/>
 
-Ce quiz évalue votre compréhension des applications du RL et explique pourquoi il est privilégié par rapport à l'apprentissage supervisé ou non supervisé dans certaines situations.
+Ce quiz évalue votre compréhension des applications du RL et explique pourquoi il est privilégié par rapport à l'apprentissage supervisé ou non supervisé dans certaines situations. Répondez à chaque question, puis cliquez sur **💡 Voir la solution** pour vérifier.
 
 ---
 
@@ -720,6 +793,15 @@ b) Parce que les jeux vidéo ont des règles fixes et immuables
 c) Parce que l'IA est préprogrammée pour connaître toutes les règles à l'avance
 d) Parce que l'agent reçoit des données étiquetées lui indiquant la bonne action à chaque étape
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+L'environnement simulé des jeux permet à l'agent de tester des milliers de stratégies **sans conséquence réelle**. Contrairement à l'apprentissage supervisé qui nécessite des données étiquetées, le RL apprend par interaction directe avec l'environnement.
+
+</details>
+
 ---
 
 **Question 2 :** Quel exploit célèbre du RL a démontré son efficacité dans les jeux vidéo ?
@@ -728,6 +810,15 @@ a) Une IA battant les humains à Tetris
 b) Une IA surpassant les champions humains à StarCraft II
 c) Une IA créant un jeu vidéo à partir de zéro
 d) Une IA utilisant des stratégies aléatoires pour gagner à Mario Kart
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+**AlphaStar** de DeepMind a battu les meilleurs joueurs humains à StarCraft II grâce à un apprentissage basé sur l'expérience. Cela aurait été impossible avec un modèle supervisé qui aurait dû anticiper chaque stratégie possible à l'avance.
+
+</details>
 
 ---
 
@@ -740,6 +831,15 @@ b) En suivant uniquement un ensemble de règles fixes prédéfinies
 c) En évitant complètement l'interaction avec d'autres véhicules
 d) En fonctionnant uniquement avec des données pré-enregistrées sans apprentissage en temps réel
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Les véhicules autonomes doivent s'adapter aux conditions changeantes (météo, piétons, trafic imprévu). L'apprentissage supervisé ne suffit pas car les données seraient figées. Le RL **apprend en interagissant** et ajuste sa trajectoire en temps réel.
+
+</details>
+
 ---
 
 **Question 4 :** Quelle est la principale différence entre un véhicule autonome basé sur le RL et un véhicule programmé avec des règles fixes ?
@@ -748,6 +848,15 @@ a) Le RL permet au véhicule d'adapter son comportement en fonction des situatio
 b) Le RL oblige le véhicule à suivre un itinéraire prédéfini
 c) Le RL empêche le véhicule de rouler dans des conditions météorologiques extrêmes
 d) Le RL empêche la voiture de prendre des décisions autonomes
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Le RL permet une **adaptation dynamique** à chaque situation rencontrée. Les règles fixes ne peuvent pas couvrir l'infinité des situations réelles — le RL apprend à gérer même les cas jamais vus auparavant.
+
+</details>
 
 ---
 
@@ -760,6 +869,15 @@ b) La création de nouveaux robots sans intervention humaine
 c) La réparation automatique des pannes sans diagnostic
 d) L'élimination du besoin d'ingénieurs en automatisation
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+L'apprentissage supervisé exigerait un modèle fixe pour chaque tâche — irréaliste en production. Le RL permet aux robots d'**adapter leurs gestes** en fonction des variations dans l'assemblage, améliorant leur précision au fil du temps.
+
+</details>
+
 ---
 
 **Question 6 :** Pourquoi le RL est-il particulièrement utile dans les chaînes de production automatisées ?
@@ -768,6 +886,15 @@ a) Parce qu'il permet aux robots d'ajuster leurs mouvements en fonction des erre
 b) Parce qu'il permet aux robots de fonctionner sans électricité
 c) Parce qu'il réduit la nécessité d'avoir un opérateur humain
 d) Parce qu'il empêche toute panne technique
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Le RL permet aux robots d'**apprendre de leurs propres erreurs** et d'améliorer leur précision au fil du temps. Aucun modèle supervisé statique ne peut faire cela efficacement, car les conditions de production varient constamment.
+
+</details>
 
 ---
 
@@ -780,6 +907,15 @@ b) En forçant les utilisateurs à réduire leur consommation d'énergie
 c) En éliminant totalement le besoin de chauffage et de climatisation
 d) En conservant les réglages fixes définis par l'ingénieur initial
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Un système à règles fixes serait inefficace car il ne pourrait pas **apprendre des habitudes** des occupants. Le RL optimise dynamiquement les paramètres du bâtiment — Google DeepMind a ainsi réduit la consommation de ses data centers de **40%** grâce au RL.
+
+</details>
+
 ---
 
 **Question 8 :** Comment le RL est-il appliqué dans les réseaux électriques intelligents ?
@@ -788,6 +924,15 @@ a) En optimisant la répartition de l'énergie en temps réel pour éviter les s
 b) En remplaçant tous les réseaux existants par de nouvelles infrastructures
 c) En stockant l'énergie sans la redistribuer
 d) En évitant toute fluctuation de tension dans les centrales électriques
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Les réseaux électriques gèrent une demande **fluctuante en temps réel**. Le RL est idéal car il ajuste dynamiquement la répartition de l'énergie, teste différentes stratégies et s'améliore en fonction des résultats — impossible avec des données statiques supervisées.
+
+</details>
 
 ---
 
@@ -800,6 +945,15 @@ b) En suivant des règles fixes sans prendre en compte les fluctuations du march
 c) En se basant uniquement sur des modèles mathématiques statiques
 d) En investissant uniquement dans les entreprises les plus connues
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Les marchés financiers sont **imprévisibles**. Un algorithme supervisé ne peut pas s'adapter à des événements imprévus (crise, décision politique). Le RL apprend des tendances en temps réel et prend en compte **l'impact à long terme** de chaque décision d'investissement.
+
+</details>
+
 ---
 
 **Question 10 :** Comment le RL est-il utilisé pour personnaliser les traitements médicaux ?
@@ -809,39 +963,14 @@ b) En appliquant un traitement unique à tous les patients
 c) En automatisant totalement les décisions des médecins
 d) En remplaçant l'analyse humaine par un programme statique
 
----
+<details>
+<summary>💡 Voir la solution</summary>
 
-### Réponses et Explications — Quiz 2
+✅ **Réponse : a)**
 
-**Réponse 1 : a)** ✅
-L'environnement simulé des jeux permet à l'agent de tester des milliers de stratégies sans conséquence réelle. Contrairement à l'apprentissage supervisé qui nécessite des données étiquetées, le RL apprend par interaction directe.
+Chaque patient réagit différemment aux traitements. Un modèle supervisé statique ne peut pas s'adapter en temps réel. Le RL **ajuste les doses progressivement** en observant la réaction du patient, minimisant les effets secondaires tout en maximisant l'efficacité du traitement.
 
-**Réponse 2 : b)** ✅
-AlphaStar de DeepMind a battu les meilleurs joueurs humains à StarCraft II grâce à un apprentissage basé sur l'expérience — impossible avec un modèle supervisé qui aurait dû anticiper chaque stratégie possible.
-
-**Réponse 3 : a)** ✅
-Les véhicules autonomes doivent s'adapter aux conditions changeantes. L'apprentissage supervisé ne suffit pas car les données seraient figées. Le RL apprend en interagissant et ajuste en temps réel.
-
-**Réponse 4 : a)** ✅
-Le RL permet une adaptation dynamique à chaque situation rencontrée, contrairement aux règles fixes qui ne peuvent pas couvrir tous les cas possibles.
-
-**Réponse 5 : a)** ✅
-L'apprentissage supervisé exigerait un modèle fixe pour chaque tâche — irréaliste. Le RL permet aux robots d'adapter leurs gestes en fonction des variations dans l'assemblage.
-
-**Réponse 6 : a)** ✅
-Le RL permet aux robots d'apprendre de leurs propres erreurs et d'améliorer leur précision au fil du temps, ce qu'aucun modèle supervisé statique ne peut faire efficacement.
-
-**Réponse 7 : a)** ✅
-Un système basé sur des règles fixes serait inefficace car il ne pourrait pas apprendre des habitudes des occupants. Le RL permet d'optimiser dynamiquement les paramètres du bâtiment.
-
-**Réponse 8 : a)** ✅
-Les réseaux électriques gèrent une demande fluctuante en temps réel. Le RL est idéal car il ajuste dynamiquement la répartition de l'énergie en testant différentes stratégies et en s'améliorant en fonction des résultats.
-
-**Réponse 9 : a)** ✅
-Les marchés financiers sont imprévisibles. Un algorithme supervisé ne peut pas s'adapter à des événements imprévus. Le RL apprend des tendances en temps réel et prend en compte l'impact à long terme de chaque décision.
-
-**Réponse 10 : a)** ✅
-Chaque patient réagit différemment aux traitements. Un modèle supervisé statique ne peut pas s'adapter en temps réel. Le RL ajuste les doses progressivement en observant la réaction du patient, minimisant les effets secondaires tout en maximisant l'efficacité.
+</details>
 
 </details>
 
@@ -856,7 +985,7 @@ Chaque patient réagit différemment aux traitements. Un modèle supervisé stat
 
 <br/>
 
-Ce quiz teste votre compréhension des différences entre les trois types d'apprentissage automatique et explique pourquoi le RL est privilégié pour les environnements dynamiques.
+Ce quiz teste votre compréhension des différences entre les trois types d'apprentissage automatique et explique pourquoi le RL est privilégié pour les environnements dynamiques. Répondez à chaque question, puis cliquez sur **💡 Voir la solution** pour vérifier.
 
 ---
 
@@ -867,6 +996,15 @@ b) L'apprentissage supervisé optimise une fonction de perte, tandis que le RL o
 c) L'apprentissage supervisé ne nécessite pas d'entraînement, alors que le RL en a besoin.
 d) Le RL est un sous-domaine de l'apprentissage supervisé.
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+En **apprentissage supervisé**, le modèle ajuste ses paramètres pour **minimiser une erreur** entre ses prédictions et les sorties attendues. En **RL**, l'agent apprend progressivement en essayant différentes actions et en cherchant à **maximiser la somme des récompenses** sur une longue période.
+
+</details>
+
 ---
 
 **Question 2 :** Quel type d'apprentissage utilise des données étiquetées ?
@@ -875,6 +1013,15 @@ a) Apprentissage supervisé
 b) Apprentissage non supervisé
 c) Apprentissage par renforcement
 d) Tous les types d'apprentissage
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : a)**
+
+Un modèle supervisé **nécessite une grande quantité de données annotées** (ex. images avec les labels "chien" ou "chat"). En revanche, le RL n'a pas besoin d'étiquettes puisqu'il apprend en **recevant des feedbacks** sous forme de récompenses.
+
+</details>
 
 ---
 
@@ -885,6 +1032,15 @@ b) Apprentissage non supervisé
 c) Apprentissage par renforcement
 d) Aucun
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+L'apprentissage non supervisé explore **seul** les relations entre les données. Un exemple classique : le clustering de clients en marketing, où l'algorithme **groupe des profils similaires** sans connaître leurs catégories au préalable.
+
+</details>
+
 ---
 
 **Question 4 :** Quel est l'objectif principal du RL ?
@@ -893,6 +1049,15 @@ a) Classifier des données
 b) Découvrir des regroupements
 c) Maximiser une récompense cumulative sur plusieurs décisions
 d) Minimiser l'erreur de prédiction d'une sortie
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+L'agent RL **ne se contente pas de résoudre un problème immédiatement** — il planifie ses actions pour obtenir le meilleur résultat **à long terme**. Dans un jeu vidéo par exemple, il adapte ses décisions pour maximiser ses victoires sur plusieurs parties.
+
+</details>
 
 ---
 
@@ -903,6 +1068,15 @@ b) Il effectue une classification en fonction de données historiques
 c) Il apprend sans étiquettes et identifie des **modèles cachés**
 d) Il optimise une séquence d'actions à long terme
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+L'apprentissage non supervisé **n'a pas de labels explicites** pour guider son apprentissage. Il cherche des **similarités** et des **regroupements** dans les données — sans qu'on lui indique à l'avance ce qu'il doit trouver.
+
+</details>
+
 ---
 
 **Question 6 :** Quel type d'apprentissage **interagit avec un environnement** et ajuste ses actions en fonction des résultats obtenus ?
@@ -911,6 +1085,15 @@ a) Apprentissage supervisé
 b) Apprentissage non supervisé
 c) Apprentissage par renforcement
 d) Aucun des trois
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+Contrairement aux autres approches qui utilisent des **bases de données fixes**, le RL **agit** sur son environnement et reçoit un retour (récompense ou pénalité) en conséquence. C'est cette boucle d'interaction continue qui le distingue fondamentalement.
+
+</details>
 
 ---
 
@@ -921,6 +1104,15 @@ b) Prévision des ventes
 c) Conduite autonome
 d) Détection de spams
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+Un modèle supervisé pourrait reconnaître des panneaux de signalisation, mais ne pourrait **pas gérer des situations imprévues** sur la route (enfant qui surgit, verglas, intersection inconnue). Le RL apprend en testant différentes décisions pour maximiser la sécurité à chaque instant.
+
+</details>
+
 ---
 
 **Question 8 :** Quel type d'apprentissage est utilisé pour optimiser le **trading algorithmique** en temps réel ?
@@ -929,6 +1121,15 @@ a) Apprentissage supervisé
 b) Apprentissage non supervisé
 c) Apprentissage par renforcement
 d) Aucun des trois
+
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : c)**
+
+Les algorithmes de trading utilisent le RL pour **s'adapter en permanence** aux fluctuations du marché et optimiser leurs décisions en temps réel. Le supervisé serait trop rigide — il ne pourrait pas réagir à des événements non présents dans les données d'entraînement.
+
+</details>
 
 ---
 
@@ -939,6 +1140,15 @@ b) Il ajuste ses décisions en fonction des changements de l'environnement
 c) Il fonctionne sans algorithme d'optimisation
 d) Il ne nécessite pas de phase d'entraînement
 
+<details>
+<summary>💡 Voir la solution</summary>
+
+✅ **Réponse : b)**
+
+Contrairement aux autres approches, le RL **ne fonctionne pas avec des données statiques** — il apprend au fil du temps et s'adapte aux conditions dynamiques. C'est cette capacité d'**adaptation continue** qui le rend incontournable pour les environnements en constante évolution.
+
+</details>
+
 ---
 
 **Question 10 :** Comment le RL améliore-t-il les performances d'un robot industriel par rapport aux autres méthodes ?
@@ -948,22 +1158,14 @@ b) Il apprend en exécutant des actions et en ajustant ses mouvements selon les 
 c) Il suit un ensemble de règles fixes définies à l'avance
 d) Il prédit les erreurs à l'avance sans interaction avec son environnement
 
----
+<details>
+<summary>💡 Voir la solution</summary>
 
-### Réponses et Explications — Quiz 3
+✅ **Réponse : b)**
 
-| Question | Réponse | Explication clé |
-|---|---|---|
-| 1 | **b)** | Supervisé = minimise une erreur de prédiction. RL = maximise une récompense cumulative. |
-| 2 | **a)** | Seul le supervisé nécessite des données annotées (images + labels, transactions + étiquettes). |
-| 3 | **b)** | Le non supervisé explore les données sans labels pour trouver groupes et patterns cachés. |
-| 4 | **c)** | L'agent RL planifie ses actions pour maximiser les récompenses sur plusieurs étapes. |
-| 5 | **c)** | Il apprend sans étiquettes et identifie des modèles cachés dans les données. |
-| 6 | **c)** | Contrairement aux autres, le RL agit sur son environnement et reçoit un retour en conséquence. |
-| 7 | **c)** | La conduite autonome nécessite des décisions en temps réel face à des situations imprévues — le supervisé seul est trop rigide. |
-| 8 | **c)** | Les algorithmes de trading utilisent le RL pour s'adapter en permanence aux fluctuations du marché. |
-| 9 | **b)** | Le RL ne fonctionne pas avec des données statiques mais apprend au fil du temps et s'adapte. |
-| 10 | **b)** | Dans l'industrie, un robot RL peut tester différentes façons de saisir un objet et trouver progressivement la meilleure méthode. |
+Dans l'industrie, un robot RL peut **tester différentes façons de saisir un objet** et trouver progressivement la meilleure méthode. Contrairement aux autres méthodes, il ne suit pas de règles fixes mais apprend en **expérimentant** et en **corrigeant ses erreurs** au fil du temps.
+
+</details>
 
 </details>
 
@@ -1477,4 +1679,8 @@ Dans les prochains chapitres, nous plongerons dans les **composants fondamentaux
 
 <p align="right"><a href="#top">↑ Retour en haut</a></p>
 
+---
 
+- Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l’autorisation écrite préalable de Dr. Haythem REHOUMA.
+
+*Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement*
