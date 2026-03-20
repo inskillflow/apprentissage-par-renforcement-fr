@@ -1,46 +1,5 @@
 <a id="top"></a>
 
-<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0f2d1f 100%); border: 3px solid #238636; border-radius: 18px; padding: 36px 32px; margin: 0 0 36px 0; text-align: center; box-shadow: 0 8px 32px rgba(35,134,54,0.3);">
-
-<div style="font-size: 2.6rem; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; margin-bottom: 6px;">
-  📦 Dépôt GitHub du cours
-</div>
-
-<div style="font-size: 1.15rem; color: #8b949e; margin-bottom: 20px;">
-  Tous les fichiers, exercices et ressources du cours sont disponibles sur GitHub
-</div>
-
-<a href="https://github.com/inskillflow/apprentissage-par-renforcement-fr"
-   style="display: inline-block; background: linear-gradient(135deg, #238636 0%, #2ea043 50%, #3fb950 100%); color: #ffffff !important; text-decoration: none !important; font-size: 1.35rem; font-weight: 800; padding: 20px 48px; border-radius: 14px; box-shadow: 0 6px 24px rgba(35,134,54,0.5); letter-spacing: 0.4px; border: 2px solid rgba(63,185,80,0.4); transition: all 0.3s ease;">
-  ⭐ &nbsp; github.com/inskillflow/apprentissage-par-renforcement-fr &nbsp; ⭐
-</a>
-
-<div style="margin-top: 28px; padding: 18px 24px; background: rgba(255, 166, 0, 0.12); border: 2px solid #f0883e; border-radius: 12px; text-align: left; max-width: 680px; margin-left: auto; margin-right: auto;">
-  <div style="font-size: 1.1rem; font-weight: 800; color: #f0883e; margin-bottom: 8px;">
-    ⚠️ &nbsp; IMPORTANT — Gardez ce dépôt en favoris !
-  </div>
-  <div style="color: #c9d1d9; font-size: 0.98rem; line-height: 1.7;">
-    Ce dépôt GitHub est la <strong style="color: #ffffff;">ressource centrale du cours</strong>. Il est mis à jour régulièrement avec du nouveau contenu, des exercices corrigés et des exemples de code. Cliquez sur <strong style="color: #f0883e;">★ Star</strong> pour le retrouver facilement et être notifié des mises à jour.
-  </div>
-</div>
-
-<div style="margin-top: 20px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
-  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
-    📁 &nbsp; Code source complet
-  </div>
-  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
-    📓 &nbsp; Notebooks Jupyter
-  </div>
-  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
-    🔄 &nbsp; Mises à jour régulières
-  </div>
-  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
-    ✅ &nbsp; Exercices corrigés
-  </div>
-</div>
-
-</div>
-
 # Apprentissage par Renforcement — Introduction et Comparaison des Approches
 
 ## Table des matières
@@ -1842,12 +1801,18 @@ Dans les prochains chapitres, nous plongerons dans les **composants fondamentaux
 
 ---
 
----
-
 <p align="center">
   <em>Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l'autorisation écrite préalable de Dr. Haythem REHOUMA.</em>
 </p>
 
 <p align="center">
   <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
+</p>
+
+<br/>
+
+<p align="center">
+  <a href="#top" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 14px 40px; border-radius: 10px; letter-spacing: 0.3px;">
+    ↑ Retour en haut du cours
+  </a>
 </p>
