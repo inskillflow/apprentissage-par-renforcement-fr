@@ -1,5 +1,46 @@
 <a id="top"></a>
 
+<div style="background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0f2d1f 100%); border: 3px solid #238636; border-radius: 18px; padding: 36px 32px; margin: 0 0 36px 0; text-align: center; box-shadow: 0 8px 32px rgba(35,134,54,0.3);">
+
+<div style="font-size: 2.6rem; font-weight: 900; color: #ffffff; letter-spacing: 0.5px; margin-bottom: 6px;">
+  📦 Dépôt GitHub du cours
+</div>
+
+<div style="font-size: 1.15rem; color: #8b949e; margin-bottom: 20px;">
+  Tous les fichiers, exercices et ressources du cours sont disponibles sur GitHub
+</div>
+
+<a href="https://github.com/inskillflow/apprentissage-par-renforcement-fr"
+   style="display: inline-block; background: linear-gradient(135deg, #238636 0%, #2ea043 50%, #3fb950 100%); color: #ffffff !important; text-decoration: none !important; font-size: 1.35rem; font-weight: 800; padding: 20px 48px; border-radius: 14px; box-shadow: 0 6px 24px rgba(35,134,54,0.5); letter-spacing: 0.4px; border: 2px solid rgba(63,185,80,0.4); transition: all 0.3s ease;">
+  ⭐ &nbsp; github.com/inskillflow/apprentissage-par-renforcement-fr &nbsp; ⭐
+</a>
+
+<div style="margin-top: 28px; padding: 18px 24px; background: rgba(255, 166, 0, 0.12); border: 2px solid #f0883e; border-radius: 12px; text-align: left; max-width: 680px; margin-left: auto; margin-right: auto;">
+  <div style="font-size: 1.1rem; font-weight: 800; color: #f0883e; margin-bottom: 8px;">
+    ⚠️ &nbsp; IMPORTANT — Gardez ce dépôt en favoris !
+  </div>
+  <div style="color: #c9d1d9; font-size: 0.98rem; line-height: 1.7;">
+    Ce dépôt GitHub est la <strong style="color: #ffffff;">ressource centrale du cours</strong>. Il est mis à jour régulièrement avec du nouveau contenu, des exercices corrigés et des exemples de code. Cliquez sur <strong style="color: #f0883e;">★ Star</strong> pour le retrouver facilement et être notifié des mises à jour.
+  </div>
+</div>
+
+<div style="margin-top: 20px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
+    📁 &nbsp; Code source complet
+  </div>
+  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
+    📓 &nbsp; Notebooks Jupyter
+  </div>
+  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
+    🔄 &nbsp; Mises à jour régulières
+  </div>
+  <div style="background: rgba(35,134,54,0.15); border: 1px solid #238636; border-radius: 8px; padding: 10px 20px; color: #3fb950; font-size: 0.9rem; font-weight: 700;">
+    ✅ &nbsp; Exercices corrigés
+  </div>
+</div>
+
+</div>
+
 # Apprentissage par Renforcement — Introduction et Comparaison des Approches
 
 ## Table des matières
@@ -585,9 +626,13 @@ Ce quiz évalue votre compréhension des bases de l'apprentissage par renforceme
 
 **Question 1 :** Quelle est la principale différence entre l'apprentissage supervisé et l'apprentissage par renforcement ?
 
+
 a) L'apprentissage par renforcement utilise des données étiquetées
+
 b) L'apprentissage supervisé repose sur l'interaction avec un environnement
+
 c) L'apprentissage par renforcement repose sur des essais et erreurs
+
 d) L'apprentissage par renforcement ne nécessite pas de données
 
 <details>
@@ -603,9 +648,13 @@ Le RL repose sur les **essais et erreurs** : l'agent essaie des actions, observe
 
 **Question 2 :** Quel est le principal objectif d'un agent dans l'apprentissage par renforcement ?
 
+
 a) Maximiser la récompense immédiate
+
 b) Minimiser le nombre d'actions effectuées
+
 c) Maximiser les récompenses cumulées sur le long terme
+
 d) Suivre un ensemble de règles prédéfinies
 
 <details>
@@ -623,9 +672,13 @@ L'agent ne cherche pas uniquement une récompense immédiate — il optimise sa 
 
 **Question 3 :** Quelles sont les trois étapes du cycle d'apprentissage par renforcement ?
 
+
 a) Prendre une action, recevoir une récompense, arrêter l'apprentissage
+
 b) Prendre une action, observer le nouvel état, ajuster la stratégie
+
 c) Observer l'environnement, mémoriser les données, agir
+
 d) Collecter des données, entraîner un modèle, tester les résultats
 
 <details>
@@ -641,9 +694,13 @@ Le cycle fondamental du RL est : **action → observation du nouvel état → aj
 
 **Question 4 :** Dans le cadre du RL, que représente l'**environnement** ?
 
+
 a) Un ensemble de données utilisées pour entraîner un modèle
+
 b) Un système interactif où l'agent évolue et prend des décisions
+
 c) Une liste d'actions possibles
+
 d) Une fonction qui retourne toujours une récompense positive
 
 <details>
@@ -661,9 +718,13 @@ L'environnement est le **système interactif** avec lequel l'agent interagit. C'
 
 **Question 5 :** Pourquoi parle-t-on d'**essai et erreur** en RL ?
 
+
 a) L'agent essaye différentes actions et apprend en fonction des résultats obtenus
+
 b) L'agent connaît déjà la solution et la teste plusieurs fois
+
 c) L'agent suit un algorithme fixe sans exploration
+
 d) L'agent choisit toujours l'action qui a donné la meilleure récompense immédiate
 
 <details>
@@ -679,9 +740,13 @@ L'agent **n'a aucune connaissance initiale** de la bonne stratégie. Il teste di
 
 **Question 6 :** Pourquoi le RL est-il particulièrement adapté aux **décisions séquentielles** ?
 
+
 a) Parce que chaque décision influence uniquement l'environnement à court terme
+
 b) Parce que l'agent apprend uniquement à partir d'exemples fournis par un humain
+
 c) Parce que chaque action affecte l'environnement et les futures décisions de l'agent
+
 d) Parce que l'agent reçoit une récompense uniquement à la dernière étape
 
 <details>
@@ -697,9 +762,13 @@ Dans le RL, **chaque action modifie l'état de l'environnement** et donc les opt
 
 **Question 7 :** Qu'entend-on par **maximisation des récompenses cumulées** ?
 
+
 a) L'agent cherche uniquement la récompense immédiate la plus élevée
+
 b) L'agent optimise son comportement pour obtenir le plus de récompenses sur la durée
+
 c) L'agent doit recevoir une récompense à chaque action pour fonctionner
+
 d) L'agent choisit toujours des actions aléatoires pour explorer toutes les possibilités
 
 <details>
@@ -717,9 +786,13 @@ Le RL optimise les récompenses **sur la durée**, pas seulement à court terme.
 
 **Question 8 :** Dans l'exemple du labyrinthe, qu'apprend l'agent à force d'interactions ?
 
+
 a) Que certaines actions sont interdites
+
 b) Que chaque déplacement le rapproche ou l'éloigne du diamant
+
 c) Que toutes les actions mènent au même résultat
+
 d) Qu'il doit mémoriser chaque position visitée
 
 <details>
@@ -735,9 +808,13 @@ L'agent apprend progressivement que **certains déplacements le rapprochent du d
 
 **Question 9 :** Pourquoi compare-t-on le RL au fonctionnement d'un **robot aspirateur** ?
 
+
 a) Parce qu'il suit toujours un chemin prédéfini
+
 b) Parce qu'il apprend à optimiser ses déplacements en testant différentes routes
+
 c) Parce qu'il ne change jamais son comportement après une erreur
+
 d) Parce qu'il utilise des capteurs pour éviter les obstacles
 
 <details>
@@ -753,9 +830,13 @@ Un robot aspirateur intelligent n'a pas de carte prédéfinie de la maison. Il *
 
 **Question 10 :** Dans quels domaines le RL est-il particulièrement utilisé ?
 
+
 a) Jeux vidéo, robotique, finance, logistique
+
 b) Traitement d'images, reconnaissance vocale
+
 c) Gestion de bases de données, compression de fichiers
+
 d) Traduction automatique, création de contenu
 
 <details>
@@ -788,9 +869,13 @@ Ce quiz évalue votre compréhension des applications du RL et explique pourquoi
 
 **Question 1 :** Pourquoi le RL est-il particulièrement efficace pour entraîner une IA à jouer à des jeux vidéo ?
 
+
 a) Parce que les jeux fournissent un environnement simulé où l'agent peut tester des stratégies sans conséquence réelle
+
 b) Parce que les jeux vidéo ont des règles fixes et immuables
+
 c) Parce que l'IA est préprogrammée pour connaître toutes les règles à l'avance
+
 d) Parce que l'agent reçoit des données étiquetées lui indiquant la bonne action à chaque étape
 
 <details>
@@ -806,9 +891,13 @@ L'environnement simulé des jeux permet à l'agent de tester des milliers de str
 
 **Question 2 :** Quel exploit célèbre du RL a démontré son efficacité dans les jeux vidéo ?
 
+
 a) Une IA battant les humains à Tetris
+
 b) Une IA surpassant les champions humains à StarCraft II
+
 c) Une IA créant un jeu vidéo à partir de zéro
+
 d) Une IA utilisant des stratégies aléatoires pour gagner à Mario Kart
 
 <details>
@@ -826,9 +915,13 @@ d) Une IA utilisant des stratégies aléatoires pour gagner à Mario Kart
 
 **Question 3 :** Comment le RL aide-t-il les véhicules autonomes à améliorer leur conduite ?
 
+
 a) En ajustant dynamiquement leur trajectoire en fonction de l'environnement
+
 b) En suivant uniquement un ensemble de règles fixes prédéfinies
+
 c) En évitant complètement l'interaction avec d'autres véhicules
+
 d) En fonctionnant uniquement avec des données pré-enregistrées sans apprentissage en temps réel
 
 <details>
@@ -844,9 +937,13 @@ Les véhicules autonomes doivent s'adapter aux conditions changeantes (météo, 
 
 **Question 4 :** Quelle est la principale différence entre un véhicule autonome basé sur le RL et un véhicule programmé avec des règles fixes ?
 
+
 a) Le RL permet au véhicule d'adapter son comportement en fonction des situations rencontrées
+
 b) Le RL oblige le véhicule à suivre un itinéraire prédéfini
+
 c) Le RL empêche le véhicule de rouler dans des conditions météorologiques extrêmes
+
 d) Le RL empêche la voiture de prendre des décisions autonomes
 
 <details>
@@ -864,9 +961,13 @@ Le RL permet une **adaptation dynamique** à chaque situation rencontrée. Les r
 
 **Question 5 :** Dans quel domaine industriel le RL est-il le plus utilisé ?
 
+
 a) L'optimisation des flux de production et l'assemblage de pièces
+
 b) La création de nouveaux robots sans intervention humaine
+
 c) La réparation automatique des pannes sans diagnostic
+
 d) L'élimination du besoin d'ingénieurs en automatisation
 
 <details>
@@ -882,9 +983,13 @@ L'apprentissage supervisé exigerait un modèle fixe pour chaque tâche — irr�
 
 **Question 6 :** Pourquoi le RL est-il particulièrement utile dans les chaînes de production automatisées ?
 
+
 a) Parce qu'il permet aux robots d'ajuster leurs mouvements en fonction des erreurs passées
+
 b) Parce qu'il permet aux robots de fonctionner sans électricité
+
 c) Parce qu'il réduit la nécessité d'avoir un opérateur humain
+
 d) Parce qu'il empêche toute panne technique
 
 <details>
@@ -902,9 +1007,13 @@ Le RL permet aux robots d'**apprendre de leurs propres erreurs** et d'améliorer
 
 **Question 7 :** Comment le RL permet-il de réduire la consommation énergétique des bâtiments intelligents ?
 
+
 a) En ajustant automatiquement le chauffage et la climatisation en fonction des habitudes des occupants
+
 b) En forçant les utilisateurs à réduire leur consommation d'énergie
+
 c) En éliminant totalement le besoin de chauffage et de climatisation
+
 d) En conservant les réglages fixes définis par l'ingénieur initial
 
 <details>
@@ -920,9 +1029,13 @@ Un système à règles fixes serait inefficace car il ne pourrait pas **apprendr
 
 **Question 8 :** Comment le RL est-il appliqué dans les réseaux électriques intelligents ?
 
+
 a) En optimisant la répartition de l'énergie en temps réel pour éviter les surcharges
+
 b) En remplaçant tous les réseaux existants par de nouvelles infrastructures
+
 c) En stockant l'énergie sans la redistribuer
+
 d) En évitant toute fluctuation de tension dans les centrales électriques
 
 <details>
@@ -940,9 +1053,13 @@ Les réseaux électriques gèrent une demande **fluctuante en temps réel**. Le 
 
 **Question 9 :** Comment les algorithmes de trading utilisent-ils le RL ?
 
+
 a) En analysant les tendances de marché et en ajustant dynamiquement les décisions d'investissement
+
 b) En suivant des règles fixes sans prendre en compte les fluctuations du marché
+
 c) En se basant uniquement sur des modèles mathématiques statiques
+
 d) En investissant uniquement dans les entreprises les plus connues
 
 <details>
@@ -958,9 +1075,13 @@ Les marchés financiers sont **imprévisibles**. Un algorithme supervisé ne peu
 
 **Question 10 :** Comment le RL est-il utilisé pour personnaliser les traitements médicaux ?
 
+
 a) En ajustant les doses de médicaments en fonction de la réaction du patient
+
 b) En appliquant un traitement unique à tous les patients
+
 c) En automatisant totalement les décisions des médecins
+
 d) En remplaçant l'analyse humaine par un programme statique
 
 <details>
@@ -991,9 +1112,13 @@ Ce quiz teste votre compréhension des différences entre les trois types d'appr
 
 **Question 1 :** Quelle est la principale différence entre l'apprentissage supervisé et le RL ?
 
+
 a) L'apprentissage supervisé nécessite des données étiquetées, tandis que le RL fonctionne avec des données non étiquetées.
+
 b) L'apprentissage supervisé optimise une fonction de perte, tandis que le RL optimise une récompense cumulative.
+
 c) L'apprentissage supervisé ne nécessite pas d'entraînement, alors que le RL en a besoin.
+
 d) Le RL est un sous-domaine de l'apprentissage supervisé.
 
 <details>
@@ -1009,9 +1134,13 @@ En **apprentissage supervisé**, le modèle ajuste ses paramètres pour **minimi
 
 **Question 2 :** Quel type d'apprentissage utilise des données étiquetées ?
 
+
 a) Apprentissage supervisé
+
 b) Apprentissage non supervisé
+
 c) Apprentissage par renforcement
+
 d) Tous les types d'apprentissage
 
 <details>
@@ -1027,9 +1156,13 @@ Un modèle supervisé **nécessite une grande quantité de données annotées** 
 
 **Question 3 :** Dans quel type d'apprentissage un modèle découvre-t-il des **structures cachées** sans intervention humaine ?
 
+
 a) Apprentissage supervisé
+
 b) Apprentissage non supervisé
+
 c) Apprentissage par renforcement
+
 d) Aucun
 
 <details>
@@ -1045,9 +1178,13 @@ L'apprentissage non supervisé explore **seul** les relations entre les données
 
 **Question 4 :** Quel est l'objectif principal du RL ?
 
+
 a) Classifier des données
+
 b) Découvrir des regroupements
+
 c) Maximiser une récompense cumulative sur plusieurs décisions
+
 d) Minimiser l'erreur de prédiction d'une sortie
 
 <details>
@@ -1063,9 +1200,13 @@ L'agent RL **ne se contente pas de résoudre un problème immédiatement** — i
 
 **Question 5 :** Quelle caractéristique distingue l'**apprentissage non supervisé** des autres méthodes ?
 
+
 a) Il utilise des récompenses pour améliorer ses décisions
+
 b) Il effectue une classification en fonction de données historiques
+
 c) Il apprend sans étiquettes et identifie des **modèles cachés**
+
 d) Il optimise une séquence d'actions à long terme
 
 <details>
@@ -1081,9 +1222,13 @@ L'apprentissage non supervisé **n'a pas de labels explicites** pour guider son 
 
 **Question 6 :** Quel type d'apprentissage **interagit avec un environnement** et ajuste ses actions en fonction des résultats obtenus ?
 
+
 a) Apprentissage supervisé
+
 b) Apprentissage non supervisé
+
 c) Apprentissage par renforcement
+
 d) Aucun des trois
 
 <details>
@@ -1099,9 +1244,13 @@ Contrairement aux autres approches qui utilisent des **bases de données fixes**
 
 **Question 7 :** Quel domaine **ne peut pas** être résolu efficacement avec l'apprentissage supervisé seul ?
 
+
 a) Reconnaissance faciale
+
 b) Prévision des ventes
+
 c) Conduite autonome
+
 d) Détection de spams
 
 <details>
@@ -1117,9 +1266,13 @@ Un modèle supervisé pourrait reconnaître des panneaux de signalisation, mais 
 
 **Question 8 :** Quel type d'apprentissage est utilisé pour optimiser le **trading algorithmique** en temps réel ?
 
+
 a) Apprentissage supervisé
+
 b) Apprentissage non supervisé
+
 c) Apprentissage par renforcement
+
 d) Aucun des trois
 
 <details>
@@ -1135,9 +1288,13 @@ Les algorithmes de trading utilisent le RL pour **s'adapter en permanence** aux 
 
 **Question 9 :** Pourquoi le RL est-il préférable dans des environnements dynamiques ?
 
+
 a) Il prédit mieux les résultats que l'apprentissage supervisé
+
 b) Il ajuste ses décisions en fonction des changements de l'environnement
+
 c) Il fonctionne sans algorithme d'optimisation
+
 d) Il ne nécessite pas de phase d'entraînement
 
 <details>
@@ -1153,9 +1310,13 @@ Contrairement aux autres approches, le RL **ne fonctionne pas avec des données 
 
 **Question 10 :** Comment le RL améliore-t-il les performances d'un robot industriel par rapport aux autres méthodes ?
 
+
 a) Il regroupe les tâches similaires grâce au clustering
+
 b) Il apprend en exécutant des actions et en ajustant ses mouvements selon les résultats
+
 c) Il suit un ensemble de règles fixes définies à l'avance
+
 d) Il prédit les erreurs à l'avance sans interaction avec son environnement
 
 <details>
@@ -1681,6 +1842,12 @@ Dans les prochains chapitres, nous plongerons dans les **composants fondamentaux
 
 ---
 
-- Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l’autorisation écrite préalable de Dr. Haythem REHOUMA.
+---
 
-*Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement*
+<p align="center">
+  <em>Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l'autorisation écrite préalable de Dr. Haythem REHOUMA.</em>
+</p>
+
+<p align="center">
+  <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
+</p>
