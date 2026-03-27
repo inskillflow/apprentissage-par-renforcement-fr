@@ -104,7 +104,7 @@ Les méthodes **Value-Based** apprennent une **fonction de valeur** qui estime l
 
 > _Une méthode Value-Based dit : « Si je suis dans cet état et que je fais cette action, quelle récompense totale puis-je espérer à long terme ? » Par exemple dans un jeu : « Si je suis dans telle position et que je saute, vais-je gagner beaucoup de points ? » — puis l'agent choisit toujours l'action avec la **valeur estimée la plus élevée**._
 
-**Les deux fonctions de valeur :**
+#### Les deux fonctions de valeur
 
 | Fonction | Notation | Définition |
 |---|---|---|
@@ -115,9 +115,9 @@ $$V^\pi(s) = \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t r_{t+1} \mid s_0 = s, 
 
 $$Q^\pi(s, a) = \mathbb{E}\left[\sum_{t=0}^{\infty} \gamma^t r_{t+1} \mid s_0 = s, a_0 = a, \pi\right]$$
 
-**De la valeur à la politique :**
+#### De la valeur à la politique
 
-$$\pi^*(s) = \arg\max_a Q^*(s, a)$$
+$$\pi^{\ast}(s) = \arg\max_a Q^{\ast}(s, a)$$
 
 ---
 
@@ -135,12 +135,12 @@ $$\pi^*(s) = \arg\max_a Q^*(s, a)$$
 
 ### Avantages et inconvénients
 
-**Avantages :**
+#### Avantages
 - Convergence garantie vers une politique optimale sous conditions adéquates
 - Efficace pour les espaces d'actions **discrets et limités**
 - Bien adapté aux environnements avec des transitions claires et explorables
 
-**Inconvénients :**
+#### Inconvénients
 - **Ne convient pas aux espaces d'actions continus** — impossible d'évaluer une infinité d'actions
 - Exploration intensive nécessaire pour bien estimer toutes les valeurs
 - Apprentissage lent dans des environnements complexes ou à dynamique variable
@@ -166,7 +166,7 @@ Les méthodes **Policy-Based** apprennent **directement une politique** qui déf
 
 > _Une méthode Policy-Based dit : « Au lieu de calculer combien vaut chaque coup dans un jeu, j'apprends directement à jouer comme un expert : dans cette situation, je saute ; dans celle-ci, je recule. » — l'apprentissage est plus intuitif, moins computationnel._
 
-**La politique comme fonction paramétrique :**
+#### La politique comme fonction paramétrique
 
 $$\pi_\theta(a | s) = P(a | s; \theta)$$
 
@@ -174,7 +174,7 @@ $$\pi_\theta(a | s) = P(a | s; \theta)$$
 - La politique associe à chaque état une **distribution de probabilités** sur les actions
 - L'entraînement consiste à **optimiser θ** pour maximiser la récompense cumulée
 
-**Objectif d'optimisation :**
+#### Objectif d'optimisation
 
 $$J(\theta) = \mathbb{E}_{\pi_\theta}\left[\sum_{t=0}^{\infty} \gamma^t r_{t+1}\right]$$
 
@@ -197,13 +197,13 @@ $$\theta \leftarrow \theta + \alpha \nabla_\theta J(\theta)$$
 
 ### Avantages et inconvénients
 
-**Avantages :**
+#### Avantages
 - **Convient parfaitement aux espaces d'actions continus** (bras robotiques, contrôle de véhicules)
 - Peut apprendre des **politiques stochastiques** — meilleure exploration naturelle
 - Ne nécessite pas de calculer explicitement une fonction de valeur
 - Souvent plus efficace dans les environnements complexes ou à forte variabilité
 
-**Inconvénients :**
+#### Inconvénients
 - Peut nécessiter de **nombreux échantillons** pour converger
 - L'apprentissage est **moins stable** — le gradient de politique peut diverger
 - La convergence n'est **pas toujours garantie** si les hyperparamètres sont mal choisis
@@ -278,11 +278,11 @@ Ces six équations couvrent les mises à jour fondamentales des deux approches. 
 
 ### Q-Learning (Value-Based — Off-Policy)
 
-**Équation 1 — Standard :**
+#### Équation 1 — Standard
 
 $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right]$$
 
-**Équation 4 — Refactorisée avec (1-α) :**
+#### Équation 4 — Refactorisée avec (1-α)
 
 $$Q(s, a) \leftarrow (1 - \alpha) \cdot Q(s, a) + \alpha \left( r + \gamma \max_{a'} Q(s', a') \right)$$
 
@@ -302,15 +302,15 @@ $$Q(s, a) \leftarrow (1 - \alpha) \cdot Q(s, a) + \alpha \left( r + \gamma \max_
 
 ### SARSA (Value-Based — On-Policy)
 
-**Équation 2 — Standard :**
+#### Équation 2 — Standard
 
 $$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma Q(s', a') - Q(s, a) \right]$$
 
-**Équation 5 — Refactorisée avec (1-α) :**
+#### Équation 5 — Refactorisée avec (1-α)
 
 $$Q(s, a) \leftarrow (1 - \alpha) \cdot Q(s, a) + \alpha \left( r + \gamma Q(s', a') \right)$$
 
-**Différence clé avec Q-Learning :**
+#### Différence clé avec Q-Learning
 
 | | Q-Learning | SARSA |
 |---|---|---|
@@ -322,11 +322,11 @@ $$Q(s, a) \leftarrow (1 - \alpha) \cdot Q(s, a) + \alpha \left( r + \gamma Q(s',
 
 ### Gradient de Politique REINFORCE (Policy-Based — On-Policy)
 
-**Équation 3 — Standard :**
+#### Équation 3 — Standard
 
 $$\theta \leftarrow \theta + \alpha \nabla_\theta \log \pi_\theta(a|s) \cdot G_t$$
 
-**Équation 6 — Refactorisée avec (1-α) :**
+#### Équation 6 — Refactorisée avec (1-α)
 
 $$\theta \leftarrow (1 - \alpha) \cdot \theta + \alpha \nabla_\theta \log \pi_\theta(a|s) \cdot G_t$$
 
@@ -407,9 +407,9 @@ $$= 0.0 + 0.1 \times [-1 + 4.5] = 0.1 \times 3.5 = \mathbf{0.35}$$
 
 Une fois entraîné, la table Q contient les valeurs optimales pour chaque paire (s, a). La politique optimale est directement lisible :
 
-$$\pi^*(s) = \arg\max_a Q(s, a)$$
+$\pi^{\ast}(s) = \arg\max_a Q(s, a)$
 
-**Exemple de table Q finale pour le labyrinthe :**
+#### Exemple de table Q finale pour le labyrinthe
 
 | État | Q(H) | Q(B) | Q(G) | Q(D) | **Action optimale** |
 |---|---|---|---|---|---|
@@ -506,18 +506,18 @@ flowchart LR
     style C fill:#2563eb,color:#fff
 ```
 
-**Comment ça fonctionne :**
+#### Comment ça fonctionne
 1. **L'Actor** choisit une action selon sa politique courante
 2. **L'environnement** retourne une récompense et un nouvel état
 3. **Le Critic** évalue si cette décision était bonne (via l'erreur TD)
 4. **L'Actor** ajuste sa politique en fonction du retour du Critic
 
-**Avantages de l'Actor-Critic :**
+#### Avantages de l'Actor-Critic
 - Réduit la variance du gradient de politique (problème de REINFORCE pur)
 - Peut gérer des actions continues (Actor Policy-Based)
 - Apprentissage plus stable (Critic Value-Based)
 
-**Algorithmes Actor-Critic principaux :**
+#### Algorithmes Actor-Critic principaux
 
 | Algorithme | Particularité | Usage |
 |---|---|---|
@@ -773,7 +773,7 @@ Une politique stochastique est utile pour plusieurs raisons :
 
 ✅ **Réponse : Policy-Based ou Actor-Critic (SAC ou PPO)**
 
-**Raisons :**
+#### Raisons
 
 1. **Espace d'actions continu** : 6 degrés × [-180°, +180°] = espace continu de dimension 6 — impossible pour une table Q
 2. **Précision requise** : Les mouvements chirurgicaux nécessitent des angles précis — les méthodes Policy-Based peuvent produire des distributions Gaussiennes sur les angles
