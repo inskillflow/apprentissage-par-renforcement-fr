@@ -42,23 +42,17 @@ En apprentissage par renforcement, tous les algorithmes cherchent à trouver la 
 > **Question centrale :** Pour maximiser mes récompenses, dois-je d'abord **évaluer la valeur de chaque action** (Value-Based), ou dois-je **apprendre directement quelle action faire** (Policy-Based) ?
 
 ```mermaid
-mindmap
-  root((Approches RL))
-    Value-Based
-      Apprend Q(s,a) ou V(s)
-      Politique implicite via max
-      Q-Learning, SARSA, DQN
-      Actions discrètes
-      Off-Policy souvent
-    Policy-Based
-      Apprend π(a|s) directement
-      Gradient de politique
-      REINFORCE, PPO, TRPO
-      Actions continues
-      On-Policy souvent
-    Actor-Critic
-      Combine les deux
-      A3C, A2C, SAC, PPO avancé
+flowchart TD
+    VB["**Value-Based**\nApprend Q et V\nPolitique via argmax\nQ-Learning · SARSA · DQN\nActions discrètes · Off-Policy"]
+    PB["**Policy-Based**\nApprend π directement\nGradient de politique\nREINFORCE · PPO · TRPO\nActions continues · On-Policy"]
+    AC["**Actor-Critic**\nCombine les deux\nA3C · A2C · SAC · PPO"]
+    ROOT["Approches RL"] --> VB
+    ROOT --> PB
+    ROOT --> AC
+    style ROOT fill:#1e293b,color:#fff
+    style VB fill:#2563eb,color:#fff
+    style PB fill:#9333ea,color:#fff
+    style AC fill:#16a34a,color:#fff
 ```
 
 ---
