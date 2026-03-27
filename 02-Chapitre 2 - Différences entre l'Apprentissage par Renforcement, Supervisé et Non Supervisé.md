@@ -637,7 +637,7 @@ flowchart LR
 
 <br/>
 
-Ce quiz évalue votre capacité à identifier le bon paradigme d'apprentissage automatique selon la description d'un problème. Répondez à chaque question, puis cliquez sur **Voir la solution** pour vérifier votre réponse.
+Ce quiz évalue votre capacité à identifier le bon paradigme d'apprentissage automatique selon la description d'un problème. Répondez à chaque question, puis cliquez sur **💡 Voir la solution** pour vérifier votre réponse.
 
 ---
 
@@ -646,14 +646,20 @@ Ce quiz évalue votre capacité à identifier le bon paradigme d'apprentissage a
 **Question 1 :** Un médecin veut qu'un algorithme classe automatiquement des radiographies comme « normale » ou « anomalie détectée ». Il dispose de 10 000 radiographies déjà annotées par ses collègues. Quel paradigme utiliser ?
 
 a) Apprentissage par renforcement
+
+
 b) Apprentissage non supervisé
+
+
 c) Apprentissage supervisé
+
+
 d) Combinaison de tous les paradigmes
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Les données sont étiquetées (normale / anomalie) et le problème est une classification binaire classique. C'est le cas d'usage idéal de l'apprentissage supervisé — ici un CNN (réseau de neurones convolutionnel) entraîné sur ces paires (image, label).
 
@@ -664,14 +670,20 @@ Les données sont étiquetées (normale / anomalie) et le problème est une clas
 **Question 2 :** Une banque reçoit des millions de transactions par jour et souhaite identifier des groupes de comportements inhabituels, sans savoir à l'avance quels types de fraudes existent. Quel paradigme utiliser ?
 
 a) Apprentissage supervisé
+
+
 b) Apprentissage par renforcement
+
+
 c) Apprentissage non supervisé
+
+
 d) Aucun des trois
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Sans étiquettes et sans catégories prédéfinies, l'apprentissage non supervisé est idéal. Des algorithmes comme DBSCAN ou Isolation Forest identifient les transactions qui ne ressemblent à aucun pattern connu — sans avoir besoin d'exemples de fraudes passées.
 
@@ -682,14 +694,20 @@ Sans étiquettes et sans catégories prédéfinies, l'apprentissage non supervis
 **Question 3 :** Un robot dans un entrepôt doit apprendre à transporter des colis en évitant les obstacles. Il reçoit une récompense de +1 chaque fois qu'il livre un colis sans collision. Quel paradigme utiliser ?
 
 a) Apprentissage non supervisé
+
+
 b) Apprentissage supervisé
+
+
 c) Apprentissage par renforcement
+
+
 d) Régression linéaire
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Le robot interagit avec un environnement dynamique, prend des décisions séquentielles (naviguer, éviter, livrer) et reçoit un feedback sous forme de récompense. C'est exactement le scénario pour lequel le RL a été conçu.
 
@@ -700,14 +718,20 @@ Le robot interagit avec un environnement dynamique, prend des décisions séquen
 **Question 4 :** Un e-commerce veut regrouper ses clients en profils d'acheteurs similaires pour personnaliser ses campagnes marketing, sans avoir défini de catégories au préalable. Quel paradigme ?
 
 a) Apprentissage supervisé
+
+
 b) Apprentissage par renforcement
+
+
 c) Apprentissage non supervisé
+
+
 d) Apprentissage semi-supervisé
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Pas d'étiquettes, pas de catégories préexistantes — objectif de découverte de groupes similaires. K-Means ou DBSCAN appliqué sur le comportement d'achat (panier moyen, fréquence, catégories favorites) permettra de segmenter les clients naturellement.
 
@@ -718,14 +742,20 @@ Pas d'étiquettes, pas de catégories préexistantes — objectif de découverte
 **Question 5 :** Une plateforme de streaming veut qu'une IA apprenne à recommander des films en maximisant le temps de visionnage total des utilisateurs sur 30 jours, en s'adaptant continuellement à leurs comportements. Quel paradigme ?
 
 a) Apprentissage non supervisé
+
+
 b) Apprentissage supervisé
+
+
 c) Apprentissage par renforcement
+
+
 d) Régression logistique
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 L'objectif est d'optimiser une récompense cumulative (temps de visionnage sur 30 jours) en prenant des décisions séquentielles (quelle recommandation afficher maintenant) qui influencent le comportement futur de l'utilisateur. C'est le cas typique du RL pour les systèmes de recommandation.
 
@@ -738,14 +768,20 @@ L'objectif est d'optimiser une récompense cumulative (temps de visionnage sur 3
 **Question 6 :** Pour entraîner un modèle de prédiction de prix de maisons à partir de 500 000 ventes immobilières avec prix connus, quel paradigme est le plus approprié ?
 
 a) RL — maximiser la récompense de vente
+
+
 b) Non Supervisé — découvrir des groupes de maisons
+
+
 c) Supervisé — régression sur données étiquetées
+
+
 d) RL avec pre-training supervisé
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 On dispose de paires (caractéristiques de la maison, prix de vente). L'objectif est de prédire un prix pour de nouvelles maisons. C'est une régression supervisée classique — XGBoost ou un réseau de neurones y excelleront.
 
@@ -756,14 +792,20 @@ On dispose de paires (caractéristiques de la maison, prix de vente). L'objectif
 **Question 7 :** Un algorithme doit apprendre à jouer à un jeu d'échecs en atteignant le niveau grand-maître. Aucune donnée d'entraînement n'est fournie initialement — il commence de zéro. Quel paradigme ?
 
 a) Supervisé — apprentissage sur des parties historiques
+
+
 b) Non Supervisé — découverte des ouvertures
+
+
 c) RL — apprentissage par essais et erreurs
+
+
 d) Régression — prédire le meilleur coup
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Sans données initiales, l'agent RL joue contre lui-même (self-play), reçoit une récompense de +1 pour une victoire, 0 pour un nul, -1 pour une défaite, et converge vers une stratégie optimale. C'est exactement le fonctionnement d'AlphaZero.
 
@@ -774,14 +816,20 @@ Sans données initiales, l'agent RL joue contre lui-même (self-play), reçoit u
 **Question 8 :** On veut analyser 100 000 articles de presse pour identifier automatiquement les grands thèmes abordés (politique, économie, sport...) sans avoir fourni ces catégories à l'avance. Quel paradigme ?
 
 a) Supervisé — classification de textes
+
+
 b) Non Supervisé — topic modeling (LDA, BERTopic)
+
+
 c) RL — optimisation de la lecture
+
+
 d) Aucun paradigme d'apprentissage automatique
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Découvrir des thèmes sans catégories prédéfinies = apprentissage non supervisé. Des algorithmes de **topic modeling** comme LDA (Latent Dirichlet Allocation) ou BERTopic identifient les thèmes naturels qui émergent du corpus de textes.
 
@@ -792,14 +840,20 @@ Découvrir des thèmes sans catégories prédéfinies = apprentissage non superv
 **Question 9 :** Une entreprise d'énergie veut optimiser en temps réel la distribution d'électricité dans un réseau intelligent (smart grid), en s'adaptant aux pics de consommation et aux pannes partielles. Quel paradigme ?
 
 a) Supervisé — prédire la consommation future
+
+
 b) Non Supervisé — détecter des anomalies de réseau
+
+
 c) RL — prendre des décisions séquentielles d'allocation
+
+
 d) Tous les trois simultanément
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 La gestion d'un réseau électrique est un problème de **contrôle séquentiel** : chaque décision d'allocation influence l'état futur du réseau. L'environnement est dynamique (fluctuations de consommation, pannes imprévues). Le RL permet d'optimiser les décisions en temps réel pour maximiser la stabilité et l'efficacité du réseau.
 
@@ -810,14 +864,20 @@ La gestion d'un réseau électrique est un problème de **contrôle séquentiel*
 **Question 10 :** OpenAI a utilisé une technique appelée RLHF pour entraîner ChatGPT. Dans RLHF, des humains notent les réponses du modèle, et un agent apprend à maximiser ces notes. Quel paradigme est le RL ici ?
 
 a) Non Supervisé — le modèle découvre les bonnes réponses
+
+
 b) Supervisé — les notes humaines sont les étiquettes
+
+
 c) RL — maximiser la récompense des préférences humaines
+
+
 d) Hybride — supervisé uniquement
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Dans RLHF, les notes humaines constituent la **fonction de récompense**. L'agent (le modèle de langage) apprend à maximiser cette récompense en générant des réponses de plus en plus appréciées par les évaluateurs humains. C'est du RL pur — avec une récompense définie par des préférences humaines.
 
@@ -843,14 +903,20 @@ Ce quiz teste votre capacité à justifier le choix d'un paradigme face à des c
 **Question 1 :** Quelle est la condition **indispensable** pour utiliser l'apprentissage supervisé ?
 
 a) Un environnement interactif et dynamique
+
+
 b) Un grand nombre de données non étiquetées
+
+
 c) Des paires (entrée, sortie attendue) pour entraîner le modèle
+
+
 d) Une fonction de récompense bien définie
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 L'apprentissage supervisé **ne peut pas fonctionner sans données étiquetées**. C'est sa condition sine qua non. Si l'étiquetage est impossible ou trop coûteux, il faut envisager une autre approche.
 
@@ -861,14 +927,20 @@ L'apprentissage supervisé **ne peut pas fonctionner sans données étiquetées*
 **Question 2 :** Pourquoi l'apprentissage non supervisé est-il préférable lorsqu'on travaille sur de la **détection d'anomalies** dans un nouveau domaine ?
 
 a) Parce qu'il apprend plus vite que le supervisé
+
+
 b) Parce qu'il ne nécessite pas de connaître les types d'anomalies à l'avance
+
+
 c) Parce qu'il génère lui-même des exemples d'anomalies
+
+
 d) Parce qu'il utilise des récompenses pour identifier les anomalies
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Dans un nouveau domaine, on ne sait pas **quels types d'anomalies existent**. Le non supervisé apprend ce qu'est le comportement « normal », puis signale tout ce qui s'en écarte — sans avoir besoin d'exemples d'anomalies étiquetées à l'avance.
 
@@ -879,14 +951,20 @@ Dans un nouveau domaine, on ne sait pas **quels types d'anomalies existent**. Le
 **Question 3 :** Pour un jeu vidéo où l'IA doit battre des joueurs humains, pourquoi le RL est-il supérieur au supervisé ?
 
 a) Parce que le RL est toujours plus rapide à entraîner
+
+
 b) Parce que le RL peut générer ses propres données en jouant contre lui-même, sans limite
+
+
 c) Parce que le supervisé ne peut pas être appliqué aux jeux vidéo
+
+
 d) Parce que le RL ne nécessite aucun paramétrage
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Le RL via **self-play** peut s'entraîner pendant des milliards de parties contre lui-même, accumulant une expérience qui dépasse de loin ce qu'un humain pourrait étiqueter. AlphaZero a joué 44 millions de parties d'échecs contre lui-même en 9 heures — impossible avec du supervisé.
 
@@ -897,14 +975,20 @@ Le RL via **self-play** peut s'entraîner pendant des milliards de parties contr
 **Question 4 :** Dans quel cas l'apprentissage non supervisé serait-il **un mauvais choix** ?
 
 a) Quand on veut découvrir des clusters dans des données clients
+
+
 b) Quand on veut prédire précisément si un email est un spam
+
+
 c) Quand on n'a pas d'étiquettes pour les données
+
+
 d) Quand on veut réduire la dimension des données
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La détection de spam nécessite une **décision binaire précise** (spam ou non-spam) sur de nouvelles données. Avec un historique d'emails étiquetés disponible, le supervisé donne une précision bien supérieure. Le non supervisé ne peut pas garantir cette précision sans supervision.
 
@@ -915,14 +999,20 @@ La détection de spam nécessite une **décision binaire précise** (spam ou non
 **Question 5 :** Quelle est la principale raison pour laquelle le RL est **difficile à appliquer** dans certains contextes réels ?
 
 a) Il nécessite obligatoirement des données étiquetées
+
+
 b) Il est incapable d'apprendre dans des environnements simples
+
+
 c) Définir une bonne fonction de récompense est complexe et critique
+
+
 d) Il ne fonctionne qu'avec des images et non avec des données textuelles
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Une **mauvaise fonction de récompense** produit un agent qui « triche » — il maximise la récompense sans atteindre l'objectif réel. C'est le problème du **reward hacking** : un robot RL dont la récompense est « nombre de points » pourrait apprendre à faire des cercles plutôt qu'à jouer correctement.
 
@@ -933,14 +1023,20 @@ Une **mauvaise fonction de récompense** produit un agent qui « triche » — i
 **Question 6 :** Pourquoi le RL est-il idéal pour la **gestion de portefeuille boursier** à long terme, contrairement au supervisé ?
 
 a) Parce que le RL ne nécessite pas de données financières historiques
+
+
 b) Parce que le RL optimise une séquence de décisions (acheter/vendre/attendre) sur la durée
+
+
 c) Parce que le RL prédit mieux les prix des actions individuelles
+
+
 d) Parce que le supervisé est incapable d'analyser des données financières
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La gestion de portefeuille est un problème de **décisions séquentielles interdépendantes** : acheter maintenant peut influencer la capacité à acheter plus tard. Le supervisé prédirait les prix individuels, mais ne pourrait pas optimiser la **stratégie globale sur plusieurs mois**.
 
@@ -951,14 +1047,20 @@ La gestion de portefeuille est un problème de **décisions séquentielles inter
 **Question 7 :** Une startup veut construire un chatbot capable de s'améliorer continuellement grâce aux retours des utilisateurs (pouces levés/baissés). Quel paradigme est le plus adapté pour la phase d'amélioration continue ?
 
 a) Supervisé — entraîner sur les conversations étiquetées
+
+
 b) Non Supervisé — découvrir des patterns de conversation
+
+
 c) RL — maximiser les retours positifs des utilisateurs
+
+
 d) Aucun — les retours ne peuvent pas être exploités
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Les retours utilisateurs (pouces levés/baissés) constituent une **fonction de récompense naturelle**. Le RL (de type RLHF) permet au chatbot d'apprendre à générer des réponses maximisant les feedbacks positifs — exactement le mécanisme utilisé par OpenAI pour ChatGPT.
 
@@ -969,14 +1071,20 @@ Les retours utilisateurs (pouces levés/baissés) constituent une **fonction de 
 **Question 8 :** Un hôpital veut identifier les patients à risque élevé de réhospitalisation dans les 30 jours suivant leur sortie. Il dispose de 5 ans de dossiers médicaux complets avec les réhospitalisations enregistrées. Quel paradigme ?
 
 a) Non Supervisé — découvrir les types de patients
+
+
 b) Supervisé — prédire la réhospitalisation à partir des dossiers historiques
+
+
 c) RL — optimiser les décisions médicales
+
+
 d) Hybride obligatoire
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 5 ans de dossiers avec l'information « réhospitalisé ou non dans les 30 jours » constituent un ensemble de données étiquetées parfait. Un modèle supervisé (Random Forest, XGBoost) peut apprendre à prédire cette probabilité avec haute précision.
 
@@ -987,14 +1095,20 @@ d) Hybride obligatoire
 **Question 9 :** Quelle propriété fondamentale distingue le RL des deux autres paradigmes lorsqu'on parle de **données d'entraînement** ?
 
 a) Le RL utilise uniquement des données structurées
+
+
 b) Le RL génère lui-même ses données en interagissant avec l'environnement
+
+
 c) Le RL ne peut apprendre que sur des données textuelles
+
+
 d) Le RL nécessite toujours des données étiquetées par des experts
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 C'est la propriété la plus fondamentale du RL : l'agent **génère activement ses propres données d'expérience** en agissant sur l'environnement. Il n'est donc pas limité par la quantité de données préexistantes — il peut s'entraîner indéfiniment dans un simulateur.
 
@@ -1005,14 +1119,20 @@ C'est la propriété la plus fondamentale du RL : l'agent **génère activement 
 **Question 10 :** Pour optimiser les trajets de milliers de robots dans un entrepôt Amazon, évitant les collisions et minimisant les temps de livraison, quel paradigme est le plus adapté ?
 
 a) Supervisé — prédire le meilleur trajet à partir d'historiques
+
+
 b) Non Supervisé — regrouper les robots par zones
+
+
 c) RL multi-agent — chaque robot apprend sa politique en interagissant avec les autres
+
+
 d) Régression logistique sur les positions
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : c)**
+✅ **Réponse : c)**
 
 Ce problème nécessite du **RL multi-agent** : chaque robot apprend sa politique de déplacement, mais l'environnement inclut les autres robots. Les décisions de chaque agent influencent l'environnement des autres — une interdépendance impossible à modéliser avec le supervisé ou le non supervisé.
 
@@ -1038,14 +1158,20 @@ Ce quiz approfondit les nuances techniques entre les trois paradigmes. Questions
 **Question 1 :** Dans l'apprentissage supervisé, qu'est-ce que la **fonction de perte** et quel est son rôle ?
 
 a) Une récompense reçue après chaque action correcte
+
+
 b) Une mesure de l'écart entre la prédiction du modèle et la vérité terrain — elle guide la correction du modèle
+
+
 c) Un critère de regroupement des données similaires
+
+
 d) Une fonction qui définit les transitions entre états
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La **fonction de perte** (loss function) mesure à quel point les prédictions du modèle sont éloignées des vraies valeurs. La descente de gradient utilise cette information pour ajuster les paramètres du modèle et réduire progressivement cette erreur.
 
@@ -1056,14 +1182,20 @@ La **fonction de perte** (loss function) mesure à quel point les prédictions d
 **Question 2 :** Quelle est la différence fondamentale entre la **fonction de perte** (supervisé) et la **fonction de récompense** (RL) ?
 
 a) Elles sont identiques — juste des noms différents
+
+
 b) La fonction de perte minimise une erreur connue immédiatement, tandis que la récompense peut être différée et cumulative
+
+
 c) La fonction de récompense est toujours positive, la perte toujours négative
+
+
 d) La fonction de perte s'applique uniquement aux réseaux de neurones
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La fonction de perte donne un **signal immédiat et précis** (erreur = prédiction - vérité). La récompense en RL peut être **différée** (le résultat n'est connu que plus tard) et **clairsemée** (pas de signal à chaque étape) — ce qui rend le RL bien plus difficile à entraîner.
 
@@ -1074,14 +1206,20 @@ La fonction de perte donne un **signal immédiat et précis** (erreur = prédict
 **Question 3 :** Qu'est-ce que le **credit assignment problem** en RL et pourquoi n'existe-t-il pas en apprentissage supervisé ?
 
 a) Le problème de trouver quelle action parmi une séquence a réellement contribué à la récompense obtenue
+
+
 b) Le problème de déterminer quelle étiquette attribuer à une donnée
+
+
 c) Le problème de répartir équitablement les données d'entraînement
+
+
 d) Le problème de choisir le bon algorithme de clustering
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : a)**
+✅ **Réponse : a)**
 
 En RL, si un agent gagne après 100 actions, quelle action (ou quelles actions) a réellement mérité la récompense ? C'est le **credit assignment problem**. En supervisé, chaque prédiction reçoit immédiatement son signal d'erreur — le problème n'existe pas.
 
@@ -1092,14 +1230,20 @@ En RL, si un agent gagne après 100 actions, quelle action (ou quelles actions) 
 **Question 4 :** En apprentissage non supervisé, qu'est-ce que le **silhouette score** et à quoi sert-il ?
 
 a) Un score qui mesure si les classes prédites correspondent aux vraies étiquettes
+
+
 b) Une mesure de la qualité d'un clustering : cohésion interne vs séparation entre clusters
+
+
 c) Un indicateur de la récompense cumulative obtenue par un agent RL
+
+
 d) Une métrique de la précision d'un modèle de régression
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Le **silhouette score** (-1 à +1) mesure si les données d'un cluster sont bien séparées des autres clusters et bien regroupées entre elles. Un score proche de +1 indique un clustering de qualité, proche de -1 indique que les données seraient mieux dans un autre cluster.
 
@@ -1110,14 +1254,20 @@ Le **silhouette score** (-1 à +1) mesure si les données d'un cluster sont bien
 **Question 5 :** Pourquoi dit-on que le RL souffre d'un problème **d'exploration vs exploitation** que le supervisé et le non supervisé ne connaissent pas ?
 
 a) Parce que le RL a besoin de beaucoup plus de données que les autres
+
+
 b) Parce que l'agent doit choisir entre exploiter ce qui fonctionne ou tester de nouvelles actions potentiellement meilleures
+
+
 c) Parce que le RL est incapable d'explorer automatiquement les données
+
+
 d) Parce que l'exploration n'est utile que pour les environnements simulés
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Le supervisé et le non supervisé opèrent sur des **données fixes** — pas de choix d'action, pas de dilemme. Le RL, lui, doit constamment arbitrer : exploiter la meilleure action connue (exploitation) ou tester des actions inconnues qui pourraient être meilleures (exploration). Trop d'exploitation = rater de meilleures stratégies. Trop d'exploration = mauvaises performances immédiates.
 
@@ -1128,14 +1278,20 @@ Le supervisé et le non supervisé opèrent sur des **données fixes** — pas d
 **Question 6 :** Pourquoi le non supervisé est-il dit **non évaluable objectivement** comparé au supervisé ?
 
 a) Parce qu'il ne produit aucun résultat mesurable
+
+
 b) Parce que sans vérité terrain (étiquettes), il est difficile de dire si le résultat est « correct »
+
+
 c) Parce que ses algorithmes convergent toujours vers le même résultat
+
+
 d) Parce qu'il ne peut pas être appliqué à des données réelles
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 En supervisé, on compare les prédictions aux vraies étiquettes — l'évaluation est objective (accuracy, F1...). En non supervisé, il n'y a pas de « bonne réponse » — on utilise des métriques internes (silhouette, inertie) mais l'interprétation reste subjective et requiert une validation humaine.
 
@@ -1146,14 +1302,20 @@ En supervisé, on compare les prédictions aux vraies étiquettes — l'évaluat
 **Question 7 :** Qu'est-ce qui différencie le RL du supervisé concernant la **stationnarité des données** ?
 
 a) Le supervisé apprend sur des données dynamiques, le RL sur des données statiques
+
+
 b) Le RL opère dans des environnements non stationnaires où les données changent en fonction des actions, contrairement au supervisé
+
+
 c) Ils traitent tous les deux des données stationnaires
+
+
 d) La stationnarité n'est pas un critère de différenciation
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 En supervisé, les données d'entraînement sont **fixes** (stationnaires). En RL, les données changent en fonction des actions de l'agent — l'environnement évolue. Cela crée des problèmes de **non-stationnarité** qui compliquent l'apprentissage et nécessitent des techniques spécifiques (experience replay, target networks en DQN).
 
@@ -1164,14 +1326,20 @@ En supervisé, les données d'entraînement sont **fixes** (stationnaires). En R
 **Question 8 :** Dans le contexte du RLHF (utilisé pour ChatGPT), quel rôle joue le **reward model** ?
 
 a) Il remplace entièrement la phase d'entraînement supervisé
+
+
 b) Il prédit la récompense (préférence humaine) à partir d'une réponse, permettant à l'agent RL de s'entraîner sans humain à chaque étape
+
+
 c) Il génère automatiquement des données étiquetées pour le supervisé
+
+
 d) Il détecte les anomalies dans les conversations des utilisateurs
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 Le reward model est un modèle supervisé entraîné sur des préférences humaines (A est meilleur que B). Il apprend à **prédire la récompense** qu'un humain donnerait à une réponse. L'agent RL s'entraîne ensuite contre ce reward model — sans avoir besoin d'un humain à chaque itération.
 
@@ -1182,14 +1350,20 @@ Le reward model est un modèle supervisé entraîné sur des préférences humai
 **Question 9 :** Quelle est la différence entre la **politique greedy** et la **politique epsilon-greedy** en RL ?
 
 a) La politique greedy choisit toujours aléatoirement, epsilon-greedy choisit la meilleure action
+
+
 b) La politique greedy choisit toujours la meilleure action connue, epsilon-greedy introduit une probabilité epsilon d'explorer une action aléatoire
+
+
 c) Elles sont identiques avec des noms différents
+
+
 d) La politique epsilon-greedy n'est utilisée que dans l'apprentissage supervisé
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La politique **greedy** exploite toujours la meilleure action connue — risque de rester bloqué dans un optimum local. La politique **epsilon-greedy** ajoute une probabilité ε d'explorer aléatoirement — permettant à l'agent de découvrir de meilleures stratégies. Plus ε est élevé, plus l'exploration est importante.
 
@@ -1200,14 +1374,20 @@ La politique **greedy** exploite toujours la meilleure action connue — risque 
 **Question 10 :** En quoi la **convergence** d'un algorithme RL est-elle fondamentalement différente de celle d'un algorithme supervisé ?
 
 a) Un algorithme supervisé ne converge jamais, contrairement au RL
+
+
 b) En supervisé, la convergence est vers un minimum de perte sur données fixes. En RL, la convergence est vers une politique optimale dans un environnement non stationnaire — bien plus difficile à garantir
+
+
 c) Ils convergent de la même façon, via la descente de gradient
+
+
 d) La convergence n'est pas un critère en RL
 
 <details>
-<summary>Voir la solution</summary>
+<summary>💡 Voir la solution</summary>
 
-**Réponse : b)**
+✅ **Réponse : b)**
 
 La convergence supervisée est relativement bien maîtrisée (fonctions de perte convexes, données fixes). En RL, l'environnement non stationnaire et les interdépendances entre actions rendent la convergence bien plus difficile à garantir. Q-Learning converge sous certaines conditions, mais les algorithmes Deep RL (DQN, PPO) sont souvent instables sans techniques spécifiques (experience replay, clipping...).
 
@@ -1618,4 +1798,18 @@ Dans le prochain chapitre, nous plongerons dans les **composants fondamentaux du
 
 ---
 
+<p align="center">
+  <em>Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l'autorisation écrite préalable de Dr. Haythem REHOUMA.</em>
+</p>
 
+<p align="center">
+  <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
+</p>
+
+<br/>
+
+<p align="center">
+  <a href="#top" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 14px 40px; border-radius: 10px; letter-spacing: 0.3px;">
+    ↑ Retour en haut du cours
+  </a>
+</p>
