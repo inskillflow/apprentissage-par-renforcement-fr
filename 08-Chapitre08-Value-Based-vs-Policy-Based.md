@@ -43,9 +43,9 @@ En apprentissage par renforcement, tous les algorithmes cherchent à trouver la 
 
 ```mermaid
 flowchart TD
-    VB["**Value-Based**\nApprend Q et V\nPolitique via argmax\nQ-Learning · SARSA · DQN\nActions discrètes · Off-Policy"]
-    PB["**Policy-Based**\nApprend π directement\nGradient de politique\nREINFORCE · PPO · TRPO\nActions continues · On-Policy"]
-    AC["**Actor-Critic**\nCombine les deux\nA3C · A2C · SAC · PPO"]
+    VB["Value-Based\nApprend Q et V\nPolitique via argmax\nQ-Learning - SARSA - DQN\nActions discrètes - Off-Policy"]
+    PB["Policy-Based\nApprend pi directement\nGradient de politique\nREINFORCE - PPO - TRPO\nActions continues - On-Policy"]
+    AC["Actor-Critic\nCombine les deux\nA3C - A2C - SAC - PPO"]
     ROOT["Approches RL"] --> VB
     ROOT --> PB
     ROOT --> AC
