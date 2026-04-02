@@ -1,5 +1,10 @@
 <a id="top"></a>
 
+
+
+$$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
+
+
 # Équations de Bellman — Définition et Applications
 
 ## Table des matières
