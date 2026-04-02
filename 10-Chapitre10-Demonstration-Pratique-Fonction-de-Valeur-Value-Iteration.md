@@ -2,6 +2,19 @@
 
 # Démonstration Pratique — Fonction de Valeur et Value Iteration avec GridWorld
 
+
+---
+
+## Équation de référence
+
+<a id="eq-valeur"></a>
+
+**Éq. (1)** — Équation de Bellman optimale (Value Iteration)
+
+$$V^{\ast}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^{\ast}(s') \right]$$
+
+---
+
 ## Table des matières
 
 | # | Section |
@@ -37,7 +50,6 @@
 <details>
 <summary>1 — Contexte et objectifs</summary>
 
-<br/>
 
 Cette démonstration pratique vous permet de **visualiser en direct** le fonctionnement de la **fonction de valeur V(s)** et de l'algorithme **Value Iteration** — les concepts théoriques vus dans le chapitre sur les équations de Bellman.
 
@@ -49,7 +61,7 @@ Vous n'allez pas seulement lire des formules : vous allez **voir les valeurs se 
 
 La **fonction de valeur V(s)** associe à chaque état s un nombre qui représente les **récompenses cumulées espérées** si l'agent suit la politique optimale depuis cet état.
 
-$$V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^*(s') \right]$$
+**(→ [Éq. 1](#eq-valeur))** — V^{\ast}(s) = max_a Σ P(s'|s,a) [ R(s,a,s') + γ · V^{\ast}(s') ]
 
 **Value Iteration** applique cette équation de manière répétée sur tous les états jusqu'à convergence :
 
@@ -132,7 +144,6 @@ flowchart LR
 <details>
 <summary>2 — L'environnement GridWorld — BookGrid</summary>
 
-<br/>
 
 GridWorld est un environnement de simulation développé par l'**Université de Californie à Berkeley** pour enseigner les algorithmes de RL. La grille par défaut, **BookGrid**, est la plus simple et la mieux adaptée pour observer Value Iteration.
 
@@ -213,7 +224,6 @@ flowchart TD
 <details>
 <summary>3 — Démonstration de base — Value Iteration</summary>
 
-<br/>
 
 ### 3.1 — Commande de référence
 
@@ -302,7 +312,6 @@ C:\Python27\python.exe gridworld.py -a value -i 10 -k 2 --livingReward -2
 <details>
 <summary>4 — Expérience 1 — Observer la propagation de Bellman</summary>
 
-<br/>
 
 Cette expérience est la plus fondamentale de la démonstration. Elle vous permet de **voir en temps réel** comment l'équation de Bellman propage la récompense +1 depuis l'état terminal vers tous les autres états.
 
@@ -397,7 +406,6 @@ Pour une grille de taille n×m, la convergence est garantie en au plus **n×m it
 <details>
 <summary>5 — Expérience 2 — Impact de la récompense de survie (--livingReward)</summary>
 
-<br/>
 
 La **récompense de survie** (*living reward*) est une récompense (ou pénalité) reçue par l'agent à **chaque pas effectué**, indépendamment de l'état terminal. Elle modélise le **coût ou bénéfice de l'action elle-même**.
 
@@ -499,7 +507,6 @@ flowchart LR
 <details>
 <summary>6 — Quiz 1 — Comprendre Value Iteration</summary>
 
-<br/>
 
 Ce quiz évalue votre compréhension des concepts de Value Iteration dans GridWorld. Répondez à chaque question, puis cliquez sur **💡 Voir la solution**.
 
@@ -724,7 +731,6 @@ Value Iteration est un algorithme **model-based** : il applique directement V(s)
 <details>
 <summary>7 — Quiz 2 — Interpréter les résultats visuels</summary>
 
-<br/>
 
 Ce quiz teste votre capacité à interpréter les affichages de la fenêtre GridWorld et à relier ce que vous voyez aux concepts théoriques.
 
@@ -844,7 +850,6 @@ Quand `i=12` et `i=100` donnent des résultats identiques, cela prouve que **Val
 <details>
 <summary>8 — Pratique guidée — Séries d'expériences à réaliser</summary>
 
-<br/>
 
 ### Objectifs d'apprentissage
 
@@ -966,7 +971,6 @@ C:\Python27\python.exe gridworld.py -a value -i 10 -k 2 --livingReward 2
 <details>
 <summary>9 — Ressources — Toutes les commandes de référence</summary>
 
-<br/>
 
 ### Récapitulatif complet des commandes de cette démonstration
 
@@ -1073,7 +1077,6 @@ Le fichier ZIP `RLCode1-main.zip` dans le dossier `pratique1/` contient égaleme
 <details>
 <summary>10 — Synthèse de la démonstration</summary>
 
-<br/>
 
 ### Ce que vous avez observé dans cette démonstration
 
@@ -1098,27 +1101,27 @@ Le fichier ZIP `RLCode1-main.zip` dans le dossier `pratique1/` contient égaleme
 
 ```mermaid
 mindmap
-  root((Value Iteration\nGridWorld))
-    Paramètres clés
-      -a value — algorithme
-      -i N — itérations Bellman
-      -k N — épisodes simulation
-      --livingReward R — coût par pas
-    Expériences réalisées
-      Propagation i=1 à i=100
-      Convergence dès i≈12
-      livingReward négatif — urgence
-      livingReward positif — survie
+  root((Value Iteration GridWorld))
+    Parametres cles
+      a value - algorithme
+      i N - iterations Bellman
+      k N - episodes simulation
+      livingReward R - cout par pas
+    Experiences realisees
+      Propagation i=1 a i=100
+      Convergence des i=12
+      livingReward negatif - urgence
+      livingReward positif - survie
     Observations
-      Onde de valeur depuis +1
-      Flèches = argmax Q(s,a)
+      Onde de valeur depuis etat terminal
+      Fleches = politique optimale
       Convergence garantie
-      Récompense mal calibrée = comportement non désiré
-    Lien avec la théorie
-      V(s) = nombres dans les cases
-      π*(s) = flèches
+      Recompense mal calibree = mauvais comportement
+    Lien avec la theorie
+      V de s = nombres dans les cases
+      politique = fleches
       Bellman = moteur du calcul
-      Model-based = P et R connus
+      Model-based : P et R connus
 ```
 
 ---
@@ -1158,7 +1161,6 @@ Le chapitre suivant (Chapitre 11) étend cette démonstration au **Q-Learning** 
   <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
 </p>
 
-<br/>
 
 <p align="center">
   <a href="#top" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 14px 40px; border-radius: 10px; letter-spacing: 0.3px;">
