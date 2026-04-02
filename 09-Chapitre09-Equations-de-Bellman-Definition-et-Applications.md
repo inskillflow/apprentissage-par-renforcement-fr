@@ -140,7 +140,7 @@ flowchart LR
 
 ### 2.2 — Définition formelle
 
-Sous une politique π, la fonction de valeur est définie par :
+Sous une politique π, la fonction de valeur est définie par
 
 $$
 V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]
@@ -486,7 +486,7 @@ Deux raisons pour utiliser γ < 1 :
 
 ### 5.4 — γ dans les équations de Bellman
 
-L'impact de γ sur l'équation de Bellman est direct :
+L'impact de γ sur l'équation de Bellman est direct
 
 $$
 V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]
@@ -615,7 +615,7 @@ flowchart LR
 
 ### 6.4 — De Bellman au Q-Learning
 
-Q-Learning est la version **model-free** de Value Iteration. À chaque expérience (s, a, r, s'), il applique une mise à jour inspirée de Bellman :
+Q-Learning est la version **model-free** de Value Iteration. À chaque expérience (s, a, r, s'), il applique une mise à jour inspirée de Bellman
 
 $$
 Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]
@@ -705,7 +705,7 @@ flowchart LR
 
 **La formule de DQN est directement issue de Bellman :**
 
-La fonction de perte entraîne le réseau à minimiser :
+La fonction de perte entraîne le réseau à minimiser
 
 $$
 \mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2
