@@ -4,60 +4,6 @@
 
 ---
 
-## Équations de référence
-
-> Toutes les équations du chapitre sont regroupées ici pour garantir leur rendu. Chaque section y fait référence par son numéro.
-
-**Éq. (1)** — Fonction de valeur d'état sous politique π *(section 2.2)*
-
-$$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
-
-**Éq. (2)** — Fonction de valeur d'action sous politique π *(section 3.2)*
-
-$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
-
-**Éq. (3)** — Bellman Expectation pour V *(section 4.2)*
-
-$$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]$$
-
-**Éq. (4)** — Bellman Optimality pour V *(section 4.2)*
-
-$$V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^*(s') \right]$$
-
-**Éq. (5)** — Bellman pour Q sous politique π *(section 4.3)*
-
-$$Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]$$
-
-**Éq. (6)** — Bellman Optimality pour Q *(section 4.3)*
-
-$$Q^*(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]$$
-
-**Éq. (7)** — Retour cumulé actualisé *(section 5.1)*
-
-$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
-
-**Éq. (8)** — Valeur actualisée d'une récompense future *(section 5.2)*
-
-$$\text{Valeur actualisée} = \gamma^{10} \times 100$$
-
-**Éq. (9)** — Impact de γ dans l'équation de Bellman *(section 5.4)*
-
-$$V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]$$
-
-**Éq. (10)** — Mise à jour Q-Learning *(section 6.4)*
-
-$$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]$$
-
-**Éq. (11)** — Fonction de perte DQN *(section 7.2)*
-
-$$\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2$$
-
-**Éq. (12)** — Bellman appliqué à la finance *(section 7.5)*
-
-$$V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_{t+1}) \right]$$
-
----
-
 ## Table des matières
 
 | # | Section |
@@ -93,6 +39,64 @@ $$V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_
 | 12a | &nbsp;&nbsp;&nbsp;↳ [Correction de la Pratique 2](#section-12) |
 | 13 | [Ressources supplémentaires — Vidéos, Projets et Outils](#section-13) |
 | 14 | [Synthèse du chapitre](#section-14) |
+
+
+---
+
+## Équations de référence
+
+> Toutes les équations du chapitre sont regroupées ici pour garantir leur rendu. Chaque section y fait référence par son numéro.
+
+**Éq. (1)** — Fonction de valeur d'état sous politique π *(section 2.2)*
+
+$$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
+
+**Éq. (2)** — Fonction de valeur d'action sous politique π *(section 3.2)*
+
+$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
+
+**Éq. (3)** — Bellman Expectation pour V *(section 4.2)*
+
+$$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]$$
+
+**Éq. (4)** — Bellman Optimality pour V *(section 4.2)*
+
+$$V^{*}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^{*}(s') \right]$$
+
+**Éq. (5)** — Bellman pour Q sous politique π *(section 4.3)*
+
+$$Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]$$
+
+**Éq. (6)** — Bellman Optimality pour Q *(section 4.3)*
+
+$$Q^{*}(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^{*}(s', a') \right]$$
+
+**Éq. (7)** — Retour cumulé actualisé *(section 5.1)*
+
+$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
+
+**Éq. (8)** — Valeur actualisée d'une récompense future *(section 5.2)*
+
+$$\text{Valeur actualisée} = \gamma^{10} \times 100$$
+
+**Éq. (9)** — Impact de γ dans l'équation de Bellman *(section 5.4)*
+
+$$V^{*}(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^{*}(s') \right]$$
+
+**Éq. (10)** — Mise à jour Q-Learning *(section 6.4)*
+
+$$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]$$
+
+**Éq. (11)** — Fonction de perte DQN *(section 7.2)*
+
+$$\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2$$
+
+**Éq. (12)** — Bellman appliqué à la finance *(section 7.5)*
+
+$$V^{*}(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^{*}(portefeuille_{t+1}) \right]$$
+
+
+---
 
 ---
 
