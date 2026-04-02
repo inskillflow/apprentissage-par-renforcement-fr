@@ -59,7 +59,7 @@ Vous n'allez pas seulement lire des formules : vous allez **voir les valeurs se 
 
 La **fonction de valeur V(s)** associe à chaque état s un nombre qui représente les **récompenses cumulées espérées** si l'agent suit la politique optimale depuis cet état.
 
-**(→ [Éq. 1](#eq-valeur))** — V^{\ast}(s) = max_a Σ P(s'|s,a) [ R(s,a,s') + γ · V^{\ast}(s') ]
+> **[→ Éq. 1 — Équation de Bellman optimale](#eq-valeur)**
 
 **Value Iteration** applique cette équation de manière répétée sur tous les états jusqu'à convergence :
 
