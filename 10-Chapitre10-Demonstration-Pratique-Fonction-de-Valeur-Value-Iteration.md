@@ -2,19 +2,6 @@
 
 # Démonstration Pratique — Fonction de Valeur et Value Iteration avec GridWorld
 
-
----
-
-## Équation de référence
-
-<a id="eq-valeur"></a>
-
-**Éq. (1)** — Équation de Bellman optimale (Value Iteration)
-
-$$V^{\ast}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^{\ast}(s') \right]$$
-
----
-
 ## Table des matières
 
 | # | Section |
@@ -42,6 +29,17 @@ $$V^{\ast}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^{\a
 | 8a | &nbsp;&nbsp;&nbsp;↳ [Correction et analyse attendue](#section-8) |
 | 9 | [Ressources — Toutes les commandes de référence](#section-9) |
 | 10 | [Synthèse de la démonstration](#section-10) |
+
+---
+
+
+## Équation de référence
+
+<a id="eq-valeur"></a>
+
+**Éq. (1)** — Équation de Bellman optimale (Value Iteration)
+
+$$V^{\ast}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^{\ast}(s') \right]$$
 
 ---
 
