@@ -29,7 +29,7 @@
 | 8a | &nbsp;&nbsp;&nbsp;↳ [Correction et analyse attendue](#section-8) |
 | 9 | [Ressources — Toutes les commandes de référence](#section-9) |
 | 10 | [Synthèse de la démonstration](#section-10) |
-| 👥 | [**Travail en groupe — Exploration guidée**](#travail-groupe) |
+| 11 | [**Travail à réaliser — Exploration guidée**](#travail-groupe) |
 
 ---
 
@@ -1152,29 +1152,13 @@ Le chapitre suivant (Chapitre 11) étend cette démonstration au **Q-Learning** 
 
 ---
 
-<p align="center">
-  <em>Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l'autorisation écrite préalable de Dr. Haythem REHOUMA.</em>
-</p>
 
-<p align="center">
-  <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
-</p>
-
-
-<p align="center">
-  <a href="#top" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 14px 40px; border-radius: 10px; letter-spacing: 0.3px;">
-    ↑ Retour en haut du cours
-  </a>
-</p>
-
----
-
-<a id="travail-groupe"></a>
+| 11 | [**Travail à réaliser — Exploration guidée**](#travail-groupe) |
 
 <details>
-<summary>🧑‍🤝‍🧑 Travail en groupe — Exploration guidée de Value Iteration</summary>
+<summary>11 — Travail à réaliser — Exploration guidée de Value Iteration</summary>
 
-## Travail en groupe — Exploration guidée de Value Iteration
+## 11 — Travail à réaliser — Exploration guidée de Value Iteration
 
 > **Consignes générales**
 > - Ce travail se fait en groupes de 2 à 4 personnes.
@@ -1231,15 +1215,17 @@ C:\Python27\python.exe gridworld.py -a value -i 100
 
 **Tableau à remplir — Observations par itération :**
 
+> 💡 *Exemple de réponses attendues — à compléter avec vos propres observations*
+
 | `-i` | Cases avec des valeurs ? | Des flèches visibles ? | La case de départ a une valeur ? | Notes libres |
 |---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
-| 5 | | | | |
-| 7 | | | | |
-| 12 | | | | |
-| 100 | | | | |
+| 1 | *Oui, seulement les cases adjacentes à +1 ont une valeur* | *Non, pas encore* | *Non* | *La valeur se propage d'1 case depuis +1* |
+| 2 | *Oui, 2 cases autour de +1* | *Oui, flèches vers +1 pour les cases proches* | *Non* | *On voit la "vague" s'étendre* |
+| 3 | *Oui, 3 cases autour de +1* | *Oui, quelques flèches* | *Non* | *Les valeurs diminuent en s'éloignant* |
+| 5 | *Oui, la moitié de la grille a des valeurs* | *Oui, la plupart des cases ont des flèches* | *Peut-être* | *Les couleurs commencent à différer clairement* |
+| 7 | *Presque toutes les cases* | *Oui, presque toutes les cases* | *Oui* | *Presque convergé* |
+| 12 | *Toutes les cases ont une valeur stable* | *Oui, toutes les cases* | *Oui* | *Semble identique à i=100* |
+| 100 | *Toutes les cases — identique à i=12* | *Oui, toutes — identique à i=12* | *Oui* | *Convergence déjà atteinte à i≈12* |
 
 **Questions d'analyse :**
 
@@ -1267,10 +1253,12 @@ C:\Python27\python.exe gridworld.py -a value -i 100 -k 1
 3. Comparez `-i 100 -k 1` et `-i 100 -k 10` : les valeurs changent-elles ? Pourquoi ?
 4. Complétez ce tableau de distinction :
 
+> 💡 *Exemple de réponses attendues*
+
 | Paramètre | Ce que ça contrôle | Impact sur les valeurs V(s) ? | Impact sur les flèches ? |
 |---|---|---|---|
-| `-i N` | | | |
-| `-k N` | | | |
+| `-i N` | *Le nombre de fois que Bellman met à jour les valeurs des états* | *Oui — plus d'itérations = valeurs plus précises jusqu'à convergence* | *Oui — les flèches apparaissent seulement quand les valeurs sont calculées* |
+| `-k N` | *Le nombre d'épisodes où l'agent joue dans la grille* | *Non — les valeurs sont déjà calculées avant les épisodes* | *Non — les flèches restent les mêmes* |
 
 5. Dans vos mots : quelle est la différence fondamentale entre une **itération** et un **épisode** ?
 
@@ -1290,13 +1278,15 @@ C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward 2.0
 
 **Tableau à remplir — Effet du livingReward :**
 
+> 💡 *Exemple de réponses attendues*
+
 | `--livingReward` | Les flèches pointent vers le +1 ? | L'agent évite-t-il le chemin long ? | L'agent semble "pressé" ? | Notes |
 |---|---|---|---|---|
-| -0.01 | | | | |
-| -0.3 | | | | |
-| -0.4 | | | | |
-| -2.0 | | | | |
-| 2.0 | | | | |
+| -0.01 | *Oui, vers +1* | *Non, prend le chemin sûr même long* | *Un peu — pénalité très faible* | *Comportement quasi normal, très peu affecté* |
+| -0.3 | *Oui, vers +1* | *Oui, commence à préférer le chemin court* | *Oui* | *L'agent commence à "sentir" le coût de chaque pas* |
+| -0.4 | *Oui, mais peut changer selon les cases* | *Oui nettement* | *Oui, très pressé* | *Seuil critique : certains comportements changent* |
+| -2.0 | *Parfois non — le piège -1 peut paraître meilleur !* | *Oui, veut finir le plus vite possible* | *Oui, extrêmement pressé* | *Chaque pas coûte -2, l'agent préfère "mourir vite"* |
+| 2.0 | *Non — l'agent veut rester dans la grille !* | *Non — il veut prolonger le trajet* | *Non, au contraire il traîne* | *L'agent évite l'état terminal pour continuer à recevoir +2/pas* |
 
 **Questions :**
 
@@ -1398,6 +1388,24 @@ Répondez à ces questions par écrit (3-5 lignes chacune) dans votre rapport de
 | **Total** | **/100** |
 
 </details>
+
+---
+
+
+<p align="center">
+  <em>Tous droits réservés. Toute reproduction, diffusion, utilisation ou adaptation de ce cours, en tout ou en partie, est strictement interdite sans l'autorisation écrite préalable de Dr. Haythem REHOUMA.</em>
+</p>
+
+<p align="center">
+  <strong>Cours créé par Dr. Haythem REHOUMA — Apprentissage par Renforcement</strong>
+</p>
+
+
+<p align="center">
+  <a href="#top" style="display: inline-block; background: #2563eb; color: #ffffff; text-decoration: none; font-size: 1.1rem; font-weight: 700; padding: 14px 40px; border-radius: 10px; letter-spacing: 0.3px;">
+    ↑ Retour en haut du cours
+  </a>
+</p>
 
 ---
 
