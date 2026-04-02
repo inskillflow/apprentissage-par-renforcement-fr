@@ -28,8 +28,8 @@
 | 8 | [Pratique guidée — Séries d'expériences à réaliser](#section-8) |
 | 8a | &nbsp;&nbsp;&nbsp;↳ [Correction et analyse attendue](#section-8) |
 | 9 | [Ressources — Toutes les commandes de référence](#section-9) |
-| 10 | [Synthu{00e8}se de la du{00e9}monstration](#section-10) |
-| u{1f9d1}u{200d}u{1f91d}u{200d}u{1f9d1} | [**Travail en groupe — Exploration guidu{00e9}e**](#travail-groupe) |
+| 10 | [Synthèse de la démonstration](#section-10) |
+| 👥 | [**Travail en groupe — Exploration guidée**](#travail-groupe) |
 
 ---
 
