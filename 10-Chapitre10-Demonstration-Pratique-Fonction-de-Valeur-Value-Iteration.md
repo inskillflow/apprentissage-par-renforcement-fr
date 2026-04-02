@@ -44,238 +44,6 @@ $$V^{\ast}(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \cdot V^{\a
 
 ---
 
-<a id="travail-groupe"></a>
-
-<details>
-<summary>🧑‍🤝‍🧑 Travail en groupe — Exploration guidée de Value Iteration</summary>
-
-## Travail en groupe — Exploration guidée de Value Iteration
-
-> **Consignes générales**
-> - Ce travail se fait en groupes de 2 à 4 personnes.
-> - Vous n'avez **pas besoin d'être mathématicien** — ce qui compte, c'est d'**observer, décrire et expliquer**.
-> - Chaque groupe documente ses observations et rédige un **rapport de groupe** à remettre.
-> - Durée estimée : **90 à 120 minutes**.
-
----
-
-### Contexte — Ce que vous allez explorer
-
-Vous allez faire tourner l'algorithme **Value Iteration** dans l'environnement **GridWorld** avec différents paramètres. À chaque fois, vous observerez comment les **valeurs des cases changent**, comment les **flèches (politique)** évoluent, et quel effet chaque paramètre a sur le comportement de l'agent.
-
-L'interface GridWorld affiche :
-- Des **chiffres dans chaque case** → la valeur V(s) estimée de cet état
-- Des **flèches** → la politique optimale suggérée (quelle direction aller)
-- Des **couleurs** → plus la case est verte/chaude, plus sa valeur est élevée
-
----
-
-### Tâche 0 — Mise en place (10 min)
-
-Avant de commencer, vérifiez que Python 2.7 et GridWorld sont installés.
-
-```cmd
-cd C:\Python27
-python.exe --version
-cd C:\Python27\RL
-C:\Python27\python.exe gridworld.py -a value -i 100 -k 10
-```
-
-**Questions de départ :**
-1. Que voyez-vous à l'écran quand vous lancez la commande ? Décrivez en 3-4 phrases.
-2. Combien de cases y a-t-il dans la grille ? Lesquelles semblent importantes (récompenses) ?
-3. Quelles couleurs distinguez-vous ? Quelle case est la plus verte ? Pourquoi selon vous ?
-4. Y a-t-il des flèches ? Dans quelles directions pointent-elles ?
-5. Notez la valeur approximative de chaque case visible.
-
----
-
-### Tâche 1 — Observer l'effet du nombre d'itérations (30 min)
-
-Lancez les commandes suivantes **une par une**, et observez attentivement ce qui change entre chaque commande.
-
-```cmd
-C:\Python27\python.exe gridworld.py -a value -i 1
-C:\Python27\python.exe gridworld.py -a value -i 2
-C:\Python27\python.exe gridworld.py -a value -i 3
-C:\Python27\python.exe gridworld.py -a value -i 5
-C:\Python27\python.exe gridworld.py -a value -i 7
-C:\Python27\python.exe gridworld.py -a value -i 12
-C:\Python27\python.exe gridworld.py -a value -i 100
-```
-
-**Tableau à remplir — Observations par itération :**
-
-| `-i` | Cases avec des valeurs ? | Des flèches visibles ? | La case de départ a une valeur ? | Notes libres |
-|---|---|---|---|---|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
-| 5 | | | | |
-| 7 | | | | |
-| 12 | | | | |
-| 100 | | | | |
-
-**Questions d'analyse :**
-
-1. À quelle itération les premières valeurs apparaissent-elles dans les cases ? Pourquoi pas dès `-i 1` pour toutes les cases ?
-2. À quelle itération les flèches de direction apparaissent-elles ? Qu'est-ce que cela signifie ?
-3. Entre `-i 12` et `-i 100`, y a-t-il une différence visible ? Qu'est-ce que cela nous dit sur la **convergence** ?
-4. Décrivez en vos propres mots comment les valeurs semblent "se propager" dans la grille.
-5. Si vous étiez l'agent, à quelle itération seriez-vous prêt à agir de façon raisonnable ? Justifiez.
-6. Pourquoi utiliser `-i 100` si `-i 12` donne déjà le même résultat ?
-
----
-
-### Tâche 2 — Comprendre les épisodes vs les itérations (15 min)
-
-```cmd
-C:\Python27\python.exe gridworld.py -a value -i 100 -k 10
-C:\Python27\python.exe gridworld.py -a value -i 1 -k 10
-C:\Python27\python.exe gridworld.py -a value -i 100 -k 1
-```
-
-**Questions :**
-
-1. Dans la première commande (`-i 100 -k 10`), combien d'épisodes l'agent joue-t-il ? Où le voyez-vous dans l'interface ?
-2. Comparez `-i 1 -k 10` et `-i 100 -k 10` : les valeurs des cases changent-elles ? Pourquoi ?
-3. Comparez `-i 100 -k 1` et `-i 100 -k 10` : les valeurs changent-elles ? Pourquoi ?
-4. Complétez ce tableau de distinction :
-
-| Paramètre | Ce que ça contrôle | Impact sur les valeurs V(s) ? | Impact sur les flèches ? |
-|---|---|---|---|
-| `-i N` | | | |
-| `-k N` | | | |
-
-5. Dans vos mots : quelle est la différence fondamentale entre une **itération** et un **épisode** ?
-
----
-
-### Tâche 3 — L'impact de la récompense de survie `--livingReward` (30 min)
-
-> Le paramètre `--livingReward` donne une **récompense (ou pénalité) à chaque pas** de l'agent — même s'il ne touche aucun état terminal.
-
-```cmd
-C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.01
-C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.3
-C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.4
-C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -2.0
-C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward 2.0
-```
-
-**Tableau à remplir — Effet du livingReward :**
-
-| `--livingReward` | Les flèches pointent vers le +1 ? | L'agent évite-t-il le chemin long ? | L'agent semble "pressé" ? | Notes |
-|---|---|---|---|---|
-| -0.01 | | | | |
-| -0.3 | | | | |
-| -0.4 | | | | |
-| -2.0 | | | | |
-| 2.0 | | | | |
-
-**Questions :**
-
-1. Avec `--livingReward -0.01` (pénalité très faible), l'agent prend-il le chemin le plus court ou le plus long ? Pourquoi ?
-2. Avec `--livingReward -2.0` (pénalité forte), que se passe-t-il ? L'agent préfère-t-il encore aller vers la récompense +1 ? Expliquez.
-3. Avec `--livingReward 2.0` (récompense positive à chaque pas), comment l'agent se comporte-t-il ? Veut-il arriver à l'état terminal ou rester dans la grille ?
-4. À quel moment l'agent change-t-il de comportement (entre -0.3 et -0.4) ? Qu'est-ce que cela révèle sur l'importance du calibrage de la récompense ?
-5. Dans la vraie vie, à quoi correspondrait un `--livingReward -2.0` pour un robot livreur ? Et un `--livingReward 2.0` ?
-6. Si vous conceviez un jeu vidéo avec un personnage RL, quel `--livingReward` utiliseriez-vous et pourquoi ?
-
----
-
-### Tâche 4 — Expérience libre en groupe (20 min)
-
-Chaque groupe choisit **une question originale** et conçoit sa propre expérience pour y répondre.
-
-**Exemples de questions** :
-- "À partir de quel nombre d'itérations les valeurs ne changent-elles plus ?"
-- "Quel `--livingReward` fait que l'agent hésite entre deux chemins ?"
-- "Que se passe-t-il avec `-i 0` ?"
-
-**Instructions :**
-1. Formulez votre question en une phrase claire.
-2. Décrivez la commande (ou les commandes) que vous allez lancer.
-3. Notez vos observations.
-4. Répondez à votre question en vous basant sur ce que vous avez vu.
-
----
-
-### Tâche 5 — Questions de réflexion pour le rapport (à rendre)
-
-Répondez à ces questions par écrit (3-5 lignes chacune) dans votre rapport de groupe.
-
-**Partie A — Compréhension des paramètres**
-
-1. Qu'est-ce qu'une **itération** dans Value Iteration ? Donnez un exemple concret avec GridWorld.
-2. Qu'est-ce qu'un **épisode** ? En quoi est-il différent d'une itération ?
-3. Expliquez le rôle du paramètre `--livingReward` avec vos propres mots et un exemple.
-4. Pourquoi l'algorithme s'appelle-t-il **"Value Iteration"** (Itération de Valeur) ? Qu'est-ce qui "itère" exactement ?
-5. Pourquoi les cases les plus proches de la récompense ont-elles des valeurs plus élevées ?
-
-**Partie B — Analyse critique**
-
-6. Si vous deviez expliquer la fonction de valeur V(s) à un enfant de 10 ans, que diriez-vous ?
-7. D'après vos expériences, combien d'itérations sont nécessaires pour que l'agent soit "bon" sur BookGrid ? Comment avez-vous déterminé ce nombre ?
-8. Quel paramètre a eu **le plus grand impact** sur le comportement de l'agent selon vos observations ? Justifiez avec 2 exemples de vos expériences.
-9. Si la récompense terminale passait de +1 à +100, pensez-vous que l'agent changerait de comportement ? Qu'est-ce qui changerait vraiment ?
-10. Dans quel domaine réel (robotique, jeux, finance...) imaginez-vous utiliser Value Iteration ? Identifiez ce qui serait : les états, les actions, et la récompense de survie.
-
-**Partie C — Observation visuelle**
-
-11. Faites une capture d'écran de GridWorld avec `-i 1` et une autre avec `-i 12`. Annotez les différences que vous observez (flèches, couleurs, valeurs).
-12. Avec `--livingReward -2.0`, capturez l'écran et expliquez pourquoi l'agent agit comme il le fait.
-13. Dessinez (à main levée ou en ASCII) comment vous imaginez les valeurs se propager dans une grille 3x3 simple avec une récompense en coin.
-
----
-
-### Format du rapport à rendre
-
-**Structure attendue :**
-
-```
-1. Page de titre
-   - Noms des membres du groupe
-   - Date
-   - Titre : "Exploration de Value Iteration avec GridWorld"
-
-2. Introduction (5-10 lignes)
-   - Ce que vous avez fait
-   - Ce que vous avez appris
-
-3. Résultats des Tâches 1 à 3
-   - Tableaux remplis
-   - Réponses aux questions
-
-4. Expérience libre (Tâche 4)
-   - Question choisie
-   - Méthode
-   - Résultats
-   - Conclusion
-
-5. Réflexions (Tâche 5)
-   - Réponses aux 13 questions
-
-6. Conclusion générale (5-10 lignes)
-   - Ce qui vous a surpris
-   - Ce que vous n'avez pas compris et ce que vous aimeriez explorer
-```
-
-**Critères d'évaluation :**
-
-| Critère | Points |
-|---|---|
-| Tableaux correctement remplis (observations précises) | /20 |
-| Qualité des réponses aux questions (clarté, pertinence) | /30 |
-| Expérience libre (originalité, méthode, conclusion) | /20 |
-| Réflexions (profondeur, exemples personnels) | /20 |
-| Présentation et clarté du rapport | /10 |
-| **Total** | **/100** |
-
-</details>
-
----
-
 <a id="section-1"></a>
 
 <details>
@@ -1398,3 +1166,238 @@ Le chapitre suivant (Chapitre 11) étend cette démonstration au **Q-Learning** 
     ↑ Retour en haut du cours
   </a>
 </p>
+
+---
+
+<a id="travail-groupe"></a>
+
+<details>
+<summary>🧑‍🤝‍🧑 Travail en groupe — Exploration guidée de Value Iteration</summary>
+
+## Travail en groupe — Exploration guidée de Value Iteration
+
+> **Consignes générales**
+> - Ce travail se fait en groupes de 2 à 4 personnes.
+> - Vous n'avez **pas besoin d'être mathématicien** — ce qui compte, c'est d'**observer, décrire et expliquer**.
+> - Chaque groupe documente ses observations et rédige un **rapport de groupe** à remettre.
+> - Durée estimée : **90 à 120 minutes**.
+
+---
+
+### Contexte — Ce que vous allez explorer
+
+Vous allez faire tourner l'algorithme **Value Iteration** dans l'environnement **GridWorld** avec différents paramètres. À chaque fois, vous observerez comment les **valeurs des cases changent**, comment les **flèches (politique)** évoluent, et quel effet chaque paramètre a sur le comportement de l'agent.
+
+L'interface GridWorld affiche :
+- Des **chiffres dans chaque case** → la valeur V(s) estimée de cet état
+- Des **flèches** → la politique optimale suggérée (quelle direction aller)
+- Des **couleurs** → plus la case est verte/chaude, plus sa valeur est élevée
+
+---
+
+### Tâche 0 — Mise en place (10 min)
+
+Avant de commencer, vérifiez que Python 2.7 et GridWorld sont installés.
+
+```cmd
+cd C:\Python27
+python.exe --version
+cd C:\Python27\RL
+C:\Python27\python.exe gridworld.py -a value -i 100 -k 10
+```
+
+**Questions de départ :**
+1. Que voyez-vous à l'écran quand vous lancez la commande ? Décrivez en 3-4 phrases.
+2. Combien de cases y a-t-il dans la grille ? Lesquelles semblent importantes (récompenses) ?
+3. Quelles couleurs distinguez-vous ? Quelle case est la plus verte ? Pourquoi selon vous ?
+4. Y a-t-il des flèches ? Dans quelles directions pointent-elles ?
+5. Notez la valeur approximative de chaque case visible.
+
+---
+
+### Tâche 1 — Observer l'effet du nombre d'itérations (30 min)
+
+Lancez les commandes suivantes **une par une**, et observez attentivement ce qui change entre chaque commande.
+
+```cmd
+C:\Python27\python.exe gridworld.py -a value -i 1
+C:\Python27\python.exe gridworld.py -a value -i 2
+C:\Python27\python.exe gridworld.py -a value -i 3
+C:\Python27\python.exe gridworld.py -a value -i 5
+C:\Python27\python.exe gridworld.py -a value -i 7
+C:\Python27\python.exe gridworld.py -a value -i 12
+C:\Python27\python.exe gridworld.py -a value -i 100
+```
+
+**Tableau à remplir — Observations par itération :**
+
+| `-i` | Cases avec des valeurs ? | Des flèches visibles ? | La case de départ a une valeur ? | Notes libres |
+|---|---|---|---|---|
+| 1 | | | | |
+| 2 | | | | |
+| 3 | | | | |
+| 5 | | | | |
+| 7 | | | | |
+| 12 | | | | |
+| 100 | | | | |
+
+**Questions d'analyse :**
+
+1. À quelle itération les premières valeurs apparaissent-elles dans les cases ? Pourquoi pas dès `-i 1` pour toutes les cases ?
+2. À quelle itération les flèches de direction apparaissent-elles ? Qu'est-ce que cela signifie ?
+3. Entre `-i 12` et `-i 100`, y a-t-il une différence visible ? Qu'est-ce que cela nous dit sur la **convergence** ?
+4. Décrivez en vos propres mots comment les valeurs semblent "se propager" dans la grille.
+5. Si vous étiez l'agent, à quelle itération seriez-vous prêt à agir de façon raisonnable ? Justifiez.
+6. Pourquoi utiliser `-i 100` si `-i 12` donne déjà le même résultat ?
+
+---
+
+### Tâche 2 — Comprendre les épisodes vs les itérations (15 min)
+
+```cmd
+C:\Python27\python.exe gridworld.py -a value -i 100 -k 10
+C:\Python27\python.exe gridworld.py -a value -i 1 -k 10
+C:\Python27\python.exe gridworld.py -a value -i 100 -k 1
+```
+
+**Questions :**
+
+1. Dans la première commande (`-i 100 -k 10`), combien d'épisodes l'agent joue-t-il ? Où le voyez-vous dans l'interface ?
+2. Comparez `-i 1 -k 10` et `-i 100 -k 10` : les valeurs des cases changent-elles ? Pourquoi ?
+3. Comparez `-i 100 -k 1` et `-i 100 -k 10` : les valeurs changent-elles ? Pourquoi ?
+4. Complétez ce tableau de distinction :
+
+| Paramètre | Ce que ça contrôle | Impact sur les valeurs V(s) ? | Impact sur les flèches ? |
+|---|---|---|---|
+| `-i N` | | | |
+| `-k N` | | | |
+
+5. Dans vos mots : quelle est la différence fondamentale entre une **itération** et un **épisode** ?
+
+---
+
+### Tâche 3 — L'impact de la récompense de survie `--livingReward` (30 min)
+
+> Le paramètre `--livingReward` donne une **récompense (ou pénalité) à chaque pas** de l'agent — même s'il ne touche aucun état terminal.
+
+```cmd
+C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.01
+C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.3
+C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -0.4
+C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward -2.0
+C:\Python27\python.exe gridworld.py -a value -i 12 -k 2 --livingReward 2.0
+```
+
+**Tableau à remplir — Effet du livingReward :**
+
+| `--livingReward` | Les flèches pointent vers le +1 ? | L'agent évite-t-il le chemin long ? | L'agent semble "pressé" ? | Notes |
+|---|---|---|---|---|
+| -0.01 | | | | |
+| -0.3 | | | | |
+| -0.4 | | | | |
+| -2.0 | | | | |
+| 2.0 | | | | |
+
+**Questions :**
+
+1. Avec `--livingReward -0.01` (pénalité très faible), l'agent prend-il le chemin le plus court ou le plus long ? Pourquoi ?
+2. Avec `--livingReward -2.0` (pénalité forte), que se passe-t-il ? L'agent préfère-t-il encore aller vers la récompense +1 ? Expliquez.
+3. Avec `--livingReward 2.0` (récompense positive à chaque pas), comment l'agent se comporte-t-il ? Veut-il arriver à l'état terminal ou rester dans la grille ?
+4. À quel moment l'agent change-t-il de comportement (entre -0.3 et -0.4) ? Qu'est-ce que cela révèle sur l'importance du calibrage de la récompense ?
+5. Dans la vraie vie, à quoi correspondrait un `--livingReward -2.0` pour un robot livreur ? Et un `--livingReward 2.0` ?
+6. Si vous conceviez un jeu vidéo avec un personnage RL, quel `--livingReward` utiliseriez-vous et pourquoi ?
+
+---
+
+### Tâche 4 — Expérience libre en groupe (20 min)
+
+Chaque groupe choisit **une question originale** et conçoit sa propre expérience pour y répondre.
+
+**Exemples de questions** :
+- "À partir de quel nombre d'itérations les valeurs ne changent-elles plus ?"
+- "Quel `--livingReward` fait que l'agent hésite entre deux chemins ?"
+- "Que se passe-t-il avec `-i 0` ?"
+
+**Instructions :**
+1. Formulez votre question en une phrase claire.
+2. Décrivez la commande (ou les commandes) que vous allez lancer.
+3. Notez vos observations.
+4. Répondez à votre question en vous basant sur ce que vous avez vu.
+
+---
+
+### Tâche 5 — Questions de réflexion pour le rapport (à rendre)
+
+Répondez à ces questions par écrit (3-5 lignes chacune) dans votre rapport de groupe.
+
+**Partie A — Compréhension des paramètres**
+
+1. Qu'est-ce qu'une **itération** dans Value Iteration ? Donnez un exemple concret avec GridWorld.
+2. Qu'est-ce qu'un **épisode** ? En quoi est-il différent d'une itération ?
+3. Expliquez le rôle du paramètre `--livingReward` avec vos propres mots et un exemple.
+4. Pourquoi l'algorithme s'appelle-t-il **"Value Iteration"** (Itération de Valeur) ? Qu'est-ce qui "itère" exactement ?
+5. Pourquoi les cases les plus proches de la récompense ont-elles des valeurs plus élevées ?
+
+**Partie B — Analyse critique**
+
+6. Si vous deviez expliquer la fonction de valeur V(s) à un enfant de 10 ans, que diriez-vous ?
+7. D'après vos expériences, combien d'itérations sont nécessaires pour que l'agent soit "bon" sur BookGrid ? Comment avez-vous déterminé ce nombre ?
+8. Quel paramètre a eu **le plus grand impact** sur le comportement de l'agent selon vos observations ? Justifiez avec 2 exemples de vos expériences.
+9. Si la récompense terminale passait de +1 à +100, pensez-vous que l'agent changerait de comportement ? Qu'est-ce qui changerait vraiment ?
+10. Dans quel domaine réel (robotique, jeux, finance...) imaginez-vous utiliser Value Iteration ? Identifiez ce qui serait : les états, les actions, et la récompense de survie.
+
+**Partie C — Observation visuelle**
+
+11. Faites une capture d'écran de GridWorld avec `-i 1` et une autre avec `-i 12`. Annotez les différences que vous observez (flèches, couleurs, valeurs).
+12. Avec `--livingReward -2.0`, capturez l'écran et expliquez pourquoi l'agent agit comme il le fait.
+13. Dessinez (à main levée ou en ASCII) comment vous imaginez les valeurs se propager dans une grille 3x3 simple avec une récompense en coin.
+
+---
+
+### Format du rapport à rendre
+
+**Structure attendue :**
+
+```
+1. Page de titre
+   - Noms des membres du groupe
+   - Date
+   - Titre : "Exploration de Value Iteration avec GridWorld"
+
+2. Introduction (5-10 lignes)
+   - Ce que vous avez fait
+   - Ce que vous avez appris
+
+3. Résultats des Tâches 1 à 3
+   - Tableaux remplis
+   - Réponses aux questions
+
+4. Expérience libre (Tâche 4)
+   - Question choisie
+   - Méthode
+   - Résultats
+   - Conclusion
+
+5. Réflexions (Tâche 5)
+   - Réponses aux 13 questions
+
+6. Conclusion générale (5-10 lignes)
+   - Ce qui vous a surpris
+   - Ce que vous n'avez pas compris et ce que vous aimeriez explorer
+```
+
+**Critères d'évaluation :**
+
+| Critère | Points |
+|---|---|
+| Tableaux correctement remplis (observations précises) | /20 |
+| Qualité des réponses aux questions (clarté, pertinence) | /30 |
+| Expérience libre (originalité, méthode, conclusion) | /20 |
+| Réflexions (profondeur, exemples personnels) | /20 |
+| Présentation et clarté du rapport | /10 |
+| **Total** | **/100** |
+
+</details>
+
+---
+
