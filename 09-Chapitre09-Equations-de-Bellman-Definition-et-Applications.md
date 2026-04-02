@@ -1,12 +1,62 @@
 <a id="top"></a>
 
+# Équations de Bellman — Définition et Applications
 
+---
+
+## Équations de référence
+
+> Toutes les équations du chapitre sont regroupées ici pour garantir leur rendu. Chaque section y fait référence par son numéro.
+
+**Éq. (1)** — Fonction de valeur d'état sous politique π *(section 2.2)*
 
 $$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
 
+**Éq. (2)** — Fonction de valeur d'action sous politique π *(section 3.2)*
+
 $$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
 
-# Équations de Bellman — Définition et Applications
+**Éq. (3)** — Bellman Expectation pour V *(section 4.2)*
+
+$$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]$$
+
+**Éq. (4)** — Bellman Optimality pour V *(section 4.2)*
+
+$$V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^*(s') \right]$$
+
+**Éq. (5)** — Bellman pour Q sous politique π *(section 4.3)*
+
+$$Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]$$
+
+**Éq. (6)** — Bellman Optimality pour Q *(section 4.3)*
+
+$$Q^*(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]$$
+
+**Éq. (7)** — Retour cumulé actualisé *(section 5.1)*
+
+$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
+
+**Éq. (8)** — Valeur actualisée d'une récompense future *(section 5.2)*
+
+$$\text{Valeur actualisée} = \gamma^{10} \times 100$$
+
+**Éq. (9)** — Impact de γ dans l'équation de Bellman *(section 5.4)*
+
+$$V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]$$
+
+**Éq. (10)** — Mise à jour Q-Learning *(section 6.4)*
+
+$$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]$$
+
+**Éq. (11)** — Fonction de perte DQN *(section 7.2)*
+
+$$\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2$$
+
+**Éq. (12)** — Bellman appliqué à la finance *(section 7.5)*
+
+$$V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_{t+1}) \right]$$
+
+---
 
 ## Table des matières
 
@@ -144,9 +194,9 @@ flowchart LR
 
 ### 2.2 — Définition formelle
 
-Sous une politique π, la fonction de valeur est définie par
+Sous une politique π, la fonction de valeur est définie par **(→ Éq. 1)** :
 
-$$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
+> **V^π(s) = E_π [ Σ γ^k · r_{t+k} | s_t = s ]**
 
 **Décryptage terme par terme :**
 
@@ -245,7 +295,9 @@ flowchart LR
 
 ### 3.2 — Définition formelle
 
-$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
+**(→ Éq. 2)** — Q^π(s,a) conditionne sur l'état s **et** l'action a :
+
+> **Q^π(s, a) = E_π [ Σ γ^k · r_{t+k} | s_t = s, a_t = a ]**
 
 La différence avec V(s) : on conditionne également sur l'**action a** prise à l'instant t.
 
@@ -328,7 +380,9 @@ C'est une **décomposition récursive** : pour connaître la valeur de l'état a
 
 #### Version sous une politique π (Bellman Expectation Equation)
 
-$$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]$$
+**(→ Éq. 3)** — V^π(s) pondéré par la politique π :
+
+> **V^π(s) = Σ_a π(a|s) · Σ_{s'} P(s'|s,a) · [ R(s,a,s') + γ V^π(s') ]**
 
 **Traduction étape par étape :**
 
@@ -341,7 +395,9 @@ $$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi
 
 #### Version optimale (Bellman Optimality Equation)
 
-$$V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^*(s') \right]$$
+**(→ Éq. 4)** — V*(s) prend le **max** sur toutes les actions :
+
+> **V*(s) = max_a · Σ_{s'} P(s'|s,a) · [ R(s,a,s') + γ V*(s') ]**
 
 La différence : au lieu de pondérer par π(a|s), on prend directement le **maximum sur toutes les actions** — car on cherche la politique optimale.
 
@@ -366,7 +422,15 @@ sequenceDiagram
 
 #### Version sous une politique π
 
-$$Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]$$#### Version optimale — la plus utilisée en RL$$Q^*(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]$$
+**(→ Éq. 5)** — Q^π(s,a) pondéré par la politique :
+
+> **Q^π(s,a) = Σ_{s'} P(s'|s,a) · [ R(s,a,s') + γ · Σ_{a'} π(a'|s') Q^π(s',a') ]**
+
+#### Version optimale — la plus utilisée en RL
+
+**(→ Éq. 6)** — Q*(s,a) prend le **max** sur les actions futures — c'est le cœur du Q-Learning :
+
+> **Q*(s,a) = Σ_{s'} P(s'|s,a) · [ R(s,a,s') + γ · max_{a'} Q*(s',a') ]**
 
 **C'est cette formule qui est au cœur du Q-Learning.**
 
@@ -417,7 +481,9 @@ Le paramètre **γ (gamma)**, appelé **facteur d'actualisation** (*discount fac
 
 ### 5.1 — Rôle et interprétation
 
-$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
+**(→ Éq. 7)** — Le retour cumulé G_t est la somme des récompenses futures pondérées par γ :
+
+> **G_t = r_t + γ r_{t+1} + γ² r_{t+2} + ... = Σ_{k=0}^∞ γ^k r_{t+k}**
 
 | Valeur de γ | Comportement de l'agent | Analogie |
 |---|---|---|
@@ -433,7 +499,9 @@ $$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \s
 
 Un agent reçoit une récompense de **+100** dans 10 étapes. Quelle est sa valeur actualisée selon γ ?
 
-$$\text{Valeur actualisée} = \gamma^{10} \times 100$$
+**(→ Éq. 8)** — Valeur actualisée d'une récompense à 10 étapes :
+
+> **Valeur actualisée = γ^10 × 100**
 
 | γ | γ^10 | Valeur actualisée de +100 dans 10 étapes |
 |---|---|---|
@@ -467,9 +535,9 @@ Deux raisons pour utiliser γ < 1 :
 
 ### 5.4 — γ dans les équations de Bellman
 
-L'impact de γ sur l'équation de Bellman est direct
+L'impact de γ sur l'équation de Bellman est direct **(→ Éq. 9)** :
 
-$$V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]$$
+> **V*(s) = max_a [ R(s,a) + γ · V*(s') ]**
 
 - **γ petit** → le terme V*(s') pèse peu → l'agent est guidé surtout par R(s,a)
 - **γ grand** → le terme V*(s') pèse beaucoup → l'agent planifie en profondeur
@@ -593,9 +661,9 @@ flowchart LR
 
 ### 6.4 — De Bellman au Q-Learning
 
-Q-Learning est la version **model-free** de Value Iteration. À chaque expérience (s, a, r, s'), il applique une mise à jour inspirée de Bellman
+Q-Learning est la version **model-free** de Value Iteration. À chaque expérience (s, a, r, s'), il applique une mise à jour inspirée de Bellman **(→ Éq. 10)** :
 
-$$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]$$
+> **Q(s,a) ← Q(s,a) + α · [ r + γ · max_{a'} Q(s',a') − Q(s,a) ]**
 
 | Terme | Rôle |
 |---|---|
@@ -680,9 +748,9 @@ flowchart LR
 
 **La formule de DQN est directement issue de Bellman :**
 
-La fonction de perte entraîne le réseau à minimiser
+La fonction de perte entraîne le réseau à minimiser **(→ Éq. 11)** :
 
-$$\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2$$
+> **L = [ (r + γ · max_{a'} Q_θ-(s',a')) − Q_θ(s,a) ]²**
 
 ---
 
@@ -730,7 +798,9 @@ L'équation de Bellman modélise le problème du trader :
 | Q(s, a) | Valeur d'une décision de trading dans la situation actuelle |
 | γ | Taux d'actualisation financier (valeur temps de l'argent) |
 
-$$V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_{t+1}) \right]$$
+**(→ Éq. 12)** — Bellman appliqué à la gestion de portefeuille :
+
+> **V*(portefeuille_t) = max_{action} [ profit_t + γ · V*(portefeuille_{t+1}) ]**
 
 </details>
 
