@@ -4,6 +4,7 @@
 
 $$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
 
+$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
 
 # Équations de Bellman — Définition et Applications
 
