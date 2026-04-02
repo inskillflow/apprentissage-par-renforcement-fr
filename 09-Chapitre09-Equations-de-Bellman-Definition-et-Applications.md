@@ -140,9 +140,7 @@ flowchart LR
 
 Sous une politique π, la fonction de valeur est définie par
 
-$$
-V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]
-$$
+$$V^\pi(s) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s \right]$$
 
 **Décryptage terme par terme :**
 
@@ -241,9 +239,7 @@ flowchart LR
 
 ### 3.2 — Définition formelle
 
-$$
-Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]
-$$
+$$Q^\pi(s, a) = \mathbb{E}_\pi \left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k} \;\Big|\; s_t = s,\; a_t = a \right]$$
 
 La différence avec V(s) : on conditionne également sur l'**action a** prise à l'instant t.
 
@@ -326,9 +322,7 @@ C'est une **décomposition récursive** : pour connaître la valeur de l'état a
 
 #### Version sous une politique π (Bellman Expectation Equation)
 
-$$
-V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]
-$$
+$$V^\pi(s) = \sum_a \pi(a|s) \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^\pi(s') \right]$$
 
 **Traduction étape par étape :**
 
@@ -341,9 +335,7 @@ $$
 
 #### Version optimale (Bellman Optimality Equation)
 
-$$
-V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^*(s') \right]
-$$
+$$V^*(s) = \max_a \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma V^*(s') \right]$$
 
 La différence : au lieu de pondérer par π(a|s), on prend directement le **maximum sur toutes les actions** — car on cherche la politique optimale.
 
@@ -368,15 +360,7 @@ sequenceDiagram
 
 #### Version sous une politique π
 
-$$
-Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]
-$$
-
-#### Version optimale — la plus utilisée en RL
-
-$$
-Q^*(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]
-$$
+$$Q^\pi(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \sum_{a'} \pi(a'|s') Q^\pi(s', a') \right]$$#### Version optimale — la plus utilisée en RL$$Q^*(s, a) = \sum_{s'} P(s'|s,a) \left[ R(s,a,s') + \gamma \max_{a'} Q^*(s', a') \right]$$
 
 **C'est cette formule qui est au cœur du Q-Learning.**
 
@@ -427,9 +411,7 @@ Le paramètre **γ (gamma)**, appelé **facteur d'actualisation** (*discount fac
 
 ### 5.1 — Rôle et interprétation
 
-$$
-G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}
-$$
+$$G_t = r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + \gamma^3 r_{t+3} + \ldots = \sum_{k=0}^{\infty} \gamma^k r_{t+k}$$
 
 | Valeur de γ | Comportement de l'agent | Analogie |
 |---|---|---|
@@ -445,9 +427,7 @@ $$
 
 Un agent reçoit une récompense de **+100** dans 10 étapes. Quelle est sa valeur actualisée selon γ ?
 
-$$
-\text{Valeur actualisée} = \gamma^{10} \times 100
-$$
+$$\text{Valeur actualisée} = \gamma^{10} \times 100$$
 
 | γ | γ^10 | Valeur actualisée de +100 dans 10 étapes |
 |---|---|---|
@@ -483,9 +463,7 @@ Deux raisons pour utiliser γ < 1 :
 
 L'impact de γ sur l'équation de Bellman est direct
 
-$$
-V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]
-$$
+$$V^*(s) = \max_a \left[ R(s,a) + \underbrace{\gamma}_{\text{ici}} V^*(s') \right]$$
 
 - **γ petit** → le terme V*(s') pèse peu → l'agent est guidé surtout par R(s,a)
 - **γ grand** → le terme V*(s') pèse beaucoup → l'agent planifie en profondeur
@@ -611,9 +589,7 @@ flowchart LR
 
 Q-Learning est la version **model-free** de Value Iteration. À chaque expérience (s, a, r, s'), il applique une mise à jour inspirée de Bellman
 
-$$
-Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]
-$$
+$$Q(s,a) \leftarrow Q(s,a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s,a) \right]$$
 
 | Terme | Rôle |
 |---|---|
@@ -700,9 +676,7 @@ flowchart LR
 
 La fonction de perte entraîne le réseau à minimiser
 
-$$
-\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2
-$$
+$$\mathcal{L} = \left[ \underbrace{r + \gamma \max_{a'} Q_{\theta^-}(s', a')}_{\text{Cible Bellman}} - Q_\theta(s, a) \right]^2$$
 
 ---
 
@@ -750,9 +724,7 @@ L'équation de Bellman modélise le problème du trader :
 | Q(s, a) | Valeur d'une décision de trading dans la situation actuelle |
 | γ | Taux d'actualisation financier (valeur temps de l'argent) |
 
-$$
-V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_{t+1}) \right]
-$$
+$$V^*(portefeuille_t) = \max_{action} \left[ profit_t + \gamma V^*(portefeuille_{t+1}) \right]$$
 
 </details>
 
