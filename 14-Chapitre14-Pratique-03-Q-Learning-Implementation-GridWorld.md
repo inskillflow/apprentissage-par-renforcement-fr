@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Q-Learning — Implémentation dans un labyrinthe (Google Colab)
+# Pratique-03 Q-Learning — Implémentation dans un labyrinthe (Google Colab)
 
 ## Table des matières
 
