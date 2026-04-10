@@ -243,20 +243,20 @@ La mise à jour Q-Learning se fait en **3 étapes** à chaque pas :
 
 **Étape 1 — Calculer la cible Bellman** **(→ [Éq. 1](#eq-bellman-obs))**
 
-$$Q(s,a)_{\text{observé}} = \underbrace{R(s')}_{\text{récompense immédiate}} + \gamma \times \underbrace{\max_{a'} Q(s',a')}_{\text{meilleure valeur future}}$$
-
+> Cible = Récompense immédiate R(s') + γ × Meilleure valeur future max Q(s',a')
+>
 > "Ce que Q(s,a) **devrait** valoir d'après ce qu'on vient d'observer"
 
 **Étape 2 — Calculer l'erreur TD** **(→ [Éq. 2](#eq-td-error))**
 
-$$\text{TD Error} = \underbrace{Q(s,a)_{\text{observé}}}_{\text{ce qu'on a vu}} - \underbrace{Q(s,a)_{\text{attendu}}}_{\text{ce qu'on croyait}}$$
-
+> TD Error = Q observé − Q attendu
+>
 > "De combien on s'est trompé"
 
 **Étape 3 — Mettre à jour Q** **(→ [Éq. 3](#eq-update))**
 
-$$Q(s,a) \leftarrow Q(s,a) + \alpha \times \text{TD Error}$$
-
+> Q(s,a) ← Q(s,a) + α × TD Error
+>
 > "Corriger Q dans la direction de l'erreur, avec un pas de taille α"
 
 ---
