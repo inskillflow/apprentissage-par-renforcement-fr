@@ -51,7 +51,7 @@ $$\text{TD Error} = Q(s,a)_{\text{observé}} - Q(s,a)_{\text{attendu}}$$
 
 $$Q(s,a) \leftarrow Q(s,a) + \alpha \times \text{TD Error}$$
 
-> Forme combinée équivalente : $Q(s,a) \leftarrow (1-\alpha)\,Q(s,a) + \alpha\!\left[r + \gamma \max_{a'} Q(s',a')\right]$
+> Forme combinée équivalente : $Q(s,a) \leftarrow (1-\alpha)\,Q(s,a) + \alpha \left[r + \gamma \max_{a'} Q(s',a')\right]$
 
 ---
 
@@ -1405,4 +1405,3 @@ mindmap
     ↑ Retour en haut du cours
   </a>
 </p>
-
