@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 6 - Pratique 1 : Révision du Premier Quart du Cours
+# Chapitre 6 - Révision 1 du Premier Quart du Cours
 
 ## Table des matières
 
