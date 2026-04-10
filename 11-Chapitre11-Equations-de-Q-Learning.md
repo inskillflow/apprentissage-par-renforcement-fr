@@ -45,6 +45,20 @@ $$Q(s,a)_{\text{observé}} = R(s') + \gamma \max_{a'} Q(s',a')$$
 
 $$\text{TD Error} = Q(s,a)_{\text{observé}} - Q(s,a)_{\text{attendu}}$$
 
+> **En langage simple — c'est quoi le TD (Temporal Difference) ?**
+>
+> Imagine que tu prédis la météo chaque matin. Le matin tu dis « il fera 25 °C ». Le soir, tu constates qu'il a fait 22 °C. La **différence** entre ta prédiction et la réalité (22 − 25 = −3) te permet de corriger ta prédiction de demain — sans attendre la fin de la semaine pour voir ta moyenne.
+>
+> Le TD fonctionne exactement pareil :
+> - **Temporal** = on corrige **au fur et à mesure**, pas à la fin.
+> - **Difference** = on regarde **l'écart** entre ce qu'on croyait (Q attendu) et ce qu'on observe (Q observé).
+>
+> C'est la surprise de l'agent : « Je pensais que cette action valait 1, mais en réalité ça vaut −0.85 → je me suis trompé de −1.85 → je corrige un peu. »
+>
+> Si le TD Error est **négatif** → l'agent était trop optimiste → il baisse sa Q-value.
+> Si le TD Error est **positif** → l'agent était trop pessimiste → il monte sa Q-value.
+> Si le TD Error est **0** → l'agent avait raison → rien ne change.
+
 <a id="eq-update"></a>
 
 **Éq. (3)** — Règle de mise à jour Q-Learning
