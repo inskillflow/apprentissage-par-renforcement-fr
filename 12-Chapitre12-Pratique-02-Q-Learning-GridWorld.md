@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Démonstration Pratique — Q-Learning et Value Iteration avec GridWorld
+# Pratique 02 — Q-Learning et Value Iteration avec GridWorld
 
 ## Table des matières
 
