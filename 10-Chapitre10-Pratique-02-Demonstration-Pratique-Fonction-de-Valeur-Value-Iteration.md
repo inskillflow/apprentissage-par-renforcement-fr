@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Démonstration Pratique — Fonction de Valeur et Value Iteration avec GridWorld
+# Pratique 02 — Fonction de Valeur et Value Iteration avec GridWorld
 
 ## Table des matières
 
