@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Pratique 02 — Fonction de Valeur et Value Iteration avec GridWorld
+# Pratique 01 — Bellman et Fonction de Valeur et Value Iteration avec GridWorld
 
 ## Table des matières
 
