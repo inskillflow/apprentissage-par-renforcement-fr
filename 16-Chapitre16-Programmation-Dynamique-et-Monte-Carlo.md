@@ -44,13 +44,23 @@ $$V(s) \leftarrow V(s) + \frac{1}{N(s)}\Big[G_t - V(s)\Big]$$
 
 **Éq. (4)** — Mise à jour MC avec taux d'apprentissage α
 
-$$V(s) \leftarrow V(s) + \alpha\Big[G_t - V(s)\Big]$$
+$$V(s) \leftarrow \underbrace{(1-\alpha)}_{\text{garder le passé}}\,V(s) + \underbrace{\alpha}_{\text{intégrer le nouveau}}\,G_t$$
+
+> Forme équivalente : $V(s) \leftarrow V(s) + \alpha [G_t - V(s)]$
+>
+> **(1-α) × V(s)** = ce qu'on **savait** (le passé, l'ancienne estimation)
+> **α × G_t** = ce qu'on **vient d'observer** (le futur réalisé, le retour complet de l'épisode)
 
 <a id="eq-td-update"></a>
 
 **Éq. (5)** — Mise à jour TD(0)
 
-$$V(s) \leftarrow V(s) + \alpha\Big[r + \gamma\,V(s') - V(s)\Big]$$
+$$V(s) \leftarrow \underbrace{(1-\alpha)}_{\text{garder le passé}}\,V(s) + \underbrace{\alpha}_{\text{intégrer le nouveau}} \left[r + \gamma\,V(s')\right]$$
+
+> Forme équivalente : $V(s) \leftarrow V(s) + \alpha [r + \gamma V(s') - V(s)]$
+>
+> **(1-α) × V(s)** = ce qu'on **savait** (le passé, l'ancienne estimation)
+> **α × [r + γ V(s')]** = ce qu'on **vient d'observer** (récompense immédiate + estimation du futur)
 
 ---
 
@@ -482,7 +492,78 @@ Dans un épisode, un même état peut être visité **plusieurs fois**. Comment 
 
 L'état S2 est visité **deux fois** (à t=0 et t=2).
 
-### 6.2 — Deux approches
+### 6.2 — Vulgarisation : un touriste à Montréal
+
+<details>
+<summary>Analogie — Évaluer les quartiers de Montréal</summary>
+
+Imagine que tu visites **Montréal** pour la première fois. Tu fais une journée complète de tourisme :
+
+```
+Ton itinéraire : Vieux-Port → Plateau → Vieux-Port → Mile-End → Retour hôtel
+```
+
+Tu passes au **Vieux-Port deux fois** dans la journée :
+- **Le matin (1re visite)** : il fait beau, terrasses animées, tu notes **9/10**
+- **Le soir (2e visite)** : il pleut, tout est fermé, tu notes **4/10**
+
+**Comment évaluer le Vieux-Port ?**
+
+| Méthode | Ce que tu fais | Note finale |
+|---|---|---|
+| **First-Visit** | Tu gardes seulement ta **première impression** du matin | **9/10** |
+| **Every-Visit** | Tu fais la **moyenne** de toutes tes visites : (9 + 4) / 2 | **6.5/10** |
+
+**Pourquoi First-Visit est souvent meilleur ?**
+
+- Ta première visite reflète l'expérience **complète** qui suit (matin → tout le reste de la journée)
+- La deuxième visite ne capture qu'un **bout** de l'expérience (soir → retour hôtel)
+- En RL, c'est pareil : la première visite d'un état dans un épisode donne un retour G_t plus **représentatif** du vrai potentiel de cet état
+
+**Autre exemple :** Tu fais un road trip Montréal → Québec → Montréal → Ottawa.
+
+- **First-Visit MC** : Montréal est évalué sur la base du trajet complet (Mtl → Qc → Mtl → Ottawa → fin)
+- **Every-Visit MC** : Montréal est évalué 2 fois — une fois pour le trajet complet, une fois pour le trajet court (Mtl → Ottawa → fin)
+
+> First-Visit dit : "Je juge un endroit sur l'expérience totale qui a suivi ma première visite."
+> Every-Visit dit : "Je juge un endroit à chaque fois que j'y passe, même si c'est juste en transit."
+
+</details>
+
+<details>
+<summary>Analogie — Regarder un film au cinéma</summary>
+
+Tu vas voir un film avec deux amis : **Ali (Monte Carlo)** et **Ben (TD Learning)**.
+
+**Le film a 3 actes :**
+
+| Acte | Contenu | Qualité |
+|---|---|---|
+| Acte 1 (0-40 min) | Introduction lente | Ennuyeux |
+| Acte 2 (40-90 min) | Rebondissements | Excellent |
+| Acte 3 (90-120 min) | Fin décevante | Mauvais |
+
+**Ali (Monte Carlo — First-Visit) :**
+- Il reste **jusqu'à la fin** du film.
+- Il sort et dit : "Le film était moyen, 5/10" → il a vu le **résultat complet** avant de juger.
+- S'il revoit le film une 2e fois, c'est un **nouvel épisode**. Mais dans le même visionnage, il ne juge qu'**une seule fois**.
+
+**Ben (TD Learning) :**
+- Après chaque scène, il chuchote : "Pour l'instant c'est nul... ah ça s'améliore... ah non c'est reparti..."
+- Il ajuste **en temps réel**, sans attendre la fin.
+
+**Et si Ali utilisait Every-Visit ?**
+- Imagine que le film repasse la **scène d'ouverture** en flashback à la minute 80.
+- **First-Visit Ali** : "J'ai déjà jugé cette scène au début, je ne la recompte pas."
+- **Every-Visit Ali** : "Je la rejuge maintenant avec le contexte du flashback aussi."
+
+> **First-Visit** = Je juge chaque scène **une seule fois**, quand je la vois pour la première fois.
+> **Every-Visit** = Je rejuge à **chaque apparition**, même en flashback.
+> **TD** = Je ne juge même pas des scènes entières, je juge **après chaque réplique**.
+
+</details>
+
+### 6.3 — Deux approches (résumé technique)
 
 | Méthode | Principe | Quand mettre à jour V(S2) ? |
 |---|---|---|
@@ -498,7 +579,7 @@ flowchart LR
     style EV fill:#9333ea,color:#fff
 ```
 
-### 6.3 — Lequel choisir ?
+### 6.4 — Lequel choisir ?
 
 | Critère | First-Visit | Every-Visit |
 |---|---|---|
@@ -510,7 +591,7 @@ flowchart LR
 
 > **En pratique**, First-Visit MC est le plus utilisé car il est simple et théoriquement non biaisé.
 
-### 6.4 — Pseudocode First-Visit MC
+### 6.5 — Pseudocode First-Visit MC
 
 ```
 Pour chaque épisode :
@@ -548,19 +629,55 @@ Pour chaque épisode :
 | Tu termines **toute la série** avant de décider si c'était bien | Après **5 minutes** d'un épisode, tu sais déjà si tu continues |
 | Tu ajustes ton goût après la fin | Tu ajustes ton goût immédiatement |
 
-### 7.3 — Comparaison technique
+### 7.3 — Les deux équations en forme (1-α) — Passé vs Futur
+
+Les deux formules ont **exactement la même structure** : un mélange entre ce qu'on **savait** (passé) et ce qu'on **observe** (nouveau).
+
+**Monte Carlo** **(→ [Éq. 4](#eq-mc-alpha))** :
+
+> V(s) ← **(1-α) × V(s)** + **α × G_t**
+>
+> | Terme | Rôle | Description |
+> |---|---|---|
+> | (1-α) × V(s) | **Passé** | Ce qu'on croyait avant — l'ancienne estimation |
+> | α × G_t | **Futur réalisé** | Le retour complet qu'on a vraiment obtenu en jouant jusqu'à la fin |
+
+**TD Learning** **(→ [Éq. 5](#eq-td-update))** :
+
+> V(s) ← **(1-α) × V(s)** + **α × [r + γ V(s')]**
+>
+> | Terme | Rôle | Description |
+> |---|---|---|
+> | (1-α) × V(s) | **Passé** | Ce qu'on croyait avant — l'ancienne estimation |
+> | α × r | **Présent** | La récompense immédiate qu'on vient de recevoir |
+> | α × γ V(s') | **Futur estimé** | Ce qu'on **pense** que le futur vaudra (estimation, pas la réalité) |
+
+**La différence clé :**
+
+| | Monte Carlo | TD Learning |
+|---|---|---|
+| **Le "nouveau"** | G_t = futur **réel** (on a joué jusqu'à la fin) | r + γV(s') = futur **estimé** (on devine la suite) |
+| **Biais** | Aucun (on a vu la vraie fin) | Oui (on fait confiance à V(s') qui est approximatif) |
+| **Variance** | Élevée (chaque épisode est différent) | Faible (on lisse avec V(s')) |
+
+> **α contrôle l'équilibre passé/futur :**
+> - α = 0 → on ne change jamais V(s) → on reste figé dans le passé
+> - α = 1 → on oublie tout le passé → on ne garde que la dernière observation
+> - α = 0.1 → on garde 90% du passé et on intègre 10% du nouveau (valeur typique)
+
+### 7.4 — Comparaison synthétique
 
 | Critère | Monte Carlo (MC) | TD Learning (TD) |
 |---|---|---|
 | **Quand met-on à jour ?** | Fin de l'épisode | Après chaque pas |
-| **Formule** | V(s) ← V(s) + α[G_t − V(s)] | V(s) ← V(s) + α[r + γV(s') − V(s)] |
-| **Utilise G_t (retour complet) ?** | Oui | Non (utilise r + γV(s')) |
+| **Formule (1-α)** | (1-α)V(s) + α G_t | (1-α)V(s) + α[r + γV(s')] |
+| **Le "nouveau" vient de** | L'épisode complet (futur réel) | Un seul pas (futur estimé) |
 | **Besoin d'épisodes terminaux ?** | Oui | Non |
 | **Biais** | Non biaisé | Biaisé (bootstrap) |
 | **Variance** | Élevée | Plus faible |
 | **Vitesse d'apprentissage** | Lent (attend la fin) | Rapide (chaque pas) |
 
-### 7.4 — Illustration visuelle
+### 7.5 — Illustration visuelle
 
 ```mermaid
 flowchart TD
@@ -576,7 +693,7 @@ flowchart TD
     style TD fill:#9333ea08,stroke:#9333ea
 ```
 
-### 7.5 — Quand utiliser quoi ?
+### 7.6 — Quand utiliser quoi ?
 
 | Situation | Méthode recommandée |
 |---|---|
@@ -586,7 +703,7 @@ flowchart TD
 | On veut apprendre rapidement | **TD Learning** |
 | On veut combiner les deux | **TD(λ)** — compromis MC/TD |
 
-### 7.6 — Positionnement dans la famille RL
+### 7.7 — Positionnement dans la famille RL
 
 ```mermaid
 flowchart TD
@@ -1010,10 +1127,10 @@ print("→ La meilleure politique est celle avec le meilleur taux de victoire")
 
 **Question 1 :** Quel est le principal avantage de Monte Carlo par rapport à la Programmation Dynamique ?
 
-a) MC est toujours plus rapide
-b) MC ne nécessite pas de connaître le modèle de l'environnement (p(s'|s,a))
-c) MC converge toujours en moins d'épisodes
-d) MC fonctionne sans récompenses
+- a) MC est toujours plus rapide
+- b) MC ne nécessite pas de connaître le modèle de l'environnement (p(s'|s,a))
+- c) MC converge toujours en moins d'épisodes
+- d) MC fonctionne sans récompenses
 
 <details>
 <summary>💡 Solution</summary>
@@ -1026,10 +1143,10 @@ d) MC fonctionne sans récompenses
 
 **Question 2 :** Quelle est la différence entre First-Visit MC et Every-Visit MC ?
 
-a) First-Visit utilise γ, Every-Visit non
-b) First-Visit ne compte que la première visite d'un état dans un épisode
-c) Every-Visit ne fonctionne que pour les épisodes courts
-d) Il n'y a aucune différence
+- a) First-Visit utilise γ, Every-Visit non
+- b) First-Visit ne compte que la première visite d'un état dans un épisode
+- c) Every-Visit ne fonctionne que pour les épisodes courts
+- d) Il n'y a aucune différence
 
 <details>
 <summary>💡 Solution</summary>
@@ -1042,10 +1159,10 @@ d) Il n'y a aucune différence
 
 **Question 3 :** Monte Carlo met à jour V(s) :
 
-a) Après chaque action
-b) Après chaque épisode complet
-c) Après chaque récompense positive
-d) Seulement si l'agent gagne
+- a) Après chaque action
+- b) Après chaque épisode complet
+- c) Après chaque récompense positive
+- d) Seulement si l'agent gagne
 
 <details>
 <summary>💡 Solution</summary>
@@ -1058,10 +1175,10 @@ d) Seulement si l'agent gagne
 
 **Question 4 :** Dans l'estimation de π par Monte Carlo avec 100 points, on obtient π ≈ 3.08. Avec 100 000 points, on obtient π ≈ 3.1412. Quel principe mathématique explique cette amélioration ?
 
-a) Le théorème de Bayes
-b) La Loi des Grands Nombres
-c) Le gradient descent
-d) L'équation de Bellman
+- a) Le théorème de Bayes
+- b) La Loi des Grands Nombres
+- c) Le gradient descent
+- d) L'équation de Bellman
 
 <details>
 <summary>💡 Solution</summary>
@@ -1074,10 +1191,10 @@ d) L'équation de Bellman
 
 **Question 5 :** TD Learning est souvent préféré à Monte Carlo quand :
 
-a) Les épisodes sont très courts
-b) On veut des estimations non biaisées
-c) Les épisodes sont très longs ou n'ont pas de fin définie
-d) On a accès au modèle complet de l'environnement
+- a) Les épisodes sont très courts
+- b) On veut des estimations non biaisées
+- c) Les épisodes sont très longs ou n'ont pas de fin définie
+- d) On a accès au modèle complet de l'environnement
 
 <details>
 <summary>💡 Solution</summary>
@@ -1090,10 +1207,10 @@ d) On a accès au modèle complet de l'environnement
 
 **Question 6 :** Dans l'exercice Blackjack, un épisode de 3 pas donne les récompenses : R1 = 0, R2 = 0, R3 = +1 (victoire). Avec γ = 1, quel est le retour G_0 ?
 
-a) 0
-b) 1
-c) 3
-d) γ²
+- a) 0
+- b) 1
+- c) 3
+- d) γ²
 
 <details>
 <summary>💡 Solution</summary>
@@ -1106,10 +1223,10 @@ d) γ²
 
 **Question 7 :** Dans le diagramme de la famille RL, où se situe Q-Learning ?
 
-a) Model-Based → Programmation Dynamique
-b) Model-Free → Monte Carlo
-c) Model-Free → TD Learning → Off-Policy
-d) Model-Free → TD Learning → On-Policy
+- a) Model-Based → Programmation Dynamique
+- b) Model-Free → Monte Carlo
+- c) Model-Free → TD Learning → Off-Policy
+- d) Model-Free → TD Learning → On-Policy
 
 <details>
 <summary>💡 Solution</summary>
