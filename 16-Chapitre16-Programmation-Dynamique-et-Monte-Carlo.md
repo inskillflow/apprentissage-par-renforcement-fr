@@ -309,7 +309,7 @@ La DP calcule ces valeurs **exactement**, mais elle a besoin de connaître p(s'|
 ```mermaid
 flowchart TD
     DP["Programmation\nDynamique"] --> P1["Besoin du modèle\np(s'|s,a) et R(s,a,s')\n→ Souvent inconnu !"]
-    DP --> P2["Complexité\nO(|S|² × |A|)\n→ Explose avec\nbeaucoup d'états"]
+    DP --> P2["Complexité\nÉtats² × Actions\n→ Explose avec\nbeaucoup d'états"]
     DP --> P3["Monde réel\nPas de 'règles'\nprédéfinies"]
     style P1 fill:#dc2626,color:#fff
     style P2 fill:#dc2626,color:#fff
@@ -319,7 +319,7 @@ flowchart TD
 | Problème | Explication | Exemple |
 |---|---|---|
 | **Modèle requis** | Il faut connaître toutes les transitions et récompenses | Un robot dans une ville : on ne connaît pas la météo, le trafic, etc. |
-| **Passage à l'échelle** | Calculer V(s) pour des millions d'états est très coûteux | Le jeu de Go a plus de 10^170 états possibles |
+| **Passage à l'échelle** | Le nombre de calculs = États² × Actions → explose vite (voir ci-dessous) | Le jeu de Go a plus de 10^170 états possibles |
 | **Monde réel** | Les règles ne sont pas toujours formalisables | Conduire une voiture, jouer à un jeu vidéo inconnu |
 
 <details>
@@ -334,14 +334,27 @@ Imagine que tu veux programmer un robot livreur de pizza à Montréal. Pour util
 
 Le monde réel n'a pas de "manuel d'instructions". La DP ne peut pas fonctionner.
 
-**Problème 2 — Ça explose**
+**Problème 2 — Ça explose (la complexité)**
 
-Pour un simple jeu d'échecs :
-- Nombre d'états possibles : environ 10^47
-- Si tu mets V(s) dans un tableau, tu aurais besoin d'un tableau avec **10 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 lignes**
-- Même les superordinateurs ne peuvent pas stocker ça
+La notation **O(|S|² × |A|)** fait peur, mais elle dit simplement :
 
-Pour le jeu de Go : 10^170 états → il y a plus de positions possibles que d'atomes dans l'univers.
+> **Nombre de calculs** = (nombre d'états)² × (nombre d'actions)
+
+- **|S|** = le nombre total d'**états** (toutes les situations possibles)
+- **|A|** = le nombre total d'**actions** (tous les choix possibles)
+- **|S|²** = pour chaque état, on doit regarder **tous les autres états** où on pourrait atterrir
+
+**Exemple concret avec des petits nombres :**
+
+| Environnement | États (S) | Actions (A) | Calculs = S² × A |
+|---|---|---|---|
+| GridWorld 4×4 | 16 | 4 | 16² × 4 = **1 024** → facile |
+| GridWorld 10×10 | 100 | 4 | 100² × 4 = **40 000** → ok |
+| GridWorld 100×100 | 10 000 | 4 | 10 000² × 4 = **400 millions** → ça commence à être lourd |
+| Échecs | 10^47 | ~30 | (10^47)² × 30 = **impossible** |
+| Go | 10^170 | ~250 | **plus que les atomes dans l'univers** |
+
+C'est pour ça qu'on dit que "ça explose" : doubler le nombre d'états **quadruple** le nombre de calculs (à cause du ²).
 
 **Problème 3 — Les règles changent**
 
@@ -407,6 +420,30 @@ Le nom vient du célèbre **casino de Monte Carlo** à Monaco — la méthode re
 | Savoir si un restaurant est bon | Tu y manges 10 fois et tu notes la qualité | Moyenne des expériences → estimation |
 | Deviner combien de bonbons dans un bocal | 1000 personnes devinent, tu fais la moyenne | Loi des Grands Nombres |
 | Estimer la surface d'un lac sur une carte | Lancer des points au hasard, compter ceux dans l'eau | Ratio de points → ratio d'aires |
+
+<details>
+<summary>Analogie — Le voyageur qui évalue l'hospitalité d'une ville</summary>
+
+Imagine un voyageur qui arrive dans une **nouvelle ville** et veut savoir si la population est accueillante ou non.
+
+**Méthode naïve (biais) :** Il parle à **3 personnes** dans la rue. 2 sont impolies, 1 est gentille. Il conclut : "Les gens ici sont désagréables à 67%." → C'est une estimation **très mauvaise**, il est peut-être juste tombé sur des gens pressés.
+
+**Méthode Monte Carlo :** Il décide de parler à **10 000 personnes** sur plusieurs semaines, dans différents quartiers, à différentes heures, avec des profils variés :
+
+| Nombre de personnes rencontrées | % accueillantes | Fiabilité |
+|---|---|---|
+| 3 | 33% | Très mauvaise — pur hasard |
+| 50 | 72% | Début de tendance |
+| 500 | 84% | Assez fiable |
+| 10 000 | 88.5% | Très fiable — estimation Monte Carlo |
+
+**Résultat après 10 000 interactions :** 88.5% des gens sont accueillants. Le voyageur peut maintenant affirmer avec confiance : "Cette ville est très accueillante !"
+
+> C'est exactement ça, Monte Carlo : **plus tu accumules d'expériences**, plus ton estimation reflète la réalité. Le voyageur ne connaissait pas la "formule" de l'hospitalité — il l'a **estimée par l'expérience répétée**.
+>
+> D'ailleurs, si ce voyageur visite le Québec, après 10 000 rencontres il trouvera probablement un score d'hospitalité assez élevé... mais ça, c'est une donnée empirique qu'on vous laisse vérifier par vous-mêmes.
+
+</details>
 
 ### 3.3 — Le fondement mathématique : la Loi des Grands Nombres
 
@@ -612,7 +649,54 @@ print(f"   plus d'épisodes = meilleure estimation de V(s)")
 
 ---
 
-### 5.1 — Le passage de π (le nombre) à π (la politique)
+### 5.1 — V(s) et Q(s,a) — Les deux fonctions de valeur
+
+<details>
+<summary>Vulgarisation — L'évaluateur immobilier et le conseiller en actions</summary>
+
+En RL, il y a **deux façons** d'évaluer une situation. Imagine que tu es dans un **quartier de Montréal** :
+
+**V(s) — La fonction de valeur d'état : "À quel point cet endroit est bon ?"**
+
+C'est comme un **évaluateur immobilier** qui donne une note à chaque quartier :
+- V(Vieux-Port) = 8/10 → "C'est un bon quartier, en général il se passe de bonnes choses ici"
+- V(Quartier dangereux) = 2/10 → "Mieux vaut ne pas traîner ici"
+
+V(s) répond à : **"Si je suis dans cet état, combien de récompenses totales puis-je espérer en suivant ma politique ?"**
+
+Il ne dit PAS quoi faire — il dit juste si l'endroit est bon ou mauvais.
+
+---
+
+**Q(s,a) — La fonction de valeur état-action : "À quel point cette action dans cet endroit est bonne ?"**
+
+C'est comme un **conseiller** qui évalue chaque **action possible** dans chaque quartier :
+- Q(Vieux-Port, aller à droite) = 9 → "Aller à droite ici, c'est excellent, ça mène au restaurant 5 étoiles"
+- Q(Vieux-Port, aller à gauche) = 3 → "Aller à gauche ici, c'est mauvais, ça mène vers le trafic"
+- Q(Vieux-Port, rester sur place) = 5 → "Rester ici, c'est correct, sans plus"
+
+Q(s,a) répond à : **"Si je suis dans cet état ET que je fais cette action, combien de récompenses totales puis-je espérer ?"**
+
+---
+
+**Résumé :**
+
+| | V(s) | Q(s,a) |
+|---|---|---|
+| **Question** | "À quel point cet **état** est bon ?" | "À quel point cet **état + action** sont bons ?" |
+| **Entrée** | Un état s | Un état s + une action a |
+| **Sortie** | Un nombre (valeur de l'état) | Un nombre (valeur de l'action dans cet état) |
+| **Analogie** | Note du quartier | Note de chaque direction dans ce quartier |
+| **Pour choisir la meilleure action** | Il faut aussi connaître le modèle | Il suffit de prendre argmax Q(s,a) |
+| **Utilisé par** | DP, Monte Carlo | **Q-Learning** (chapitre 15) |
+
+> **Avantage de Q(s,a) :** Pour choisir la meilleure action, il suffit de prendre `argmax_a Q(s,a)` — **pas besoin du modèle**. C'est pour ça que Q-Learning est si populaire.
+>
+> **Dans ce chapitre**, on se concentre sur **V(s)** car Monte Carlo est souvent utilisé pour évaluer une politique (pas pour en trouver une). Q-Learning (chapitre 15) utilise Q(s,a).
+
+</details>
+
+### 5.2 — Le passage de π (le nombre) à π (la politique) 
 
 On vient de voir que Monte Carlo estime π (le nombre) en **répétant des expériences**. En RL, on fait exactement pareil pour estimer **V(s)** — la valeur d'un état sous une politique π.
 
@@ -622,7 +706,7 @@ On vient de voir que Monte Carlo estime π (le nombre) en **répétant des expé
 | Compter les points dans le cercle | Calculer le retour G_t de chaque épisode |
 | Moyenne des ratios → π | Moyenne des retours → V(s) |
 
-### 5.2 — Le retour G_t (→ [Éq. 2](#eq-return))
+### 5.3 — Le retour G_t (→ [Éq. 2](#eq-return))
 
 Le **retour** est la récompense totale accumulée à partir du temps t, avec actualisation :
 
@@ -676,7 +760,7 @@ Poids :      ×1      ×0.9     ×0.81    ×0.729
 
 G_0 = -1 + 0.9×(-1) + 0.9²×(-1) + 0.9³×(10) = -1 - 0.9 - 0.81 + 7.29 = **4.58**
 
-### 5.3 — L'algorithme Monte Carlo pour V(s)
+### 5.4 — L'algorithme Monte Carlo pour V(s)
 
 ```
 Initialiser V(s) = 0 et N(s) = 0 pour tous les états s
@@ -705,7 +789,7 @@ flowchart TD
     style DONE fill:#16a34a,color:#fff
 ```
 
-### 5.4 — Point clé : on attend la fin de l'épisode
+### 5.5 — Point clé : on attend la fin de l'épisode
 
 > **Monte Carlo ne met à jour V(s) qu'une fois l'épisode terminé.**
 > C'est sa caractéristique principale (et sa limitation — voir section 7).
