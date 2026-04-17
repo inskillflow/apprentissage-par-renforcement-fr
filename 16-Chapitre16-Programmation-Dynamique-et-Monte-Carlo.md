@@ -77,6 +77,40 @@ La **Programmation Dynamique (DP)** est une famille de méthodes qui résolvent 
 
 En RL, la DP utilise les **équations de Bellman** pour calculer de manière itérative la valeur optimale de chaque état.
 
+<details>
+<summary>Analogie — Planifier un trajet Montréal → Vancouver en voiture</summary>
+
+Imagine que tu veux trouver le **meilleur itinéraire** de Montréal à Vancouver (4 400 km). Le problème est énorme : des centaines de routes possibles, de villes-étapes, de conditions météo…
+
+**Approche naïve (force brute) :** Essayer TOUS les itinéraires possibles, calculer le temps de chacun, prendre le meilleur. → Impossible, il y en a des millions.
+
+**Approche Programmation Dynamique :** Décomposer en sous-problèmes !
+
+```
+Gros problème : Montréal → Vancouver (optimal ?)
+    ├─ Sous-problème 1 : Montréal → Ottawa (optimal ?)
+    ├─ Sous-problème 2 : Ottawa → Sudbury (optimal ?)
+    ├─ Sous-problème 3 : Sudbury → Winnipeg (optimal ?)
+    ├─ Sous-problème 4 : Winnipeg → Calgary (optimal ?)
+    └─ Sous-problème 5 : Calgary → Vancouver (optimal ?)
+```
+
+**Le principe clé :** Si tu connais le meilleur trajet de **Ottawa à Vancouver**, alors le meilleur trajet de **Montréal à Vancouver** = le meilleur trajet de Montréal à Ottawa + le meilleur de Ottawa à Vancouver.
+
+C'est exactement **l'équation de Bellman** :
+
+> **V(Montréal)** = coût(Montréal → Ottawa) + **V(Ottawa)**
+
+Tu résous les petits sous-problèmes d'abord (les villes proches de Vancouver), puis tu **remontes** vers Montréal en combinant les solutions. C'est ça, la programmation dynamique :
+
+1. **Décomposer** le gros problème en petits morceaux
+2. **Résoudre** chaque morceau une seule fois (et mémoriser la solution)
+3. **Combiner** les solutions pour résoudre le problème complet
+
+**Mais il y a un hic** : la DP a besoin de connaître **toutes les routes, distances et conditions à l'avance** (le modèle complet). Si tu ne connais pas la carte, tu ne peux pas utiliser la DP → c'est là que Monte Carlo entre en jeu (section 3).
+
+</details>
+
 ```mermaid
 flowchart LR
     B["Équation de Bellman\nV(s) = ..."] --> PE["Policy Evaluation\n(évaluer une politique)"]
@@ -98,6 +132,43 @@ Pour fonctionner, la DP nécessite un **modèle complet** de l'environnement :
 
 C'est une approche **model-based** : on connaît les règles du jeu à l'avance.
 
+<details>
+<summary>Vulgarisation — Model-Based vs Model-Free : le GPS vs le touriste perdu</summary>
+
+**Model-Based (avec modèle) = Tu as le GPS + la carte complète**
+
+Imagine que tu conduis dans une ville que tu ne connais pas, mais tu as un **GPS avec la carte complète** :
+- Tu connais **toutes les rues** (les états possibles)
+- Tu connais **chaque intersection** et où chaque rue mène (les transitions p(s'|s,a))
+- Tu connais **le temps de trajet** de chaque segment (les récompenses R)
+- Tu peux **calculer le meilleur chemin** sans bouger de ta chaise, juste en regardant la carte
+
+C'est la **Programmation Dynamique** : elle résout tout **sur papier** avant même de démarrer le moteur.
+
+**Model-Free (sans modèle) = Tu es un touriste sans carte**
+
+Maintenant imagine que tu arrives dans une ville **sans GPS, sans carte, sans Internet** :
+- Tu ne sais pas où mènent les rues → tu dois **les essayer**
+- Tu ne connais pas les distances → tu les **découvres en marchant**
+- Tu ne sais pas s'il y a un raccourci → tu le **trouves par hasard** après plusieurs essais
+
+C'est **Monte Carlo** et **TD Learning** : l'agent apprend en **explorant**, pas en calculant.
+
+**Résumé :**
+
+| | Model-Based (DP) | Model-Free (MC, TD, Q-Learning) |
+|---|---|---|
+| **Analogie** | GPS avec carte complète | Touriste sans carte |
+| **Connaît les règles ?** | Oui, tout est connu | Non, il faut explorer |
+| **Comment apprend ?** | En calculant (équations) | En essayant (expérience) |
+| **Avantage** | Rapide et exact | Fonctionne sans info préalable |
+| **Inconvénient** | Impossible si on n'a pas la carte | Plus lent, doit accumuler de l'expérience |
+| **Monde réel** | Échecs (règles connues) | Robot dans un bâtiment inconnu |
+
+> **En résumé :** "Model-based" signifie que l'agent a accès au **manuel d'instructions** de l'environnement. "Model-free" signifie qu'il doit apprendre les règles **en jouant**.
+
+</details>
+
 ### 1.3 — Policy Evaluation (évaluation itérative)
 
 On calcule V(s) pour chaque état en appliquant l'équation de Bellman **(→ [Éq. 1](#eq-bellman-v))** de manière répétée jusqu'à convergence :
@@ -108,7 +179,80 @@ Répéter jusqu'à convergence :
         V(s) ← Σ_a π(a|s) × Σ_s' p(s'|s,a) × [r + γ × V(s')]
 ```
 
+<details>
+<summary>Vulgarisation — La rumeur qui se propage dans un village</summary>
+
+Imagine un **village de 10 maisons** reliées par des chemins. Chaque maison a un trésor caché (la récompense). Tu veux connaître la **valeur** de chaque maison (combien de richesse tu peux accumuler en partant de là).
+
+**Au début :** personne ne sait rien → V(maison) = 0 pour toutes les maisons.
+
+**Itération 1 :** Chaque maison demande à ses **voisines** : "Combien tu vaux ?" Puis elle calcule sa propre valeur en combinant la récompense locale + la valeur des voisines.
+- La maison à côté du trésor dit : "Je vaux beaucoup, le trésor est juste là !"
+- Les maisons éloignées disent : "Aucune idée, tout est à 0."
+
+**Itération 2 :** Les voisines du trésor ont maintenant une valeur > 0. Leurs propres voisines peuvent enfin calculer quelque chose d'utile → la valeur se **propage** d'un cran.
+
+**Itération 10 :** Toutes les maisons, même les plus éloignées, ont une estimation correcte de leur valeur.
+
+> C'est comme une **rumeur** qui part du trésor et se propage maison par maison à chaque itération. Après assez de passages, tout le village connaît la valeur de chaque emplacement. C'est ça, la **convergence**.
+
+</details>
+
 ### 1.4 — Policy Iteration vs Value Iteration
+
+<details>
+<summary>Vulgarisation — L'entraîneur d'une équipe de football</summary>
+
+**C'est quoi une "politique" (policy) ?**
+
+Une **politique**, c'est le **plan de jeu** de l'équipe. C'est la réponse à la question : "Dans chaque situation, qu'est-ce qu'on fait ?"
+
+| Situation (état) | Politique = décision |
+|---|---|
+| On a le ballon au milieu du terrain | → Passer vers l'avant |
+| L'adversaire attaque sur le côté droit | → Le défenseur couvre à droite |
+| On mène 2-0 à la 85e minute | → Jouer défensif, garder le ballon |
+| On perd 0-1 à la 89e minute | → Tout le monde attaque |
+
+La politique π dit : "Pour **chaque situation**, voici **l'action** à faire." En RL, c'est pareil : π(s) = l'action à prendre dans l'état s.
+
+---
+
+**Policy Iteration = L'entraîneur méthodique**
+
+Imagine un entraîneur qui fonctionne en **deux phases** bien séparées :
+
+1. **Phase 1 — Évaluer le plan de jeu actuel** : Il fait jouer l'équipe avec le plan actuel pendant **10 matchs amicaux** et note les résultats. "Avec ce plan, on gagne 6 matchs sur 10, on encaisse surtout par la droite."
+
+2. **Phase 2 — Améliorer le plan** : Il regarde les notes et modifie le plan. "On va renforcer la défense à droite et faire plus de contre-attaques."
+
+3. **Retour à la Phase 1** : Il refait 10 matchs avec le nouveau plan, re-évalue, re-améliore… jusqu'à ce que le plan ne change plus.
+
+→ C'est **lent mais précis** : à chaque cycle, il sait exactement ce que vaut le plan avant de le changer.
+
+---
+
+**Value Iteration = L'entraîneur pragmatique**
+
+Un autre entraîneur ne sépare pas les deux phases. Après **chaque match**, il :
+- Note ce qui a marché ou pas
+- Change immédiatement la tactique pour le prochain match
+- Ne fait pas 10 matchs pour évaluer, il ajuste **au fur et à mesure**
+
+→ C'est **plus rapide et plus simple** : on ne perd pas de temps à évaluer complètement avant de changer.
+
+---
+
+**Résumé :**
+
+| | Policy Iteration | Value Iteration |
+|---|---|---|
+| **Analogie** | 10 matchs → évaluer → changer → 10 matchs → … | 1 match → ajuster → 1 match → ajuster → … |
+| **Évaluation** | Complète (beaucoup d'itérations) | Partielle (une seule passe) |
+| **Amélioration** | Après évaluation complète | À chaque étape |
+| **Vitesse** | Moins d'itérations globales | Chaque itération est plus rapide |
+
+</details>
 
 | Méthode | Principe | Avantage |
 |---|---|---|
@@ -178,6 +322,40 @@ flowchart TD
 | **Passage à l'échelle** | Calculer V(s) pour des millions d'états est très coûteux | Le jeu de Go a plus de 10^170 états possibles |
 | **Monde réel** | Les règles ne sont pas toujours formalisables | Conduire une voiture, jouer à un jeu vidéo inconnu |
 
+<details>
+<summary>Vulgarisation — Pourquoi la DP échoue dans la vraie vie</summary>
+
+**Problème 1 — Il faut la carte complète**
+
+Imagine que tu veux programmer un robot livreur de pizza à Montréal. Pour utiliser la DP, il te faudrait :
+- La position exacte de chaque voiture, piéton, feu de circulation → **impossible**
+- La probabilité qu'un piéton traverse à chaque seconde → **inconnue**
+- La récompense exacte de chaque action → **dépend du contexte**
+
+Le monde réel n'a pas de "manuel d'instructions". La DP ne peut pas fonctionner.
+
+**Problème 2 — Ça explose**
+
+Pour un simple jeu d'échecs :
+- Nombre d'états possibles : environ 10^47
+- Si tu mets V(s) dans un tableau, tu aurais besoin d'un tableau avec **10 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 lignes**
+- Même les superordinateurs ne peuvent pas stocker ça
+
+Pour le jeu de Go : 10^170 états → il y a plus de positions possibles que d'atomes dans l'univers.
+
+**Problème 3 — Les règles changent**
+
+Un humain qui conduit sa voiture fait face à :
+- La météo qui change
+- Des travaux non prévus
+- Un enfant qui court sur la route
+
+Il n'y a **pas de matrice de transition fixe** pour la conduite automobile. Les règles changent à chaque seconde.
+
+> **Conclusion :** La DP est **parfaite pour des petits problèmes bien définis** (grilles 4×4, labyrinthe simple). Mais pour le monde réel → il faut des méthodes model-free (Monte Carlo, TD, Q-Learning).
+
+</details>
+
 ### 2.2 — La solution : les méthodes sans modèle
 
 > Et si on pouvait apprendre **directement en essayant**, sans connaître les règles ?
@@ -241,6 +419,32 @@ flowchart LR
     E3 --> E4["∞ essais\nEstimation = exacte"]
     style E4 fill:#16a34a,color:#fff
 ```
+
+<details>
+<summary>Vulgarisation — Le sondage électoral</summary>
+
+Imagine qu'il y a une élection et tu veux prédire le résultat :
+
+- **Tu demandes à 3 personnes** dans la rue : 2 votent bleu, 1 vote rouge → 67% bleu. C'est très approximatif, peut-être que ces 3 personnes sont des amis qui pensent pareil.
+
+- **Tu demandes à 100 personnes** : 54 bleu, 46 rouge → 54% bleu. C'est mieux, mais encore un peu aléatoire.
+
+- **Tu demandes à 10 000 personnes** : 51.2% bleu, 48.8% rouge. C'est **très proche** du vrai résultat.
+
+- **Tu demandes à TOUTE la population** : tu as le résultat **exact**.
+
+| Nombre de personnes sondées | Estimation | Fiabilité |
+|---|---|---|
+| 3 | 67% bleu | Très mauvaise |
+| 100 | 54% bleu | Correcte |
+| 10 000 | 51.2% bleu | Très bonne |
+| Toute la population | 51.0% bleu | Exacte |
+
+C'est **exactement** la Loi des Grands Nombres : plus tu augmentes l'échantillon, plus ta moyenne se rapproche de la réalité.
+
+En RL : remplace "personnes sondées" par "épisodes joués" et "résultat du vote" par "V(s)". Plus tu joues d'épisodes, plus ton estimation de V(s) est précise.
+
+</details>
 
 ### 3.4 — Pourquoi Monte Carlo est utile en RL ?
 
@@ -424,6 +628,43 @@ Le **retour** est la récompense totale accumulée à partir du temps t, avec ac
 
 > G_t = R_{t+1} + γ × R_{t+2} + γ² × R_{t+3} + ...
 
+<details>
+<summary>Vulgarisation — G_t et γ : l'argent maintenant vs l'argent plus tard</summary>
+
+**C'est quoi le retour G_t ?**
+
+G_t, c'est le **bulletin de notes final** d'un épisode. Il résume tout ce que l'agent a gagné à partir du moment t.
+
+**C'est quoi γ (gamma) — le facteur d'actualisation ?**
+
+Imagine qu'on te propose deux choix :
+- **Option A :** Recevoir 100 $ **maintenant**
+- **Option B :** Recevoir 100 $ **dans 1 an**
+
+Tout le monde préfère l'option A. Pourquoi ? Parce que l'argent **maintenant** vaut plus que l'argent **plus tard**. Il y a du risque, de l'inflation, de l'incertitude.
+
+**γ modélise exactement ça :**
+
+| γ | Comportement | Analogie |
+|---|---|---|
+| γ = 0 | L'agent ne regarde que la récompense **immédiate** | "Je veux mon argent tout de suite, je m'en fiche de demain" |
+| γ = 0.5 | L'agent accorde **moitié moins** de valeur au futur à chaque pas | "100 $ maintenant = 50 $ dans 1 pas = 25 $ dans 2 pas" |
+| γ = 0.9 | L'agent est **prévoyant**, il accorde beaucoup de valeur au futur | "100 $ maintenant = 90 $ dans 1 pas = 81 $ dans 2 pas" |
+| γ = 1 | L'agent traite le futur **aussi important** que le présent | "100 $ maintenant = 100 $ dans 10 ans" (risqué !) |
+
+**Visualisation avec γ = 0.9 :**
+
+```
+Temps :      t=0      t=1       t=2       t=3
+Poids :      ×1      ×0.9     ×0.81    ×0.729
+             ████    ███▊     ███▍     ██▉
+             100%     90%      81%     72.9%
+```
+
+> Plus on s'éloigne dans le futur, moins ça pèse dans la note finale.
+
+</details>
+
 **Exemple concret :** Un épisode de 4 pas avec γ = 0.9
 
 | Temps | Action | Récompense |
@@ -469,7 +710,35 @@ flowchart TD
 > **Monte Carlo ne met à jour V(s) qu'une fois l'épisode terminé.**
 > C'est sa caractéristique principale (et sa limitation — voir section 7).
 
-C'est comme un étudiant qui ne regarde ses notes qu'**à la fin du semestre**, au lieu de vérifier après chaque examen.
+<details>
+<summary>Vulgarisation — L'étudiant, le prof et le bulletin</summary>
+
+**Monte Carlo = L'étudiant qui attend le bulletin final**
+
+Tu es inscrit à un cours de 15 semaines. Tu fais des travaux, des quiz, un examen final. Avec Monte Carlo, tu ne regardes ta note **qu'à la fin de la session** :
+
+- Semaine 1 : travail → note inconnue
+- Semaine 5 : quiz → note inconnue
+- Semaine 10 : mi-session → note inconnue
+- Semaine 15 : **fin de session → tu reçois ta note finale : B+**
+- Maintenant seulement, tu ajustes ta stratégie d'étude pour la prochaine session.
+
+**TD Learning = L'étudiant qui regarde après chaque évaluation**
+
+Ce même étudiant, mais il vérifie ses résultats **après chaque travail** :
+
+- Semaine 1 : travail → 70%. "Hmm, je dois étudier plus."
+- Semaine 5 : quiz → 85%. "Ça s'améliore, je continue."
+- Semaine 10 : mi-session → 60%. "Alarme ! Je change complètement ma méthode."
+- Semaine 15 : examen final → 90%. "Ma nouvelle méthode fonctionne !"
+
+| | Monte Carlo | TD Learning |
+|---|---|---|
+| **Quand il ajuste** | Après la session complète | Après chaque évaluation |
+| **Avantage** | Voit le portrait **complet** | Peut **corriger le tir** rapidement |
+| **Inconvénient** | S'il échoue, c'est trop tard pour changer | Peut surréagir à un seul mauvais quiz |
+
+</details>
 
 </details>
 
@@ -664,6 +933,47 @@ Les deux formules ont **exactement la même structure** : un mélange entre ce q
 > - α = 0 → on ne change jamais V(s) → on reste figé dans le passé
 > - α = 1 → on oublie tout le passé → on ne garde que la dernière observation
 > - α = 0.1 → on garde 90% du passé et on intègre 10% du nouveau (valeur typique)
+
+<details>
+<summary>Vulgarisation — Biais vs Variance : le tireur à l'arc</summary>
+
+**Biais** et **Variance** sont deux types d'erreurs. L'analogie parfaite : un **tireur à l'arc** qui vise le centre de la cible.
+
+```
+    Faible Biais          Fort Biais
+    Faible Variance       Faible Variance
+    ┌─────────────┐      ┌─────────────┐
+    │      ◉      │      │  ●●●        │
+    │     ●●●     │      │  ●●         │
+    │      ●      │      │             │
+    └─────────────┘      └─────────────┘
+    PARFAIT !             Groupé mais décalé
+
+    Faible Biais          Fort Biais
+    Forte Variance        Forte Variance
+    ┌─────────────┐      ┌─────────────┐
+    │ ●    ●      │      │ ●           │
+    │    ◉   ●    │      │       ●     │
+    │  ●      ●   │      │   ●    ●    │
+    └─────────────┘      └─────────────┘
+    Centré mais éparpillé Tout est faux
+```
+
+**En RL :**
+
+| | Monte Carlo | TD Learning |
+|---|---|---|
+| **Biais** | **Aucun** — la moyenne des G_t vise exactement V(s) | **Oui** — on fait confiance à V(s') qui est lui-même approximatif |
+| **Variance** | **Élevée** — chaque épisode est différent (beaucoup de hasard) | **Faible** — on lisse avec V(s'), les mises à jour sont plus stables |
+| **Analogie arc** | Les flèches sont **centrées** sur la cible mais **éparpillées** | Les flèches sont **groupées** mais potentiellement **légèrement décalées** |
+
+**Pourquoi ça compte ?**
+- **Haute variance** (MC) = il faut beaucoup d'épisodes pour que la moyenne se stabilise
+- **Biais** (TD) = même avec beaucoup d'épisodes, l'estimation peut être légèrement fausse (mais en pratique, le biais disparaît avec le temps)
+
+> En général, TD Learning est préféré car **le biais diminue** au fil du temps (V(s') s'améliore), tandis que la **haute variance** de MC rend l'apprentissage lent.
+
+</details>
 
 ### 7.4 — Comparaison synthétique
 
