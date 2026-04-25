@@ -38,7 +38,7 @@
 | 7h | &nbsp;&nbsp;&nbsp;↳ [Tableau récapitulatif](#section-7) |
 | 8 | [Bellman — fondement théorique du TD](#section-8) |
 | 8a | &nbsp;&nbsp;&nbsp;↳ [Bellman pour V et Q sous une politique π](#section-8) |
-| 8b | &nbsp;&nbsp;&nbsp;↳ [Bellman optimalité — V*(s) et Q*(s,a)](#section-8) |
+| 8b | &nbsp;&nbsp;&nbsp;↳ [Bellman optimalité — V★(s) et Q★(s,a)](#section-8) |
 | 8c | &nbsp;&nbsp;&nbsp;↳ [Lien avec TD et Q-Learning](#section-8) |
 | 9 | [Exemples numériques pas à pas](#section-9) |
 | 9a | &nbsp;&nbsp;&nbsp;↳ [Exemple 1 — TD(0) avec récompense](#section-9) |
@@ -61,37 +61,82 @@
 
 ## Équations de référence
 
+> _Pour chaque méthode TD, on donne **les deux formes équivalentes** :_
+> _- **Forme « erreur TD »** : $\text{ancien} + \alpha \times (\text{cible} - \text{ancien})$_
+> _- **Forme « mélange pondéré »** $(1-\alpha)$ : $(1-\alpha)\cdot \text{ancien} + \alpha\cdot \text{cible}$_
+> _Les deux donnent **exactement le même résultat numérique** ; la seconde rend explicite la part « ancien savoir » conservée._
+
+---
+
 <a id="eq-td0"></a>
 
 **Éq. (1)** — TD(0) — mise à jour à un pas
 
+**(1a) Forme « erreur TD » :**
+
 $$V(S_t) \leftarrow V(S_t) + \alpha \left[ R_{t+1} + \gamma\, V(S_{t+1}) - V(S_t) \right]$$
+
+**(1b) Forme « mélange pondéré » $(1-\alpha)$ :**
+
+$$V(S_t) \leftarrow (1-\alpha)\, V(S_t) + \alpha \left[ R_{t+1} + \gamma\, V(S_{t+1}) \right]$$
+
+---
 
 <a id="eq-tdn"></a>
 
 **Éq. (2)** — TD(n) — mise à jour à n pas
 
+**(2a) Forme « erreur TD » :**
+
 $$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum_{k=1}^{n} \gamma^{k-1}\, R_{t+k} + \gamma^{n}\, V(S_{t+n}) - V(S_t) \right]$$
+
+**(2b) Forme « mélange pondéré » $(1-\alpha)$ :**
+
+$$V(S_t) \leftarrow (1-\alpha)\, V(S_t) + \alpha \left[ \sum_{k=1}^{n} \gamma^{k-1}\, R_{t+k} + \gamma^{n}\, V(S_{t+n}) \right]$$
+
+---
 
 <a id="eq-tdlambda"></a>
 
 **Éq. (3)** — TD(λ) — combinaison pondérée des retours à n pas (forward view)
 
-$$G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{\,n-1}\, G_t^{(n)},\qquad V(S_t) \leftarrow V(S_t) + \alpha \left[ G_t^{\lambda} - V(S_t) \right]$$
+Cible λ-pondérée : $G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{\,n-1}\, G_t^{(n)}$, où $G_t^{(n)} = \sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^{n} V(S_{t+n})$.
 
-où $G_t^{(n)} = \sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^{n} V(S_{t+n})$ est le retour à $n$ pas.
+**(3a) Forme « erreur TD » :**
+
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ G_t^{\lambda} - V(S_t) \right]$$
+
+**(3b) Forme « mélange pondéré » $(1-\alpha)$ :**
+
+$$V(S_t) \leftarrow (1-\alpha)\, V(S_t) + \alpha\, G_t^{\lambda}$$
+
+---
 
 <a id="eq-sarsa"></a>
 
 **Éq. (4)** — SARSA (on-policy)
 
+**(4a) Forme « erreur TD » :**
+
 $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma\, Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right]$$
+
+**(4b) Forme « mélange pondéré » $(1-\alpha)$ :**
+
+$$Q(S_t, A_t) \leftarrow (1-\alpha)\, Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma\, Q(S_{t+1}, A_{t+1}) \right]$$
+
+---
 
 <a id="eq-qlearning"></a>
 
 **Éq. (5)** — Q-Learning (off-policy)
 
+**(5a) Forme « erreur TD » :**
+
 $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') - Q(S_t, A_t) \right]$$
+
+**(5b) Forme « mélange pondéré » $(1-\alpha)$ :**
+
+$$Q(S_t, A_t) \leftarrow (1-\alpha)\, Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') \right]$$
 
 <a id="eq-bellman-v-pi"></a>
 
@@ -107,15 +152,15 @@ $$Q^{\pi}(s,a) = \mathbb{E}_{\pi}\!\left[\, R_{t+1} + \gamma\, Q^{\pi}(S_{t+1}, 
 
 <a id="eq-bellman-v-star"></a>
 
-**Éq. (8)** — Bellman optimalité pour $V^{*}$
+**Éq. (8)** — Bellman optimalité pour $V^{\ast}$
 
-$$V^{*}(s) = \max_a \mathbb{E}\!\left[\, R_{t+1} + \gamma\, V^{*}(S_{t+1}) \mid S_t = s,\, A_t = a \,\right]$$
+$$V^{\ast}(s) = \max_a \mathbb{E}\!\left[\, R_{t+1} + \gamma\, V^{\ast}(S_{t+1}) \mid S_t = s,\, A_t = a \,\right]$$
 
 <a id="eq-bellman-q-star"></a>
 
-**Éq. (9)** — Bellman optimalité pour $Q^{*}$
+**Éq. (9)** — Bellman optimalité pour $Q^{\ast}$
 
-$$Q^{*}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{*}(S_{t+1}, a') \mid S_t = s,\, A_t = a \,\right]$$
+$$Q^{\ast}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{\ast}(S_{t+1}, a') \mid S_t = s,\, A_t = a \,\right]$$
 
 ---
 
@@ -728,17 +773,17 @@ $$Q^{\pi}(s,a) = \mathbb{E}_{\pi}\!\left[\, R_{t+1} + \gamma\, Q^{\pi}(S_{t+1}, 
 
 ---
 
-### 8b — Bellman optimalité — V*(s) et Q*(s,a)
+### 8b — Bellman optimalité — $V^{\ast}(s)$ et $Q^{\ast}(s,a)$
 
 Quand on cherche **la meilleure politique**, on prend le `max` sur les actions :
 
 **(→ [Éq. 8](#eq-bellman-v-star))**
 
-$$V^{*}(s) = \max_a \mathbb{E}\!\left[\, R_{t+1} + \gamma\, V^{*}(S_{t+1}) \mid S_t = s,\, A_t = a \,\right]$$
+$$V^{\ast}(s) = \max_a \mathbb{E}\!\left[\, R_{t+1} + \gamma\, V^{\ast}(S_{t+1}) \mid S_t = s,\, A_t = a \,\right]$$
 
 **(→ [Éq. 9](#eq-bellman-q-star))**
 
-$$Q^{*}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{*}(S_{t+1}, a') \mid S_t = s,\, A_t = a \,\right]$$
+$$Q^{\ast}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{\ast}(S_{t+1}, a') \mid S_t = s,\, A_t = a \,\right]$$
 
 > ⚠️ **Bellman exact ↔ programmation dynamique :** ces équations supposent qu'on **connaît** $P(s'|s,a)$ et $R(s,a)$. Elles sont la base de **Value Iteration / Policy Iteration**.
 
@@ -750,7 +795,7 @@ $$Q^{*}(s,a) = \mathbb{E}\!\left[\, R_{t+1} + \gamma \max_{a'} Q^{*}(S_{t+1}, a'
 |---|---|
 | $V^{\pi}(s) = \mathbb{E}_{\pi}[R + \gamma V^{\pi}(s')]$ | **TD(0)** — on remplace l'espérance par un **échantillon** + bootstrap |
 | $Q^{\pi}(s,a) = \mathbb{E}_{\pi}[R + \gamma Q^{\pi}(s', a')]$ | **SARSA** — on échantillonne l'action $a'$ réellement suivie |
-| $Q^{*}(s,a) = \mathbb{E}[R + \gamma \max_{a'} Q^{*}(s', a')]$ | **Q-Learning** — on échantillonne et on prend le `max` |
+| $Q^{\ast}(s,a) = \mathbb{E}[R + \gamma \max_{a'} Q^{\ast}(s', a')]$ | **Q-Learning** — on échantillonne et on prend le `max` |
 
 > _En une phrase : **TD = Bellman appliqué à l'expérience**, sans connaître le modèle._
 
