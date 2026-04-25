@@ -74,7 +74,7 @@
 | $\delta_t$ | Erreur TD | **Surprise** : différence entre cible bootstrapée et estimé courant |
 | $G_t^{(n)}$ | Retour à $n$ pas | $n$ récompenses observées + bootstrap sur $V(S\_{t+n})$ |
 | $G_t^{\lambda}$ | Retour λ-pondéré | Combinaison de tous les $G_t^{(n)}$ avec poids $\lambda^{n-1}$ |
-| $\pi$ | Politique | Stratégie de choix d'action ($\pi(a\|s)$) |
+| $\pi$ | Politique | Stratégie de choix d'action — $\pi(a \mid s)$ |
 
 > _Lecture clé pour les équations TD :_ **« $\alpha$ contrôle combien on **intègre du nouveau**, $1-\alpha$ combien on **garde du passé** »**.
 
@@ -82,12 +82,15 @@
 
 ### Pour chaque méthode TD : trois écritures équivalentes
 
-> _Pour chaque méthode TD, on donne **deux formes équivalentes** :_
-> _- **(a) Forme « erreur TD »** — la plus courante en littérature : $\text{ancien} + \alpha \times (\text{cible} - \text{ancien})$_
-> _- **(b) Forme « mélange pondéré » $(1-\alpha)$** — la plus pédagogique : $(1-\alpha) \cdot \text{ancien} + \alpha \cdot \text{cible}$_
->
-> _Les deux donnent **exactement le même résultat numérique**._
-> _Sous chaque équation, **un tableau** identifie le rôle de chaque terme._
+Pour chaque méthode TD, on donne **trois formes équivalentes** :
+
+- **(a) Forme « erreur TD »** — la plus courante en littérature :
+  $$\text{nouveau} = \text{ancien} + \alpha \times (\text{cible} - \text{ancien})$$
+- **(b) Forme « mélange pondéré »** $(1-\alpha)$ — la plus pédagogique :
+  $$\text{nouveau} = (1-\alpha) \cdot \text{ancien} + \alpha \cdot \text{cible}$$
+- **(c) Forme annotée** — la même que (b), avec **les rôles de chaque terme explicités** sous l'équation (avec `\underbrace`).
+
+Les trois donnent **exactement le même résultat numérique**.
 
 ---
 
@@ -103,7 +106,11 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \left[ R\_{t+1} + \gamma V(S\_{t+1}) - V(S_t
 
 $$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot \left[ R\_{t+1} + \gamma V(S\_{t+1}) \right]$$
 
-**Description des termes :**
+**(1c) Forme annotée :**
+
+$$V(S_t) \leftarrow \underbrace{(1-\alpha) \cdot V(S_t)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot \left[ R\_{t+1} + \gamma V(S\_{t+1}) \right]}\_{\text{intégrer le nouveau}}$$
+
+**Description des termes (rappel) :**
 
 | Terme | Rôle |
 |---|---|
@@ -128,6 +135,10 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k}
 **(2b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
 $$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) \right]$$
+
+**(2c) Forme annotée :**
+
+$$V(S_t) \leftarrow \underbrace{(1-\alpha) \cdot V(S_t)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) \right]}\_{\text{intégrer le nouveau}}$$
 
 **Description des termes :**
 
@@ -158,6 +169,10 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \left[ G_t^{\lambda} - V(S_t) \right]$$
 
 $$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot G_t^{\lambda}$$
 
+**(3c) Forme annotée :**
+
+$$V(S_t) \leftarrow \underbrace{(1-\alpha) \cdot V(S_t)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot G_t^{\lambda}}\_{\text{intégrer le nouveau (tous horizons mélangés)}}$$
+
 **Description des termes :**
 
 | Terme | Rôle |
@@ -182,6 +197,10 @@ $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R\_{t+1} + \gamma Q(S\_{t+1
 **(4b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
 $$Q(S_t, A_t) \leftarrow (1-\alpha) \cdot Q(S_t, A_t) + \alpha \cdot \left[ R\_{t+1} + \gamma Q(S\_{t+1}, A\_{t+1}) \right]$$
+
+**(4c) Forme annotée :**
+
+$$Q(S_t, A_t) \leftarrow \underbrace{(1-\alpha) \cdot Q(S_t, A_t)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot \left[ R\_{t+1} + \gamma Q(S\_{t+1}, A\_{t+1}) \right]}\_{\text{intégrer le nouveau (on-policy)}}$$
 
 **Description des termes :**
 
@@ -208,6 +227,10 @@ $$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R\_{t+1} + \gamma \max\_{a'
 
 $$Q(S_t, A_t) \leftarrow (1-\alpha) \cdot Q(S_t, A_t) + \alpha \cdot \left[ R\_{t+1} + \gamma \max\_{a'} Q(S\_{t+1}, a') \right]$$
 
+**(5c) Forme annotée :**
+
+$$Q(S_t, A_t) \leftarrow \underbrace{(1-\alpha) \cdot Q(S_t, A_t)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot \left[ R\_{t+1} + \gamma \max\_{a'} Q(S\_{t+1}, a') \right]}\_{\text{intégrer le nouveau (off-policy)}}$$
+
 **Description des termes :**
 
 | Terme | Rôle |
@@ -225,14 +248,14 @@ $$Q(S_t, A_t) \leftarrow (1-\alpha) \cdot Q(S_t, A_t) + \alpha \cdot \left[ R\_{
 
 Toutes les méthodes TD partagent la **même structure de mise à jour** :
 
-$$Q(s,a) \leftarrow (1-\alpha) \cdot Q(s,a) + \alpha \cdot \text{cible}$$
+$$V(s) \leftarrow \underbrace{(1-\alpha) \cdot V(s)}\_{\text{garder le passé}} + \underbrace{\alpha \cdot G_t}\_{\text{intégrer le nouveau}}$$
 
 | Bloc | Lecture |
 |---|---|
-| $(1-\alpha) \cdot Q(s,a)$ | **Ancien savoir conservé** |
-| $\alpha \cdot \text{cible}$ | **Nouveau intégré** |
+| $(1-\alpha) \cdot V(s)$ | **Ancien savoir conservé** |
+| $\alpha \cdot G_t$ | **Nouveau intégré** |
 
-(La même structure tient pour $V(s)$ : remplacer $Q(s,a)$ par $V(s)$.)
+(La même structure tient pour $Q(s,a)$ : remplacer $V(s)$ par $Q(s,a)$, et $G_t$ par la cible appropriée — $r + \gamma Q(s',a')$ pour SARSA, $r + \gamma \max\_{a'} Q(s',a')$ pour Q-Learning.)
 
 | α | $1-\alpha$ | Effet |
 |---|---|---|
@@ -362,7 +385,7 @@ flowchart LR
 
 L'**erreur TD** mesure la **surprise** entre ce que l'agent croyait et ce qu'il observe maintenant :
 
-$$\delta_t = \big[\, R\_{t+1} + \gamma V(S\_{t+1}) \,\big] - V(S_t)$$
+$$\delta_t = \underbrace{R\_{t+1} + \gamma V(S\_{t+1})}\_{\text{cible bootstrapée}} - \underbrace{V(S_t)}\_{\text{estimé courant}}$$
 
 | Terme | Sens |
 |---|---|
@@ -457,6 +480,10 @@ Au lieu de regarder un seul pas comme TD(0), on peut accumuler **n récompenses 
 **Forme générale (→ [Éq. 2](#eq-tdn)) :**
 
 $$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) - V(S_t) \right]$$
+
+**Forme annotée :**
+
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ \underbrace{\sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k}}\_{\text{récompenses observées}} + \underbrace{\gamma^{n} V(S\_{t+n})}\_{\text{bootstrap final}} - V(S_t) \right]$$
 
 | Bloc de l'équation | Lecture |
 |---|---|
@@ -680,7 +707,7 @@ TD(0) met à jour des **valeurs d'état** $V(s)$. Pour **prendre des décisions*
 | **Permet de décider sans modèle ?** | ❌ Non — il faudrait connaître les transitions pour savoir vers quel $s'$ chaque action mène | ✅ Oui — il suffit de prendre $\arg\max_a Q(s,a)$ |
 | **Méthodes** | TD(0), TD(n), TD(λ), Monte Carlo (évaluation) | **SARSA, Q-Learning, Expected SARSA** (contrôle) |
 
-> _C'est pour cela que **SARSA et Q-Learning travaillent sur $Q(s,a)$** : à partir d'une $Q$-table, on peut directement choisir une action, **sans connaître $P(s'|s,a)$**._
+> _C'est pour cela que **SARSA et Q-Learning travaillent sur $Q(s,a)$** : à partir d'une $Q$-table, on peut directement choisir une action, **sans connaître $P(s' \mid s,a)$**._
 
 ---
 
@@ -913,7 +940,7 @@ $$V^{\ast}(s) = \max\_a \mathbb{E}\left[ R\_{t+1} + \gamma V^{\ast}(S\_{t+1}) \m
 
 $$Q^{\ast}(s,a) = \mathbb{E}\left[ R\_{t+1} + \gamma \max\_{a'} Q^{\ast}(S\_{t+1}, a') \mid S\_t = s, A\_t = a \right]$$
 
-> ⚠️ **Bellman exact ↔ programmation dynamique :** ces équations supposent qu'on **connaît** $P(s'|s,a)$ et $R(s,a)$. Elles sont la base de **Value Iteration / Policy Iteration**.
+> ⚠️ **Bellman exact ↔ programmation dynamique :** ces équations supposent qu'on **connaît** $P(s' \mid s,a)$ et $R(s,a)$. Elles sont la base de **Value Iteration / Policy Iteration**.
 
 ---
 
@@ -1073,7 +1100,7 @@ Dans cette convention :
 
 C'est la **connaissance explicite** de :
 
-- la fonction de **transition** $P(s'|s,a)$ — *« Quelle est la probabilité d'arriver dans $s'$ ? »*
+- la fonction de **transition** $P(s' \mid s,a)$ — *« Quelle est la probabilité d'arriver dans $s'$ ? »*
 - la fonction de **récompense** $R(s,a)$ — *« Que vais-je gagner en moyenne ? »*
 
 Avec un modèle, on peut **simuler** l'environnement sans interagir réellement avec lui.
