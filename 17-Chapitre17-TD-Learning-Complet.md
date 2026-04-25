@@ -67,12 +67,12 @@
 |---|---|---|
 | $V(s)$ | Valeur d'un état | « À quel point cet état est-il bon ? » |
 | $Q(s,a)$ | Valeur état-action | « Faire l'action $a$ depuis $s$ est-il bon ? » |
-| $R_{t+1}$ | Récompense immédiate | Signal **observé** juste après l'action |
+| $R\_{t+1}$ | Récompense immédiate | Signal **observé** juste après l'action |
 | $\gamma \in [0,1]$ | Facteur de discount | Importance des récompenses futures (0 = myope, 1 = prévoyant) |
 | $\alpha \in [0,1]$ | Taux d'apprentissage | **Vitesse de mise à jour** — combien on tient compte du nouveau |
 | $1 - \alpha$ | Inertie | **Part de l'ancien savoir conservée** |
 | $\delta_t$ | Erreur TD | **Surprise** : différence entre cible bootstrapée et estimé courant |
-| $G_t^{(n)}$ | Retour à $n$ pas | $n$ récompenses observées + bootstrap sur $V(S_{t+n})$ |
+| $G_t^{(n)}$ | Retour à $n$ pas | $n$ récompenses observées + bootstrap sur $V(S\_{t+n})$ |
 | $G_t^{\lambda}$ | Retour λ-pondéré | Combinaison de tous les $G_t^{(n)}$ avec poids $\lambda^{n-1}$ |
 | $\pi$ | Politique | Stratégie de choix d'action ($\pi(a\|s)$) |
 
@@ -82,12 +82,12 @@
 
 ### Pour chaque méthode TD : trois écritures équivalentes
 
-> _Pour chaque méthode TD, on donne **trois formes équivalentes** :_
+> _Pour chaque méthode TD, on donne **deux formes équivalentes** :_
 > _- **(a) Forme « erreur TD »** — la plus courante en littérature : $\text{ancien} + \alpha \times (\text{cible} - \text{ancien})$_
-> _- **(b) Forme « mélange pondéré » $(1-\alpha)$** — la plus pédagogique : $(1-\alpha)\cdot \text{ancien} + \alpha\cdot \text{cible}$_
-> _- **(c) Forme annotée** — la même que (b), mais avec **les rôles explicités** sous chaque terme_
+> _- **(b) Forme « mélange pondéré » $(1-\alpha)$** — la plus pédagogique : $(1-\alpha) \cdot \text{ancien} + \alpha \cdot \text{cible}$_
 >
-> _Les trois donnent **exactement le même résultat numérique**._
+> _Les deux donnent **exactement le même résultat numérique**._
+> _Sous chaque équation, **un tableau** identifie le rôle de chaque terme._
 
 ---
 
@@ -97,15 +97,23 @@
 
 **(1a) Forme « erreur TD » :**
 
-$$V(S_t) \leftarrow V(S_t) + \alpha \left[ R_{t+1} + \gamma V(S_{t+1}) - V(S_t) \right]$$
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ R\_{t+1} + \gamma V(S\_{t+1}) - V(S_t) \right]$$
 
 **(1b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
-$$V(S_t) \leftarrow (1-\alpha) V(S_t) + \alpha \left[ R_{t+1} + \gamma V(S_{t+1}) \right]$$
+$$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot \left[ R\_{t+1} + \gamma V(S\_{t+1}) \right]$$
 
-**(1c) Forme annotée :**
+**Description des termes :**
 
-$$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \underbrace{\alpha \left[ \underbrace{R_{t+1}}_{\text{récompense observée}} + \underbrace{\gamma V(S_{t+1})}_{\text{bootstrap (estimation)}} \right]}_{\text{intégrer le nouveau}}$$
+| Terme | Rôle |
+|---|---|
+| $V(S_t)$ (côté gauche) | **Nouvelle estimation** de la valeur de l'état $S_t$ |
+| $(1-\alpha) \cdot V(S_t)$ | **Garder le passé** — part de l'ancienne valeur conservée |
+| $\alpha \cdot [\ldots]$ | **Intégrer le nouveau** — part actualisée à partir de l'expérience |
+| $R\_{t+1}$ | Récompense **observée** après l'action |
+| $\gamma V(S\_{t+1})$ | **Bootstrap** — estimation de la valeur de l'état suivant |
+| $\alpha$ | Taux d'apprentissage (vitesse de mise à jour) |
+| $\gamma$ | Facteur de discount (importance du futur) |
 
 ---
 
@@ -115,15 +123,20 @@ $$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \
 
 **(2a) Forme « erreur TD » :**
 
-$$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^{n} V(S_{t+n}) - V(S_t) \right]$$
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) - V(S_t) \right]$$
 
 **(2b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
-$$V(S_t) \leftarrow (1-\alpha) V(S_t) + \alpha \left[ \sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^{n} V(S_{t+n}) \right]$$
+$$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) \right]$$
 
-**(2c) Forme annotée :**
+**Description des termes :**
 
-$$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \underbrace{\alpha \left[ \underbrace{\sum_{k=1}^{n} \gamma^{k-1} R_{t+k}}_{n\text{ récompenses observées}} + \underbrace{\gamma^{n} V(S_{t+n})}_{\text{bootstrap final}} \right]}_{\text{intégrer le nouveau}}$$
+| Terme | Rôle |
+|---|---|
+| $(1-\alpha) \cdot V(S_t)$ | **Garder le passé** |
+| $\alpha \cdot [\ldots]$ | **Intégrer le nouveau** |
+| $\sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k}$ | **n récompenses observées** ($R\_{t+1}, R\_{t+2}, \ldots, R\_{t+n}$) pondérées par $\gamma^{k-1}$ |
+| $\gamma^{n} V(S\_{t+n})$ | **Bootstrap final** — estimation de la valeur de l'état atteint $n$ pas plus loin |
 
 ---
 
@@ -133,7 +146,9 @@ $$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \
 
 Cible λ-pondérée :
 
-$$G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{n-1} G_t^{(n)}, \quad \text{avec} \quad G_t^{(n)} = \sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^{n} V(S_{t+n})$$
+$$G_t^{\lambda} = (1-\lambda)\sum\_{n=1}^{\infty} \lambda^{n-1} G_t^{(n)}$$
+
+avec $G_t^{(n)} = \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n})$ — le retour à $n$ pas.
 
 **(3a) Forme « erreur TD » :**
 
@@ -141,11 +156,18 @@ $$V(S_t) \leftarrow V(S_t) + \alpha \left[ G_t^{\lambda} - V(S_t) \right]$$
 
 **(3b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
-$$V(S_t) \leftarrow (1-\alpha) V(S_t) + \alpha G_t^{\lambda}$$
+$$V(S_t) \leftarrow (1-\alpha) \cdot V(S_t) + \alpha \cdot G_t^{\lambda}$$
 
-**(3c) Forme annotée :**
+**Description des termes :**
 
-$$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \underbrace{\alpha G_t^{\lambda}}_{\substack{\text{intégrer le nouveau} \\ \text{(mélange de tous les horizons)}}}$$
+| Terme | Rôle |
+|---|---|
+| $\lambda \in [0,1]$ | **Coefficient de décroissance** (mémoire de l'historique) |
+| $\lambda^{n-1}$ | Poids du retour à $n$ pas |
+| $G_t^{(n)}$ | Retour à $n$ pas (cf. [Éq. (2)](#eq-tdn)) |
+| $G_t^{\lambda}$ | **Cible λ-pondérée** — combinaison de **tous** les horizons |
+| $(1-\alpha) \cdot V(S_t)$ | Garder le passé |
+| $\alpha \cdot G_t^{\lambda}$ | Intégrer le nouveau (mélange de tous les horizons) |
 
 ---
 
@@ -155,15 +177,22 @@ $$V(S_t) \leftarrow \underbrace{(1-\alpha) V(S_t)}_{\text{garder le passé}} + \
 
 **(4a) Forme « erreur TD » :**
 
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right]$$
+$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R\_{t+1} + \gamma Q(S\_{t+1}, A\_{t+1}) - Q(S_t, A_t) \right]$$
 
 **(4b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
-$$Q(S_t, A_t) \leftarrow (1-\alpha) Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) \right]$$
+$$Q(S_t, A_t) \leftarrow (1-\alpha) \cdot Q(S_t, A_t) + \alpha \cdot \left[ R\_{t+1} + \gamma Q(S\_{t+1}, A\_{t+1}) \right]$$
 
-**(4c) Forme annotée :**
+**Description des termes :**
 
-$$Q(S_t, A_t) \leftarrow \underbrace{(1-\alpha) Q(S_t, A_t)}_{\text{garder le passé}} + \underbrace{\alpha \left[ \underbrace{R_{t+1}}_{\text{récompense}} + \underbrace{\gamma Q(S_{t+1}, A_{t+1})}_{\substack{\text{action suivante} \\ \text{réellement suivie}}} \right]}_{\text{intégrer le nouveau (on-policy)}}$$
+| Terme | Rôle |
+|---|---|
+| $Q(S_t, A_t)$ | Valeur estimée du couple **(état, action)** courant |
+| $(1-\alpha) \cdot Q(S_t, A_t)$ | **Garder le passé** |
+| $\alpha \cdot [\ldots]$ | **Intégrer le nouveau** (on-policy) |
+| $R\_{t+1}$ | Récompense observée |
+| $Q(S\_{t+1}, A\_{t+1})$ | Valeur de l'**action $A\_{t+1}$ réellement suivie** par la politique courante |
+| $\gamma$ | Facteur de discount |
 
 ---
 
@@ -173,21 +202,37 @@ $$Q(S_t, A_t) \leftarrow \underbrace{(1-\alpha) Q(S_t, A_t)}_{\text{garder le pa
 
 **(5a) Forme « erreur TD » :**
 
-$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') - Q(S_t, A_t) \right]$$
+$$Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R\_{t+1} + \gamma \max\_{a'} Q(S\_{t+1}, a') - Q(S_t, A_t) \right]$$
 
 **(5b) Forme « mélange pondéré » $(1-\alpha)$ :**
 
-$$Q(S_t, A_t) \leftarrow (1-\alpha) Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') \right]$$
+$$Q(S_t, A_t) \leftarrow (1-\alpha) \cdot Q(S_t, A_t) + \alpha \cdot \left[ R\_{t+1} + \gamma \max\_{a'} Q(S\_{t+1}, a') \right]$$
 
-**(5c) Forme annotée :**
+**Description des termes :**
 
-$$Q(S_t, A_t) \leftarrow \underbrace{(1-\alpha) Q(S_t, A_t)}_{\text{garder le passé}} + \underbrace{\alpha \left[ \underbrace{R_{t+1}}_{\text{récompense}} + \underbrace{\gamma \max_{a'} Q(S_{t+1}, a')}_{\substack{\text{meilleure action} \\ \text{possible (off-policy)}}} \right]}_{\text{intégrer le nouveau}}$$
+| Terme | Rôle |
+|---|---|
+| $Q(S_t, A_t)$ | Valeur estimée du couple (état, action) courant |
+| $(1-\alpha) \cdot Q(S_t, A_t)$ | **Garder le passé** |
+| $\alpha \cdot [\ldots]$ | **Intégrer le nouveau** (off-policy) |
+| $R\_{t+1}$ | Récompense observée |
+| $\max\_{a'} Q(S\_{t+1}, a')$ | Valeur de la **meilleure action possible** dans $S\_{t+1}$ — *même si l'agent ne la prend pas réellement* |
+| $\gamma$ | Facteur de discount |
 
 ---
 
 ### Lecture en image — α et 1−α côte à côte
 
-$$Q(s,a) \;\leftarrow\; \underbrace{(1-\alpha) Q(s,a)}_{\text{ancien savoir conservé}} \;+\; \underbrace{\alpha \cdot \text{cible}}_{\text{nouveau intégré}}$$
+Toutes les méthodes TD partagent la **même structure de mise à jour** :
+
+$$Q(s,a) \leftarrow (1-\alpha) \cdot Q(s,a) + \alpha \cdot \text{cible}$$
+
+| Bloc | Lecture |
+|---|---|
+| $(1-\alpha) \cdot Q(s,a)$ | **Ancien savoir conservé** |
+| $\alpha \cdot \text{cible}$ | **Nouveau intégré** |
+
+(La même structure tient pour $V(s)$ : remplacer $Q(s,a)$ par $V(s)$.)
 
 | α | $1-\alpha$ | Effet |
 |---|---|---|
@@ -209,25 +254,25 @@ $$Q(s,a) \;\leftarrow\; \underbrace{(1-\alpha) Q(s,a)}_{\text{ancien savoir cons
 
 **Éq. (6)** — Bellman pour $V^{\pi}$
 
-$$V^{\pi}(s) = \mathbb{E}_{\pi}\left[ R_{t+1} + \gamma V^{\pi}(S_{t+1}) \mid S_t = s \right]$$
+$$V^{\pi}(s) = \mathbb{E}\_{\pi}\left[ R\_{t+1} + \gamma V^{\pi}(S\_{t+1}) \mid S\_t = s \right]$$
 
 <a id="eq-bellman-q-pi"></a>
 
 **Éq. (7)** — Bellman pour $Q^{\pi}$
 
-$$Q^{\pi}(s,a) = \mathbb{E}_{\pi}\left[ R_{t+1} + \gamma Q^{\pi}(S_{t+1}, A_{t+1}) \mid S_t = s, A_t = a \right]$$
+$$Q^{\pi}(s,a) = \mathbb{E}\_{\pi}\left[ R\_{t+1} + \gamma Q^{\pi}(S\_{t+1}, A\_{t+1}) \mid S\_t = s, A\_t = a \right]$$
 
 <a id="eq-bellman-v-star"></a>
 
 **Éq. (8)** — Bellman optimalité pour $V^{\ast}$
 
-$$V^{\ast}(s) = \max_a \mathbb{E}\left[ R_{t+1} + \gamma V^{\ast}(S_{t+1}) \mid S_t = s, A_t = a \right]$$
+$$V^{\ast}(s) = \max\_a \mathbb{E}\left[ R\_{t+1} + \gamma V^{\ast}(S\_{t+1}) \mid S\_t = s, A\_t = a \right]$$
 
 <a id="eq-bellman-q-star"></a>
 
 **Éq. (9)** — Bellman optimalité pour $Q^{\ast}$
 
-$$Q^{\ast}(s,a) = \mathbb{E}\left[ R_{t+1} + \gamma \max_{a'} Q^{\ast}(S_{t+1}, a') \mid S_t = s, A_t = a \right]$$
+$$Q^{\ast}(s,a) = \mathbb{E}\left[ R\_{t+1} + \gamma \max\_{a'} Q^{\ast}(S\_{t+1}, a') \mid S\_t = s, A\_t = a \right]$$
 
 > _Lecture intuitive Bellman :_ « **valeur d'aujourd'hui = récompense immédiate attendue + valeur actualisée de l'état suivant** »
 
@@ -269,7 +314,7 @@ Le TD-Learning permet :
 ```mermaid
 flowchart LR
     A["Agent"] -->|"Action a_t"| ENV["Environnement"]
-    ENV -->|"r_{t+1}, s_{t+1}"| A
+    ENV -->|"r_t+1, s_t+1"| A
     A -->|"Mise à jour immédiate de V(s) ou Q(s,a)"| A
     style A fill:#2563eb,color:#fff
     style ENV fill:#9333ea,color:#fff
@@ -306,10 +351,10 @@ flowchart LR
 |---|---|---|
 | $V(s)$ | Valeur d'un état | « À quel point cet état est-il bon ? » |
 | $Q(s,a)$ | Valeur état-action | « À quel point faire l'action $a$ depuis $s$ est-il bon ? » |
-| $R_{t+1}$ | Récompense immédiate | Signal reçu juste après l'action |
+| $R\_{t+1}$ | Récompense immédiate | Signal reçu juste après l'action |
 | $\alpha \in [0,1]$ | Taux d'apprentissage | Vitesse de mise à jour (gros = on apprend vite, petit = on est prudent) |
 | $\gamma \in [0,1]$ | Facteur de discount | Importance des récompenses futures (myope vs prévoyant) |
-| **Bootstrap** | Auto-référence | On utilise une **estimation** (ex. $V(S_{t+1})$) à l'intérieur d'une mise à jour, au lieu d'attendre la vraie observation finale |
+| **Bootstrap** | Auto-référence | On utilise une **estimation** (ex. $V(S\_{t+1})$) à l'intérieur d'une mise à jour, au lieu d'attendre la vraie observation finale |
 
 ---
 
@@ -317,12 +362,20 @@ flowchart LR
 
 L'**erreur TD** mesure la **surprise** entre ce que l'agent croyait et ce qu'il observe maintenant :
 
-$$\delta_t = \underbrace{R_{t+1} + \gamma  V(S_{t+1})}_{\text{cible bootstrapée}} - \underbrace{V(S_t)}_{\text{estimé courant}}$$
+$$\delta_t = \big[\, R\_{t+1} + \gamma V(S\_{t+1}) \,\big] - V(S_t)$$
+
+| Terme | Sens |
+|---|---|
+| $R\_{t+1} + \gamma V(S\_{t+1})$ | **Cible bootstrapée** : récompense observée + estimation de la valeur future |
+| $V(S_t)$ | **Estimé courant** : ce que l'agent croyait avant d'agir |
+| $\delta_t$ | **Erreur TD** : différence entre les deux (la « surprise ») |
+
+> _Voir aussi **(→ [Éq. (1a)](#eq-td0))** : $V(S_t) \leftarrow V(S_t) + \alpha\, \delta_t$ — la mise à jour TD(0) est juste un pas dans la direction de l'erreur._
 
 ```mermaid
 flowchart LR
     EST["V(S_t) attendu"] -->|"comparaison"| DELTA["delta_t (erreur TD)"]
-    OBS["r + gamma * V(S_{t+1}) observé"] -->|"comparaison"| DELTA
+    OBS["r + gamma * V(S_t+1) observé"] -->|"comparaison"| DELTA
     DELTA -->|"corrige V(S_t)"| EST
     style DELTA fill:#16a34a,color:#fff
 ```
@@ -348,14 +401,14 @@ flowchart LR
 
 C'est la version la plus simple du TD-Learning. **(→ [Éq. 1](#eq-td0))**
 
-$$V(S_t) \leftarrow V(S_t) + \alpha \left[ R_{t+1} + \gamma  V(S_{t+1}) - V(S_t) \right]$$
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ R\_{t+1} + \gamma  V(S\_{t+1}) - V(S_t) \right]$$
 
 > _Le « 0 » dans **TD(0)** signifie qu'on ne regarde **qu'un seul pas** dans le futur : l'état suivant et la récompense immédiate, pas plus loin._
 
 ```mermaid
 flowchart LR
-    S["S_t"] -->|"action a_t"| S1["S_{t+1}"]
-    S1 -->|"r_{t+1}"| UP["Mise à jour de V(S_t)<br/>avec V(S_{t+1})"]
+    S["S_t"] -->|"action a_t"| S1["S_t+1"]
+    S1 -->|"r_t+1"| UP["Mise à jour de V(S_t)<br/>avec V(S_t+1)"]
     style UP fill:#2563eb,color:#fff
 ```
 
@@ -365,7 +418,7 @@ flowchart LR
 
 La même équation peut s'écrire de manière plus parlante :
 
-$$V(S_t) \leftarrow (1-\alpha)  V(S_t) + \alpha \left[ R_{t+1} + \gamma  V(S_{t+1}) \right]$$
+$$V(S_t) \leftarrow (1-\alpha)  V(S_t) + \alpha \left[ R\_{t+1} + \gamma  V(S\_{t+1}) \right]$$
 
 | α | (1 − α) | Lecture intuitive |
 |---|---|---|
@@ -403,7 +456,13 @@ Au lieu de regarder un seul pas comme TD(0), on peut accumuler **n récompenses 
 
 **Forme générale (→ [Éq. 2](#eq-tdn)) :**
 
-$$V(S_t) \leftarrow V(S_t) + \alpha \left[ \underbrace{\sum_{k=1}^{n} \gamma^{k-1}  R_{t+k}}_{\text{récompenses observées}} + \underbrace{\gamma^{n}  V(S_{t+n})}_{\text{bootstrap final}} - V(S_t) \right]$$
+$$V(S_t) \leftarrow V(S_t) + \alpha \left[ \sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^{n} V(S\_{t+n}) - V(S_t) \right]$$
+
+| Bloc de l'équation | Lecture |
+|---|---|
+| $\sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k}$ | $n$ **récompenses observées** ($R\_{t+1}, R\_{t+2}, \ldots, R\_{t+n}$) — partie réelle |
+| $\gamma^{n} V(S\_{t+n})$ | **Bootstrap final** — estimation à partir de l'état atteint $n$ pas plus loin |
+| $V(S_t)$ (à droite, dans le crochet) | Estimé courant qu'on cherche à corriger |
 
 ---
 
@@ -492,7 +551,7 @@ Exemple — TD(λ = 0,3) :
 
 L'idée de TD(λ) est de **combiner** plusieurs horizons (1 pas, 2 pas, 3 pas, …) en un seul retour, avec des poids qui décroissent géométriquement selon λ. **(→ [Éq. 3](#eq-tdlambda))**
 
-$$G_t^{\lambda} = (1-\lambda)\sum_{n=1}^{\infty} \lambda^{ n-1}  G_t^{(n)}$$
+$$G_t^{\lambda} = (1-\lambda)\sum\_{n=1}^{\infty} \lambda^{ n-1}  G_t^{(n)}$$
 
 > _On ne choisit **pas** un seul $n$ : on les **mélange tous**, avec une importance qui décroît._
 
@@ -663,7 +722,7 @@ flowchart LR
 
 **SARSA est on-policy : il apprend la valeur de la politique *vraiment* suivie, exploration ε comprise.**
 
-> _Si la politique est ε-greedy avec ε = 0,1, SARSA estime $Q^{\pi_{\varepsilon}}$ — pas $Q^*$. C'est plus **prudent** mais aussi plus **fidèle** au comportement réel._
+> _Si la politique est ε-greedy avec ε = 0,1, SARSA estime $Q^{\pi\_{\varepsilon}}$ — pas $Q^*$. C'est plus **prudent** mais aussi plus **fidèle** au comportement réel._
 
 ---
 
@@ -714,7 +773,7 @@ $$\delta = \text{cible} - Q(s,a) = 0{,}8 - 5{,}0 = -4{,}2$$
 
 $$Q(s, a) \leftarrow 5{,}0 + 0{,}1 \times (-4{,}2) = \mathbf{4{,}58}$$
 
-> _Comparaison : si on avait fait du Q-Learning ici, on aurait pris $\max_{a'} Q(s', a') = 7{,}0$ (sud) au lieu de $2{,}0$ (est). La cible aurait été $-1 + 0{,}9 \times 7{,}0 = 5{,}3$, et la mise à jour donnerait $Q(s,a) \leftarrow 5{,}03$. **Q-Learning est plus optimiste** parce qu'il suppose qu'on aurait pris la **meilleure** action ensuite._
+> _Comparaison : si on avait fait du Q-Learning ici, on aurait pris $\max\_{a'} Q(s', a') = 7{,}0$ (sud) au lieu de $2{,}0$ (est). La cible aurait été $-1 + 0{,}9 \times 7{,}0 = 5{,}3$, et la mise à jour donnerait $Q(s,a) \leftarrow 5{,}03$. **Q-Learning est plus optimiste** parce qu'il suppose qu'on aurait pris la **meilleure** action ensuite._
 
 ---
 
@@ -736,9 +795,9 @@ $$Q(s, a) \leftarrow 5{,}0 + 0{,}1 \times (-4{,}2) = \mathbf{4{,}58}$$
 
 **(→ [Éq. 5](#eq-qlearning))**
 
-$$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right]$$
+$$Q(s, a) \leftarrow Q(s, a) + \alpha \left[ r + \gamma \max\_{a'} Q(s', a') - Q(s, a) \right]$$
 
-> _Q-Learning utilise $\max_{a'} Q(s', a')$ : il met à jour **comme si** l'agent allait toujours choisir la **meilleure** action ensuite, **même si** dans la réalité il explore (ε-greedy)._
+> _Q-Learning utilise $\max\_{a'} Q(s', a')$ : il met à jour **comme si** l'agent allait toujours choisir la **meilleure** action ensuite, **même si** dans la réalité il explore (ε-greedy)._
 
 ```mermaid
 flowchart LR
@@ -751,7 +810,7 @@ flowchart LR
 
 #### Différence clé en une ligne
 
-$$\boxed{\;\text{SARSA}: r + \gamma  Q(s', \mathbf{a'_{\text{suivie}}}) \quad\text{vs}\quad \text{Q-Learning}: r + \gamma \max_{a'} Q(s', a')\;}$$
+$$\boxed{\;\text{SARSA}: r + \gamma  Q(s', \mathbf{a'\_{\text{suivie}}}) \quad\text{vs}\quad \text{Q-Learning}: r + \gamma \max\_{a'} Q(s', a')\;}$$
 
 ---
 
@@ -789,7 +848,7 @@ flowchart LR
 
 #### Pourquoi cette différence ?
 
-- **Q-Learning** met à jour avec $\max_{a'} Q(s', a')$ — donc **« je suppose que je joue parfaitement la suite »**. Il ignore que sa propre politique d'exploration le fera tomber 10 % du temps.
+- **Q-Learning** met à jour avec $\max\_{a'} Q(s', a')$ — donc **« je suppose que je joue parfaitement la suite »**. Il ignore que sa propre politique d'exploration le fera tomber 10 % du temps.
 - **SARSA** met à jour avec $Q(s', a')$ — l'action **vraiment** prise, qui inclut le risque de chute aléatoire. Il **internalise** le coût de l'exploration et apprend une politique **prudente**.
 
 > _Moralité industrielle :_
@@ -803,10 +862,10 @@ flowchart LR
 | Méthode | Met à jour | Politique | Action utilisée pour bootstraper | Forme |
 |---|---|---|---|---|
 | **TD(0)** | $V(s)$ | (évaluation) | aucune (pas de choix d'action) | $V(s) \leftarrow V(s) + \alpha[r + \gamma V(s') - V(s)]$ |
-| **TD(n)** | $V(s)$ | (évaluation) | aucune | $V(s) \leftarrow V(s) + \alpha[\sum \gamma^{k-1} r_{t+k} + \gamma^n V(s_{t+n}) - V(s)]$ |
+| **TD(n)** | $V(s)$ | (évaluation) | aucune | $V(s) \leftarrow V(s) + \alpha[\sum \gamma^{k-1} r\_{t+k} + \gamma^n V(s\_{t+n}) - V(s)]$ |
 | **TD(λ)** | $V(s)$ | (évaluation) | combinaison de tous les horizons | $V(s) \leftarrow V(s) + \alpha[G_t^{\lambda} - V(s)]$ |
-| **SARSA** | $Q(s,a)$ | **on-policy** | $A_{t+1}$ **réellement suivie** | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s', a') - Q(s,a)]$ |
-| **Q-Learning** | $Q(s,a)$ | **off-policy** | $\arg\max_{a'} Q(s', a')$ | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma \max_{a'} Q(s', a') - Q(s,a)]$ |
+| **SARSA** | $Q(s,a)$ | **on-policy** | $A\_{t+1}$ **réellement suivie** | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s', a') - Q(s,a)]$ |
+| **Q-Learning** | $Q(s,a)$ | **off-policy** | $\arg\max\_{a'} Q(s', a')$ | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma \max\_{a'} Q(s', a') - Q(s,a)]$ |
 
 </details>
 
@@ -831,11 +890,11 @@ flowchart LR
 
 **(→ [Éq. 6](#eq-bellman-v-pi))**
 
-$$V^{\pi}(s) = \mathbb{E}_{\pi}\left[ R_{t+1} + \gamma V^{\pi}(S_{t+1}) \mid S_t = s \right]$$
+$$V^{\pi}(s) = \mathbb{E}\_{\pi}\left[ R\_{t+1} + \gamma V^{\pi}(S\_{t+1}) \mid S\_t = s \right]$$
 
 **(→ [Éq. 7](#eq-bellman-q-pi))**
 
-$$Q^{\pi}(s,a) = \mathbb{E}_{\pi}\left[ R_{t+1} + \gamma Q^{\pi}(S_{t+1}, A_{t+1}) \mid S_t = s, A_t = a \right]$$
+$$Q^{\pi}(s,a) = \mathbb{E}\_{\pi}\left[ R\_{t+1} + \gamma Q^{\pi}(S\_{t+1}, A\_{t+1}) \mid S\_t = s, A\_t = a \right]$$
 
 > _Lecture intuitive :_
 > _« Un bon investissement = ce qu'il rapporte un peu maintenant + ce qu'il rapportera encore plus à l'avenir. »_
@@ -848,11 +907,11 @@ Quand on cherche **la meilleure politique**, on prend le `max` sur les actions :
 
 **(→ [Éq. 8](#eq-bellman-v-star))**
 
-$$V^{\ast}(s) = \max_a \mathbb{E}\left[ R_{t+1} + \gamma V^{\ast}(S_{t+1}) \mid S_t = s, A_t = a \right]$$
+$$V^{\ast}(s) = \max\_a \mathbb{E}\left[ R\_{t+1} + \gamma V^{\ast}(S\_{t+1}) \mid S\_t = s, A\_t = a \right]$$
 
 **(→ [Éq. 9](#eq-bellman-q-star))**
 
-$$Q^{\ast}(s,a) = \mathbb{E}\left[ R_{t+1} + \gamma \max_{a'} Q^{\ast}(S_{t+1}, a') \mid S_t = s, A_t = a \right]$$
+$$Q^{\ast}(s,a) = \mathbb{E}\left[ R\_{t+1} + \gamma \max\_{a'} Q^{\ast}(S\_{t+1}, a') \mid S\_t = s, A\_t = a \right]$$
 
 > ⚠️ **Bellman exact ↔ programmation dynamique :** ces équations supposent qu'on **connaît** $P(s'|s,a)$ et $R(s,a)$. Elles sont la base de **Value Iteration / Policy Iteration**.
 
@@ -862,9 +921,9 @@ $$Q^{\ast}(s,a) = \mathbb{E}\left[ R_{t+1} + \gamma \max_{a'} Q^{\ast}(S_{t+1}, 
 
 | Bellman (théorie) | Méthode empirique correspondante |
 |---|---|
-| $V^{\pi}(s) = \mathbb{E}_{\pi}[R + \gamma V^{\pi}(s')]$ | **TD(0)** — on remplace l'espérance par un **échantillon** + bootstrap |
-| $Q^{\pi}(s,a) = \mathbb{E}_{\pi}[R + \gamma Q^{\pi}(s', a')]$ | **SARSA** — on échantillonne l'action $a'$ réellement suivie |
-| $Q^{\ast}(s,a) = \mathbb{E}[R + \gamma \max_{a'} Q^{\ast}(s', a')]$ | **Q-Learning** — on échantillonne et on prend le `max` |
+| $V^{\pi}(s) = \mathbb{E}\_{\pi}[R + \gamma V^{\pi}(s')]$ | **TD(0)** — on remplace l'espérance par un **échantillon** + bootstrap |
+| $Q^{\pi}(s,a) = \mathbb{E}\_{\pi}[R + \gamma Q^{\pi}(s', a')]$ | **SARSA** — on échantillonne l'action $a'$ réellement suivie |
+| $Q^{\ast}(s,a) = \mathbb{E}[R + \gamma \max\_{a'} Q^{\ast}(s', a')]$ | **Q-Learning** — on échantillonne et on prend le `max` |
 
 > _En une phrase : **TD = Bellman appliqué à l'expérience**, sans connaître le modèle._
 
@@ -906,7 +965,7 @@ $$V(s_1) \leftarrow V(s_1) + \alpha \cdot \delta_t = 10 + 0{,}1 \times 13 = \mat
 
 **Données :**
 
-$$V(s_t) = 5{,}0 \;;\; V(s_{t+1}) = 7{,}0 \;;\; R_{t+1} = 2{,}0 \;;\; \gamma = 0{,}9 \;;\; \alpha = 0{,}1$$
+$$V(s_t) = 5{,}0 \;;\; V(s\_{t+1}) = 7{,}0 \;;\; R\_{t+1} = 2{,}0 \;;\; \gamma = 0{,}9 \;;\; \alpha = 0{,}1$$
 
 #### Hypothèse — retour Monte Carlo observé $G_t = 15{,}0$
 
@@ -916,16 +975,16 @@ $$V(s_t) \leftarrow 5{,}0 + 0{,}1 \times (15{,}0 - 5{,}0) = 5{,}0 + 1{,}0 = \mat
 
 #### TD(1) — bootstrap
 
-$$\text{cible}_{TD(1)} = R_{t+1} + \gamma  V(s_{t+1}) = 2{,}0 + 0{,}9 \times 7{,}0 = 8{,}3$$
+$$\text{cible}\_{TD(1)} = R\_{t+1} + \gamma  V(s\_{t+1}) = 2{,}0 + 0{,}9 \times 7{,}0 = 8{,}3$$
 
 $$V(s_t) \leftarrow 5{,}0 + 0{,}1 \times (8{,}3 - 5{,}0) = 5{,}0 + 0{,}33 = \mathbf{5{,}33}$$
 
-> _La cible 8,3 utilise **l'estimation** $V(s_{t+1}) = 7{,}0$ : c'est précisément **du bootstrap**._
+> _La cible 8,3 utilise **l'estimation** $V(s\_{t+1}) = 7{,}0$ : c'est précisément **du bootstrap**._
 
 | Méthode | Cible | $V(s_t)$ après mise à jour |
 |---|---|---|
 | Monte Carlo | $G_t = 15{,}0$ (récompenses réelles uniquement) | **6,0** |
-| TD(1) | $R + \gamma V(s_{t+1}) = 8{,}3$ (bootstrap) | **5,33** |
+| TD(1) | $R + \gamma V(s\_{t+1}) = 8{,}3$ (bootstrap) | **5,33** |
 
 ---
 
@@ -934,13 +993,13 @@ $$V(s_t) \leftarrow 5{,}0 + 0{,}1 \times (8{,}3 - 5{,}0) = 5{,}0 + 0{,}33 = \mat
 **Données :**
 
 - $Q(s_t, a_t) = 10$
-- $R_{t+1} = 4$
-- $\max_{a'} Q(s_{t+1}, a') = 20$
+- $R\_{t+1} = 4$
+- $\max\_{a'} Q(s\_{t+1}, a') = 20$
 - $\alpha = 0{,}1$, $\gamma = 0{,}9$
 
 **Forme « mélange pondéré » :**
 
-$$Q(s_t, a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(s_{t+1}, a') \right]$$
+$$Q(s_t, a_t) \leftarrow (1-\alpha) Q(s_t, a_t) + \alpha \left[ R\_{t+1} + \gamma \max\_{a'} Q(s\_{t+1}, a') \right]$$
 
 $$Q(s_t, a_t) \leftarrow 0{,}9 \times 10 + 0{,}1 \times (4 + 0{,}9 \times 20) = 9 + 0{,}1 \times 22 = 9 + 2{,}2 = \mathbf{11{,}2}$$
 
@@ -966,24 +1025,24 @@ Dans **certains documents** (notamment les annexes-équations utilisées dans ce
 
 | Notation | Cible utilisée |
 |---|---|
-| **TD(0)** (convention « bootstrap pur ») | $\gamma  V(S_{t+1})$ — **sans** $R_{t+1}$ |
-| **TD(1)** | $R_{t+1} + \gamma  V(S_{t+1})$ — **avec** $R_{t+1}$ |
-| **TD(n)** | $\sum_{k=1}^{n} \gamma^{k-1} R_{t+k} + \gamma^n V(S_{t+n})$ |
+| **TD(0)** (convention « bootstrap pur ») | $\gamma  V(S\_{t+1})$ — **sans** $R\_{t+1}$ |
+| **TD(1)** | $R\_{t+1} + \gamma  V(S\_{t+1})$ — **avec** $R\_{t+1}$ |
+| **TD(n)** | $\sum\_{k=1}^{n} \gamma^{k-1} R\_{t+k} + \gamma^n V(S\_{t+n})$ |
 
 Soit l'équation TD(0) **alternative** :
 
-$$V(S_t) \leftarrow (1-\alpha)  V(S_t) + \alpha  \gamma  V(S_{t+1})$$
+$$V(S_t) \leftarrow (1-\alpha)  V(S_t) + \alpha  \gamma  V(S\_{t+1})$$
 
 > _Cette convention met l'accent sur le **bootstrap pur** (« on n'utilise que l'estimation de l'état suivant »). Elle est utile pour expliquer ce qu'est **vraiment** le bootstrap._
 
 ⚠️ **Convention « standard » Sutton & Barto** (la plus répandue dans la littérature) :
 
-$$\textbf{TD(0)}  :\; V(S_t) \leftarrow V(S_t) + \alpha [R_{t+1} + \gamma V(S_{t+1}) - V(S_t)]$$
+$$\textbf{TD(0)}  :\; V(S_t) \leftarrow V(S_t) + \alpha [R\_{t+1} + \gamma V(S\_{t+1}) - V(S_t)]$$
 
 Dans cette convention :
 
-- TD(0) **inclut déjà** $R_{t+1}$.
-- TD(n) regarde **n+1** récompenses ($R_{t+1}, \ldots, R_{t+n}$) et bootstrap sur $V(S_{t+n})$.
+- TD(0) **inclut déjà** $R\_{t+1}$.
+- TD(n) regarde **n+1** récompenses ($R\_{t+1}, \ldots, R\_{t+n}$) et bootstrap sur $V(S\_{t+n})$.
 
 ---
 
@@ -991,9 +1050,9 @@ Dans cette convention :
 
 | | Convention « cours / PDFs » | Convention « Sutton & Barto » |
 |---|---|---|
-| TD(0) | $\gamma V(S_{t+1})$ (bootstrap pur) | $R_{t+1} + \gamma V(S_{t+1})$ |
-| TD(1) | $R_{t+1} + \gamma V(S_{t+1})$ | $R_{t+1} + \gamma R_{t+2} + \gamma^2 V(S_{t+2})$ |
-| TD(2) | $R_{t+1} + \gamma R_{t+2} + \gamma^2 V(S_{t+2})$ | $R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \gamma^3 V(S_{t+3})$ |
+| TD(0) | $\gamma V(S\_{t+1})$ (bootstrap pur) | $R\_{t+1} + \gamma V(S\_{t+1})$ |
+| TD(1) | $R\_{t+1} + \gamma V(S\_{t+1})$ | $R\_{t+1} + \gamma R\_{t+2} + \gamma^2 V(S\_{t+2})$ |
+| TD(2) | $R\_{t+1} + \gamma R\_{t+2} + \gamma^2 V(S\_{t+2})$ | $R\_{t+1} + \gamma R\_{t+2} + \gamma^2 R\_{t+3} + \gamma^3 V(S\_{t+3})$ |
 
 > 💡 **Règle pratique :** le sens **général** ne change pas — plus le numéro grandit, plus on regarde loin. **Vérifie toujours la définition** de l'auteur avant de comparer des résultats.
 
@@ -1312,7 +1371,7 @@ d) λ doit valoir 0 dans ce cas
 **Q5.** **SARSA** est dit **on-policy** parce que :
 
 a) Il apprend toujours la politique optimale, peu importe l'exploration
-b) **La mise à jour utilise l'action $A_{t+1}$ réellement effectuée selon la politique en cours**
+b) **La mise à jour utilise l'action $A\_{t+1}$ réellement effectuée selon la politique en cours**
 c) Il n'utilise pas de γ
 d) Il est équivalent à TD(0)
 
@@ -1321,7 +1380,7 @@ d) Il est équivalent à TD(0)
 **Q6.** **Q-Learning** est dit **off-policy** parce que :
 
 a) Il ne met jamais à jour Q
-b) **La cible utilise $\max_{a'} Q(s', a')$ — l'action optimale, pas celle réellement suivie**
+b) **La cible utilise $\max\_{a'} Q(s', a')$ — l'action optimale, pas celle réellement suivie**
 c) Il ne dépend pas de l'environnement
 d) α doit être égal à 1
 
