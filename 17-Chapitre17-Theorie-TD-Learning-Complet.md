@@ -1789,46 +1789,46 @@ flowchart LR
 
 **Q1.** Que signifie le « 0 » dans **TD(0)** ?
 
-a) On ne regarde aucune récompense future
-b) **On regarde un seul pas dans le futur (récompense + état suivant)**
-c) Le taux d'apprentissage α vaut 0
-d) Le facteur γ vaut 0
+a) On ne regarde aucune récompense future <br/>
+b) On regarde un seul pas dans le futur (récompense + état suivant) <br/>
+c) Le taux d'apprentissage α vaut 0 <br/>
+d) Le facteur γ vaut 0 <br/>
 
 ---
 
 **Q2.** Avec la forme $V(s) \leftarrow (1-\alpha) V(s) + \alpha [r + \gamma V(s')]$, si α = 0,1 :
 
-a) On garde 10 % de l'ancienne valeur
-b) **On garde 90 % de l'ancienne valeur, on apprend 10 % du nouveau**
-c) On apprend 100 % du nouveau
-d) On ne fait aucune mise à jour
+a) On garde 10 % de l'ancienne valeur <br/>
+b) On garde 90 % de l'ancienne valeur, on apprend 10 % du nouveau <br/>
+c) On apprend 100 % du nouveau <br/>
+d) On ne fait aucune mise à jour <br/>
 
 ---
 
 **Q3.** TD(0) **vs** Monte Carlo : quelle affirmation est **vraie** ?
 
-a) Monte Carlo met à jour à chaque pas, TD(0) à la fin de l'épisode
-b) **TD(0) met à jour à chaque pas, Monte Carlo attend la fin de l'épisode**
-c) Les deux nécessitent un modèle complet de l'environnement
-d) Aucune des deux n'utilise de récompense
+a) Monte Carlo met à jour à chaque pas, TD(0) à la fin de l'épisode <br/>
+b) TD(0) met à jour à chaque pas, Monte Carlo attend la fin de l'épisode <br/>
+c) Les deux nécessitent un modèle complet de l'environnement <br/>
+d) Aucune des deux n'utilise de récompense <br/>
 
 ---
 
 **Q4.** TD(n) avec un **n grand** :
 
-a) Se rapproche de TD(0)
-b) **Se rapproche de Monte Carlo**
-c) Annule l'effet de γ
-d) N'utilise plus de bootstrap **et** ignore les récompenses
+a) Se rapproche de TD(0) <br/>
+b) Se rapproche de Monte Carlo <br/>
+c) Annule l'effet de γ <br/>
+d) N'utilise plus de bootstrap et ignore les récompenses <br/>
 
 ---
 
 **Q5.** Le terme **bootstrap** dans TD signifie :
 
-a) Démarrer l'environnement
-b) **Utiliser une estimation actuelle (V ou Q) à l'intérieur d'une mise à jour**
-c) Ré-échantillonner les transitions
-d) Choisir aléatoirement les actions
+a) Démarrer l'environnement <br/>
+b) Utiliser une estimation actuelle (V ou Q) à l'intérieur d'une mise à jour <br/>
+c) Ré-échantillonner les transitions <br/>
+d) Choisir aléatoirement les actions <br/>
 
 </details>
 
@@ -1845,82 +1845,82 @@ d) Choisir aléatoirement les actions
 
 **Q1.** Dans **TD(λ)**, le paramètre λ est :
 
-a) Un nombre entier de pas
-b) **Un coefficient réel entre 0 et 1 qui contrôle la décroissance**
-c) Le taux d'apprentissage
-d) Le facteur de discount
+a) Un nombre entier de pas <br/>
+b) Un coefficient réel entre 0 et 1 qui contrôle la décroissance <br/>
+c) Le taux d'apprentissage <br/>
+d) Le facteur de discount <br/>
 
 ---
 
 **Q2.** **TD(0,3)** signifie :
 
-a) On regarde 3 pas dans le futur
-b) **λ = 0,3 → on combine tous les pas avec des poids décroissants 1, 0,3, 0,3², …**
-c) Le taux d'apprentissage est 0,3
-d) On ignore les 3 premiers pas
+a) On regarde 3 pas dans le futur <br/>
+b) λ = 0,3 → on combine tous les pas avec des poids décroissants 1, 0,3, 0,3², … <br/>
+c) Le taux d'apprentissage est 0,3 <br/>
+d) On ignore les 3 premiers pas <br/>
 
 ---
 
 **Q3.** Quand λ → 1, le comportement de TD(λ) :
 
-a) Devient identique à TD(0)
-b) **Se rapproche d'une mise à jour de type Monte Carlo**
-c) Cesse d'apprendre
-d) Force ε = 0
+a) Devient identique à TD(0) <br/>
+b) Se rapproche d'une mise à jour de type Monte Carlo <br/>
+c) Cesse d'apprendre <br/>
+d) Force ε = 0 <br/>
 
 ---
 
 **Q4.** L'analogie « semaine saine + McDo hier » illustre que :
 
-a) TD(0) est plus réaliste que TD(λ) pour ce cas
-b) **TD(λ) lisse le jugement en tenant compte des jours précédents, TD(0) sur-réagit au dernier jour**
-c) Les deux méthodes donnent toujours le même résultat
-d) λ doit valoir 0 dans ce cas
+a) TD(0) est plus réaliste que TD(λ) pour ce cas <br/>
+b) TD(λ) lisse le jugement en tenant compte des jours précédents, TD(0) sur-réagit au dernier jour <br/>
+c) Les deux méthodes donnent toujours le même résultat <br/>
+d) λ doit valoir 0 dans ce cas <br/>
 
 ---
 
 **Q5.** **SARSA** est dit **on-policy** parce que :
 
-a) Il apprend toujours la politique optimale, peu importe l'exploration
-b) **La mise à jour utilise l'action $A\_{t+1}$ réellement effectuée selon la politique en cours**
-c) Il n'utilise pas de γ
-d) Il est équivalent à TD(0)
+a) Il apprend toujours la politique optimale, peu importe l'exploration <br/>
+b) La mise à jour utilise l'action $A\_{t+1}$ réellement effectuée selon la politique en cours <br/>
+c) Il n'utilise pas de γ <br/>
+d) Il est équivalent à TD(0) <br/>
 
 ---
 
 **Q6.** **Q-Learning** est dit **off-policy** parce que :
 
-a) Il ne met jamais à jour Q
-b) **La cible utilise $\max\_{a'} Q(s', a')$ — l'action optimale, pas celle réellement suivie**
-c) Il ne dépend pas de l'environnement
-d) α doit être égal à 1
+a) Il ne met jamais à jour Q <br/>
+b) La cible utilise $\max\_{a'} Q(s', a')$ — l'action optimale, pas celle réellement suivie <br/>
+c) Il ne dépend pas de l'environnement <br/>
+d) α doit être égal à 1 <br/>
 
 ---
 
 **Q7.** Quel domaine industriel relève typiquement d'un comportement **TD(0)** ?
 
-a) Backtesting d'une stratégie sur 10 ans
-b) **Système IDS/IPS qui bloque un paquet malveillant en temps réel**
-c) Audit de fraude à la fin du trimestre
-d) Critique d'un film après l'avoir vu en entier
+a) Backtesting d'une stratégie sur 10 ans <br/>
+b) Système IDS/IPS qui bloque un paquet malveillant en temps réel <br/>
+c) Audit de fraude à la fin du trimestre <br/>
+d) Critique d'un film après l'avoir vu en entier <br/>
 
 ---
 
 **Q8.** Pourquoi utiliser **SARSA** plutôt que Q-Learning sur un **cobot industriel** ?
 
-a) SARSA est plus rapide
-b) **SARSA apprend la politique réellement suivie → on évite d'apprendre des comportements optimaux mais dangereux**
-c) Q-Learning n'utilise pas γ
-d) SARSA n'utilise pas de récompense
+a) SARSA est plus rapide <br/>
+b) SARSA apprend la politique réellement suivie → on évite d'apprendre des comportements optimaux mais dangereux <br/>
+c) Q-Learning n'utilise pas γ <br/>
+d) SARSA n'utilise pas de récompense <br/>
 
 ---
 
 **Q9.** Une équipe **forensic** qui analyse 6 mois de logs après un incident utilise une logique :
 
-a) TD(0)
-b) TD(1)
-c) **Monte Carlo (analyse complète après la séquence)**
-d) Bellman exact
+a) TD(0) <br/>
+b) TD(1) <br/>
+c) Monte Carlo (analyse complète après la séquence) <br/>
+d) Bellman exact <br/>
 
 </details>
 
