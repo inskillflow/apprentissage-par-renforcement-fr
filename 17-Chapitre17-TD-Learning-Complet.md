@@ -55,7 +55,16 @@
 | 14 | [Quiz 1 — TD(0) et TD(n)](#section-14) |
 | 15 | [Quiz 2 — TD(λ), SARSA / Q-Learning et applications](#section-15) |
 | 16 | [Travail à réaliser — Activité TP](#section-16) |
-| 17 | [Synthèse du chapitre](#section-17) |
+| 17 | [Pratiques sur Colab — Code Python prêt à l'emploi](#section-17) |
+| 17a | &nbsp;&nbsp;&nbsp;↳ [Setup — Installer les dépendances](#section-17) |
+| 17b | &nbsp;&nbsp;&nbsp;↳ [Pratique 1 — TD(0) sur GridWorld minimal](#section-17) |
+| 17c | &nbsp;&nbsp;&nbsp;↳ [Pratique 2 — TD(n) avec n variable](#section-17) |
+| 17d | &nbsp;&nbsp;&nbsp;↳ [Pratique 3 — TD(λ) avec traces d'éligibilité](#section-17) |
+| 17e | &nbsp;&nbsp;&nbsp;↳ [Pratique 4 — SARSA sur FrozenLake](#section-17) |
+| 17f | &nbsp;&nbsp;&nbsp;↳ [Pratique 5 — Q-Learning sur FrozenLake](#section-17) |
+| 17g | &nbsp;&nbsp;&nbsp;↳ [Pratique 6 — SARSA vs Q-Learning sur Cliff Walking](#section-17) |
+| 17h | &nbsp;&nbsp;&nbsp;↳ [Pratique 7 — Comparer α, γ, ε (hyperparamètres)](#section-17) |
+| 18 | [Synthèse du chapitre](#section-18) |
 
 ---
 
@@ -355,6 +364,60 @@ flowchart LR
 
 > _Et un proverbe ancien qui résume bien l'idée : « Tes yeux sont ta balance » — on ajuste en fonction de ce qu'on voit, ici et maintenant._
 
+---
+
+### 1d — Exemple-clé : « ce que je pensais vs ce que j'observe »
+
+**Le cœur du TD-Learning, c'est l'écart entre une prédiction et la réalité observée.**
+
+#### Exemple 1 — Le sommeil
+
+Le soir, je me dis :
+
+> *« Je vais bien dormir cette nuit, demain matin je me sentirai en pleine forme. »* — **prédiction**
+
+Le lendemain matin, je me réveille fatigué·e :
+
+> *« En fait, je me sens groggy. »* — **observation**
+
+L'écart entre les deux = **erreur TD** $\delta$.
+
+- Si $\delta < 0$ (j'attendais mieux que ce que j'ai eu) → la prochaine fois, je **baisse** ma prédiction (« mieux dormir ne suffira peut-être pas »).
+- Si $\delta > 0$ (mieux que prévu) → je **monte** ma prédiction.
+
+> _C'est exactement ce que fait un agent TD : il **ajuste sa croyance** en fonction de la **différence** entre ce qu'il pensait et ce qu'il observe vraiment._
+
+---
+
+#### Exemple 2 — L'investisseur amateur
+
+> *« J'achète cette action à 1000 $. Je pense qu'elle vaudra 1200 $ dans une semaine. »* — **prédiction $V(s) = 1200$**
+
+Au bout d'une semaine, l'action vaut 1100 $ :
+
+> Erreur TD : $\delta = 1100 - 1200 = -100$
+
+L'investisseur ajuste sa prédiction pour la prochaine fois :
+
+$$V(s) \leftarrow V(s) + \alpha \times \delta = 1200 + 0{,}1 \times (-100) = 1190$$
+
+Avec $\alpha = 0{,}1$, il **descend** sa prédiction de 10 $ — pas de 100 $ d'un coup, par prudence.
+
+> _Plus il fera ce type d'écart, plus sa prédiction se rapprochera progressivement de la vraie valeur du marché._
+
+---
+
+#### Exemple 3 — La météo
+
+> *« Je prédis 25 °C et soleil pour demain. »* — **prédiction $V(s)$**
+
+Le lendemain : **18 °C et pluie**.
+
+- Erreur TD énorme et négative.
+- Le modèle météo **corrige** ses paramètres pour la prochaine prédiction (sans attendre la fin du mois pour faire un bilan global — c'est ça la **mise à jour temporelle**).
+
+> _Tous les systèmes de prédiction « en ligne » (météo, fraude, recommandation) suivent cette logique TD._
+
 </details>
 
 <p align="right"><a href="#top">↑ Retour en haut</a></p>
@@ -512,6 +575,95 @@ flowchart LR
 | **Monte Carlo** | Faible | Élevée | Lent, demande la fin de l'épisode |
 
 > _TD(n) est un curseur entre **bootstrap pur** (TD(0)) et **observation pure** (Monte Carlo)._
+
+---
+
+### 4c — Exemple détaillé : prédire le prix du baril de pétrole
+
+> *« Avant la guerre Russie–Ukraine de 2022, le baril était autour de **90 $**. Comment un modèle apprend-il à prédire son évolution avec TD(0), TD(1), TD(2), TD(3) ? »*
+
+#### Contexte
+
+Un trader prédit la valeur **future** du baril. À chaque jour, il observe le prix réel et ajuste sa prédiction.
+
+| Jour | Prix observé (USD) |
+|---|---|
+| Jour 0 (lundi) | 90 |
+| Jour 1 (mardi) | 92 |
+| Jour 2 (mercredi) | 95 |
+| Jour 3 (jeudi) | 88 |
+| Jour 4 (vendredi) | 75 ⚠️ (mauvaise nouvelle géopolitique) |
+
+Sa prédiction initiale du **lundi** : $V(\text{lundi}) = 100$ (il pensait que ça monterait).
+Paramètres : $\alpha = 0{,}1$, $\gamma = 0{,}9$.
+
+---
+
+#### TD(0) — Ajustement le mardi seulement
+
+Le mardi soir, on observe $R = 92$ et $V(\text{mardi}) = 95$ (estimé du jour suivant).
+
+$$\delta = R + \gamma V(\text{mardi}) - V(\text{lundi}) = 92 + 0{,}9 \times 95 - 100 = 77{,}5$$
+
+$$V(\text{lundi}) \leftarrow 100 + 0{,}1 \times 77{,}5 = \mathbf{107{,}75}$$
+
+> *Le modèle remonte sa prédiction (cible plus haute que prévu).*
+
+---
+
+#### TD(1) — On attend **2 jours** avant d'ajuster
+
+Cible : $R\_{t+1} + \gamma R\_{t+2} + \gamma^2 V(\text{mercredi})$
+$= 92 + 0{,}9 \times 95 + 0{,}9^2 \times 88 = 92 + 85{,}5 + 71{,}28 = 248{,}78$
+
+$$V(\text{lundi}) \leftarrow 100 + 0{,}1 \times (248{,}78 - 100) = 114{,}88$$
+
+> *On a plus d'information, mais on a attendu 2 jours.*
+
+---
+
+#### TD(3) — On attend **4 jours** : on voit la chute du vendredi !
+
+Cible : $R\_{t+1} + \gamma R\_{t+2} + \gamma^2 R\_{t+3} + \gamma^3 R\_{t+4} + \gamma^4 V(\text{lundi suivant})$
+
+$= 92 + 0{,}9(95) + 0{,}81(88) + 0{,}729(75) + \ldots$
+
+$\approx 92 + 85{,}5 + 71{,}28 + 54{,}68 + \ldots \approx \mathbf{303{,}5}$ (avec un bootstrap final)
+
+$$V(\text{lundi}) \leftarrow 100 + 0{,}1 \times (303{,}5 - 100) = 120{,}35$$
+
+> *Mais attention : on a **attendu 4 jours** pour apprendre. Si on doit décider lundi, c'est trop tard !*
+
+---
+
+#### Tableau récapitulatif
+
+| Méthode | Combien de jours d'attente ? | Information utilisée | Verdict |
+|---|---|---|---|
+| **TD(0)** | 1 jour | Mardi uniquement | **Très réactif**, mais ignore la chute du vendredi |
+| **TD(1)** | 2 jours | Mardi + Mercredi | Compromis |
+| **TD(3)** | 4 jours | Mardi → Vendredi | **Très précis**, mais info **trop tardive** pour décider lundi |
+| **Monte Carlo** | Toute la semaine | Tous les jours observés | Précis mais **très en retard** |
+
+> ⚠️ **Leçon-clé :** dans le **trading** (et la fraude bancaire, la cybersécurité, etc.), on **n'a pas** le luxe d'attendre 4 jours. C'est pourquoi **TD(0)** ou **TD(1)** sont privilégiés en production. TD(3) est utile pour le **backtesting** ou les analyses **a posteriori**.
+
+---
+
+### 4d — Exemple : prédiction météo
+
+Les modèles de météo utilisent du TD-Learning massivement. Prenons une prédiction sur **5 jours** :
+
+| Jour | Prédit (matin) | Observé (soir) |
+|---|---|---|
+| Lundi | 25 °C, soleil | 25 °C ✓ |
+| Mardi | 26 °C, soleil | 22 °C, nuageux ⚠️ |
+| Mercredi | 24 °C, soleil | **18 °C, pluie** ⚠️⚠️ |
+
+- **TD(0)** : ajuste **chaque soir** dès qu'on observe l'écart. Très réactif aux changements brusques (orage soudain).
+- **TD(3)** : ajuste après 3 jours, lisse les fluctuations. Plus stable mais plus lent à réagir.
+- **Monte Carlo** : attend la fin du mois pour faire un bilan global. **Inutile** pour décider de prendre son parapluie demain.
+
+> _Conclusion : pour des **décisions immédiates** (prendre un parapluie, sortir un drone, geler une transaction bancaire), on veut **TD(0)** ou **TD(1)**. Pour de l'**analyse climatique sur l'année**, Monte Carlo._
 
 </details>
 
@@ -682,6 +834,56 @@ flowchart LR
 > _Phrase à dire en classe :_
 > _« Dans nos exemples, λ = 0,3 est choisi pour illustrer un cas de mémoire très courte. En pratique, on choisit λ **expérimentalement**, comme n'importe quel hyperparamètre. »_
 
+---
+
+### 6e — Exemple TD(λ) : l'investisseur sur le marché financier
+
+> *« Reprenons le baril de pétrole. TD(n) regardait n jours fixes. TD(λ) combine **tous** les jours, avec des poids qui décroissent. »*
+
+Reprenons les données :
+
+| Jour | Prix observé |
+|---|---|
+| Mardi | 92 |
+| Mercredi | 95 |
+| Jeudi | 88 |
+| Vendredi | **75** ⚠️ |
+| Lundi suivant | 78 |
+
+Prédiction initiale lundi : $V = 100$.
+
+#### Cas λ = 0,3 (mémoire courte)
+
+L'investisseur donne :
+- **Beaucoup de poids** au mardi (poids ≈ 1)
+- **Un peu** au mercredi (poids ≈ 0,3)
+- **Très peu** au jeudi (poids ≈ 0,09)
+- **Quasi rien** au vendredi (poids ≈ 0,027) → **il « rate » presque la chute du vendredi !**
+
+Conséquence : la mise à jour de $V(\text{lundi})$ ressemble surtout à TD(0) — réactive, mais myope.
+
+#### Cas λ = 0,9 (mémoire longue)
+
+- Mardi : poids 1
+- Mercredi : 0,9
+- Jeudi : 0,81
+- Vendredi : **0,729** → la chute est **bien intégrée**
+- Lundi : 0,656
+
+Conséquence : la mise à jour **prend en compte** la chute du vendredi → l'investisseur baisse fortement sa prédiction.
+
+#### Cas λ = 0 vs λ = 1
+
+| λ | Comportement | Avec notre exemple |
+|---|---|---|
+| **0** | Comme TD(0) | Réagit seulement à mardi, ignore la chute |
+| **0,3** | Mémoire courte | Voit un peu mercredi, oublie vendredi |
+| **0,7** | Compromis | Intègre les 3-4 jours principaux |
+| **0,9** | Mémoire longue | Intègre toute la semaine, vendredi compris |
+| **1** | Comme Monte Carlo | Attend la fin → moyenne complète, mais arrive trop tard |
+
+> 💡 **Moralité :** dans un marché **stable**, λ petit (~0,3) est suffisant. Dans un marché **volatil avec événements rares mais énormes** (guerres, crises), λ grand (~0,9) protège mieux car il **garde en mémoire** le vrai choc qui va arriver.
+
 </details>
 
 <p align="right"><a href="#top">↑ Retour en haut</a></p>
@@ -753,6 +955,38 @@ flowchart LR
 
 ---
 
+#### ⚠️ Question fréquente — « Pourquoi pas de récompense suivante $R\_{t+2}$ ? »
+
+> *« État, action, récompense, état suivant, action suivante… mais pas de récompense suivante ? »*
+
+**Réponse : non, et c'est normal.** Voici pourquoi :
+
+| Quintuplet SARSA | Sens |
+|---|---|
+| $S_t$ | État actuel — **observé** |
+| $A_t$ | Action **choisie** par la politique |
+| $R\_{t+1}$ | Récompense **observée** après l'action |
+| $S\_{t+1}$ | État suivant — **observé** |
+| $A\_{t+1}$ | Action suivante — **choisie**, **pas encore exécutée** |
+
+**On n'attend pas $R\_{t+2}$** parce que :
+
+1. **Une seule récompense est observée par pas** ($R\_{t+1}$). C'est tout ce qu'on a après l'action $A_t$.
+2. La **valeur future** des récompenses suivantes est déjà **estimée** par $Q(S\_{t+1}, A\_{t+1})$ — c'est exactement le rôle du **bootstrap**.
+3. $Q(S\_{t+1}, A\_{t+1})$ représente *« combien je vais gagner en moyenne à partir de $S\_{t+1}$ si je prends $A\_{t+1}$ et que je suis ma politique ensuite »* — donc toutes les futures récompenses **sont déjà incluses dans cette estimation**.
+
+> 💡 **En une phrase :**
+> $r$ = **observé** (1 seule récompense), $Q(s', a')$ = **estimé** (résume toutes les récompenses futures espérées). On n'a **pas** besoin de $R\_{t+2}$, car le bootstrap fait le travail.
+
+#### Comparaison avec un quintuplet « idéal »
+
+| Si on attendait toutes les récompenses futures… | …on aurait Monte Carlo (pas TD) |
+|---|---|
+| $R\_{t+1}, R\_{t+2}, R\_{t+3}, \ldots$ | C'est **Monte Carlo** : il faut attendre la fin de l'épisode pour tout calculer |
+| $r + \gamma Q(s', a')$ (SARSA) | Le bootstrap **remplace** toutes les futures récompenses par une **estimation rapide** |
+
+---
+
 ### 7c — SARSA — pseudo-code complet
 
 ```text
@@ -815,6 +1049,58 @@ $$Q(s, a) \leftarrow 5{,}0 + 0{,}1 \times (-4{,}2) = \mathbf{4{,}58}$$
 | Forme « erreur TD » | $V(s) \leftarrow V(s) + \alpha[r + \gamma V(s') - V(s)]$ | $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s', a') - Q(s,a)]$ |
 
 > _On peut voir **SARSA comme un TD(0) sur les couples (état, action)** : même principe de bootstrap à un pas, mais granularité plus fine **et** politique active._
+
+---
+
+### 7e bis — SARSA dans la vraie vie : 4 exemples parlants
+
+#### Exemple 1 — Le cuisinier qui apprend une recette
+
+- **État $s$** : ingrédients sur le plan de travail (oignon, ail, viande, ...)
+- **Action $a$** : « ajouter du sel »
+- **Récompense $r$** : feedback du goûteur (+1 si bon, −1 si trop salé)
+- **État suivant $s'$** : le plat avec un peu de sel
+- **Action suivante $a'$** : « ajouter du poivre » (l'action qu'il VA réellement faire)
+
+Le cuisinier met à jour son intuition $Q(\text{ingrédients}, \text{saler})$ en fonction de :
+- la récompense observée (+1 ou −1)
+- l'estimation de ce qu'il va gagner ensuite avec « poivrer » → $Q(s', a')$
+
+> _Il **n'imagine pas** ce qui aurait été optimal (« ajouter du curcuma serait peut-être mieux »). Il apprend selon **ce qu'il fait réellement**._
+
+#### Exemple 2 — Le médecin urgentiste
+
+Un patient arrive aux urgences :
+- **$s$** : symptômes observés
+- **$a$** : « donner du paracétamol » (choix du médecin selon protocole + un peu d'exploration)
+- **$r$** : amélioration légère
+- **$s'$** : nouvel état du patient
+- **$a'$** : « ordonner une prise de sang » (prochaine action prévue)
+
+Le médecin met à jour sa croyance $Q(\text{symptômes}, \text{paracétamol})$ en fonction de **ce qu'il va vraiment faire ensuite**, pas de l'action « idéale ».
+
+> _C'est typiquement on-policy : on apprend la valeur du **protocole réel**, pas d'un protocole théorique parfait._
+
+#### Exemple 3 — Le robot collaboratif (cobot)
+
+Un cobot dans une usine :
+- **$s$** : pièce détectée à 50 cm
+- **$a$** : « avancer doucement de 10 cm »
+- **$r$** : pas de collision (+1)
+- **$s'$** : pièce à 40 cm
+- **$a'$** : « tourner légèrement » (par sécurité)
+
+> _Q-Learning aurait dit : « la meilleure action serait d'avancer vite ». **Mais c'est dangereux !** SARSA apprend que la stratégie réellement appliquée (avancer doucement + tourner) est sûre._
+
+#### Exemple 4 — Le trader prudent
+
+- **$s$** : marché baissier
+- **$a$** : « vendre 30 % du portefeuille » (politique conservatrice)
+- **$r$** : −2 % de perte (mais limitée)
+- **$s'$** : marché toujours baissier
+- **$a'$** : « attendre » (action conservatrice prévue)
+
+> _Q-Learning aurait recommandé « vendre tout d'un coup » (action théoriquement optimale en cas de chute). SARSA apprend la valeur de la **vraie politique** : prudente, on ne vend pas tout en panique._
 
 ---
 
@@ -1490,7 +1776,333 @@ d) Bellman exact
 <a id="section-17"></a>
 
 <details>
-<summary>17 — Synthèse du chapitre</summary>
+<summary>17 — Pratiques sur Colab — Code Python prêt à l'emploi</summary>
+
+<br/>
+
+> _Toutes les pratiques de cette section sont **prêtes à copier-coller dans Google Colab**. Pas besoin d'installation locale — un compte Google suffit._
+>
+> 🔗 [colab.research.google.com](https://colab.research.google.com)
+
+---
+
+### 17a — Setup — Installer les dépendances
+
+**Cellule 1 — Installation (à exécuter une seule fois) :**
+
+```python
+!pip install gymnasium numpy matplotlib --quiet
+print("✓ Dépendances installées")
+```
+
+**Cellule 2 — Imports :**
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+import gymnasium as gym
+from collections import defaultdict
+np.random.seed(42)
+```
+
+---
+
+### 17b — Pratique 1 — TD(0) sur un GridWorld minimal
+
+**Objectif :** voir la valeur $V(s)$ se propager case par case.
+
+```python
+# GridWorld 1D : 5 cases, but à droite (case 4)
+# Actions : -1 (gauche), +1 (droite)
+N_STATES = 5
+GOAL = 4
+
+def step(s, a):
+    s_next = max(0, min(N_STATES - 1, s + a))
+    reward = 1.0 if s_next == GOAL else 0.0
+    done = (s_next == GOAL)
+    return s_next, reward, done
+
+def td0(alpha=0.1, gamma=0.9, n_episodes=500):
+    V = np.zeros(N_STATES)
+    for _ in range(n_episodes):
+        s = 0
+        done = False
+        while not done:
+            a = np.random.choice([-1, +1])  # politique aléatoire
+            s_next, r, done = step(s, a)
+            # Mise à jour TD(0)
+            target = r + gamma * V[s_next] * (not done)
+            V[s] += alpha * (target - V[s])
+            s = s_next
+    return V
+
+V_appris = td0()
+print("Valeurs apprises V(s) :", V_appris.round(3))
+plt.bar(range(N_STATES), V_appris)
+plt.xlabel("État"); plt.ylabel("V(s)")
+plt.title("TD(0) sur GridWorld 1D")
+plt.show()
+```
+
+> _Tu devrais voir une **valeur croissante** vers la case 4 (le but) — c'est la propagation Bellman._
+
+---
+
+### 17c — Pratique 2 — TD(n) avec n variable
+
+**Objectif :** comparer TD(0), TD(2), TD(5) sur la même tâche.
+
+```python
+def td_n(n=1, alpha=0.1, gamma=0.9, n_episodes=500):
+    V = np.zeros(N_STATES)
+    for _ in range(n_episodes):
+        s = 0
+        rewards, states = [], [s]
+        done = False
+        while not done:
+            a = np.random.choice([-1, +1])
+            s_next, r, done = step(s, a)
+            rewards.append(r)
+            states.append(s_next)
+            s = s_next
+        # Mise à jour n-step après l'épisode
+        T = len(rewards)
+        for t in range(T):
+            G = 0.0
+            end = min(t + n, T)
+            for k in range(t, end):
+                G += (gamma ** (k - t)) * rewards[k]
+            if end < T:
+                G += (gamma ** n) * V[states[end]]
+            V[states[t]] += alpha * (G - V[states[t]])
+    return V
+
+# Comparer 3 valeurs de n
+for n in [1, 2, 5]:
+    V = td_n(n=n)
+    plt.plot(V, label=f"TD({n})", marker="o")
+plt.xlabel("État"); plt.ylabel("V(s)")
+plt.legend(); plt.title("Comparaison TD(n)")
+plt.show()
+```
+
+---
+
+### 17d — Pratique 3 — TD(λ) avec traces d'éligibilité (backward view)
+
+**Objectif :** implémenter TD(λ) et comparer plusieurs valeurs de λ.
+
+```python
+def td_lambda(lam=0.5, alpha=0.1, gamma=0.9, n_episodes=500):
+    V = np.zeros(N_STATES)
+    for _ in range(n_episodes):
+        E = np.zeros(N_STATES)  # traces d'éligibilité
+        s = 0
+        done = False
+        while not done:
+            a = np.random.choice([-1, +1])
+            s_next, r, done = step(s, a)
+            delta = r + gamma * V[s_next] * (not done) - V[s]
+            E[s] += 1.0  # incrémenter la trace de s
+            V += alpha * delta * E
+            E *= gamma * lam  # décroissance des traces
+            s = s_next
+    return V
+
+for lam in [0.0, 0.3, 0.7, 0.9]:
+    V = td_lambda(lam=lam)
+    plt.plot(V, label=f"λ={lam}", marker="o")
+plt.xlabel("État"); plt.ylabel("V(s)")
+plt.legend(); plt.title("TD(λ) — différentes valeurs de λ")
+plt.show()
+```
+
+> _λ = 0 → comportement TD(0). λ = 1 → comportement Monte Carlo._
+
+---
+
+### 17e — Pratique 4 — SARSA sur FrozenLake
+
+**Objectif :** apprendre une **politique** (pas juste $V$) avec SARSA on-policy.
+
+```python
+env = gym.make("FrozenLake-v1", is_slippery=False)
+n_S, n_A = env.observation_space.n, env.action_space.n
+
+def epsilon_greedy(Q, s, epsilon):
+    if np.random.random() < epsilon:
+        return np.random.randint(n_A)
+    return int(np.argmax(Q[s]))
+
+def sarsa(alpha=0.1, gamma=0.99, epsilon=0.1, n_episodes=2000):
+    Q = np.zeros((n_S, n_A))
+    rewards_hist = []
+    for ep in range(n_episodes):
+        s, _ = env.reset()
+        a = epsilon_greedy(Q, s, epsilon)
+        total = 0
+        done = False
+        while not done:
+            s_next, r, terminated, truncated, _ = env.step(a)
+            done = terminated or truncated
+            a_next = epsilon_greedy(Q, s_next, epsilon)
+            # Mise à jour SARSA — on utilise Q[s_next, a_next] (pas le max !)
+            Q[s, a] += alpha * (r + gamma * Q[s_next, a_next] * (not done) - Q[s, a])
+            s, a = s_next, a_next
+            total += r
+        rewards_hist.append(total)
+    return Q, rewards_hist
+
+Q_sarsa, rewards = sarsa()
+# Lisser et tracer
+window = 100
+moving_avg = np.convolve(rewards, np.ones(window)/window, mode="valid")
+plt.plot(moving_avg)
+plt.title("SARSA — Récompense moyenne (fenêtre 100 épisodes)")
+plt.xlabel("Épisode"); plt.ylabel("Récompense")
+plt.show()
+print("Politique apprise :", np.argmax(Q_sarsa, axis=1).reshape(4, 4))
+```
+
+---
+
+### 17f — Pratique 5 — Q-Learning sur FrozenLake
+
+**Différence avec SARSA : on prend $\max\_{a'}$ au lieu de $Q(s', a')$.**
+
+```python
+def q_learning(alpha=0.1, gamma=0.99, epsilon=0.1, n_episodes=2000):
+    Q = np.zeros((n_S, n_A))
+    rewards_hist = []
+    for ep in range(n_episodes):
+        s, _ = env.reset()
+        total = 0
+        done = False
+        while not done:
+            a = epsilon_greedy(Q, s, epsilon)
+            s_next, r, terminated, truncated, _ = env.step(a)
+            done = terminated or truncated
+            # Mise à jour Q-Learning — on utilise max(Q[s_next, :])
+            Q[s, a] += alpha * (r + gamma * np.max(Q[s_next]) * (not done) - Q[s, a])
+            s = s_next
+            total += r
+        rewards_hist.append(total)
+    return Q, rewards_hist
+
+Q_ql, rewards_ql = q_learning()
+plt.plot(np.convolve(rewards_ql, np.ones(100)/100, mode="valid"))
+plt.title("Q-Learning — Récompense moyenne")
+plt.xlabel("Épisode"); plt.ylabel("Récompense")
+plt.show()
+```
+
+---
+
+### 17g — Pratique 6 — SARSA vs Q-Learning sur Cliff Walking ⭐
+
+**L'exemple classique pour visualiser la différence on-policy / off-policy.**
+
+```python
+env_cliff = gym.make("CliffWalking-v0")
+n_S_cliff, n_A_cliff = env_cliff.observation_space.n, env_cliff.action_space.n
+
+def run_agent(algo="sarsa", alpha=0.1, gamma=1.0, epsilon=0.1, n_episodes=500):
+    Q = np.zeros((n_S_cliff, n_A_cliff))
+    rewards_hist = []
+    for _ in range(n_episodes):
+        s, _ = env_cliff.reset()
+        if algo == "sarsa":
+            a = epsilon_greedy(Q, s, epsilon)
+        total, done = 0, False
+        while not done:
+            if algo == "q_learning":
+                a = epsilon_greedy(Q, s, epsilon)
+            s_next, r, terminated, truncated, _ = env_cliff.step(a)
+            done = terminated or truncated
+            if algo == "sarsa":
+                a_next = epsilon_greedy(Q, s_next, epsilon)
+                Q[s, a] += alpha * (r + gamma * Q[s_next, a_next] * (not done) - Q[s, a])
+                s, a = s_next, a_next
+            else:  # q_learning
+                Q[s, a] += alpha * (r + gamma * np.max(Q[s_next]) * (not done) - Q[s, a])
+                s = s_next
+            total += r
+        rewards_hist.append(total)
+    return Q, rewards_hist
+
+# Patcher epsilon_greedy pour CliffWalking
+def epsilon_greedy(Q, s, epsilon):
+    if np.random.random() < epsilon:
+        return np.random.randint(Q.shape[1])
+    return int(np.argmax(Q[s]))
+
+_, r_sarsa = run_agent("sarsa")
+_, r_ql = run_agent("q_learning")
+
+plt.plot(np.convolve(r_sarsa, np.ones(20)/20, mode="valid"), label="SARSA (prudent)")
+plt.plot(np.convolve(r_ql, np.ones(20)/20, mode="valid"), label="Q-Learning (agressif)")
+plt.xlabel("Épisode"); plt.ylabel("Récompense moyenne")
+plt.title("Cliff Walking : SARSA vs Q-Learning")
+plt.legend(); plt.show()
+```
+
+> 💡 **Ce que tu dois observer :** SARSA a une **meilleure récompense moyenne** pendant l'apprentissage (il évite la falaise), Q-Learning a des **chutes fréquentes** (il essaie le chemin le plus court trop tôt). Mais une fois greedy, Q-Learning sait le chemin optimal.
+
+---
+
+### 17h — Pratique 7 — Comparer α, γ, ε (hyperparamètres)
+
+**Objectif :** trouver les bons hyperparamètres expérimentalement (méthode du « grid search »).
+
+```python
+results = {}
+for alpha in [0.01, 0.1, 0.5]:
+    for epsilon in [0.05, 0.1, 0.3]:
+        Q, hist = q_learning(alpha=alpha, epsilon=epsilon, n_episodes=1500)
+        # Évaluer la politique greedy après apprentissage
+        s, _ = env.reset()
+        total, done = 0, False
+        while not done:
+            a = int(np.argmax(Q[s]))
+            s, r, term, trunc, _ = env.step(a)
+            done = term or trunc
+            total += r
+        results[(alpha, epsilon)] = total
+        print(f"α={alpha}, ε={epsilon} → récompense finale = {total}")
+
+# Affichage matriciel
+import pandas as pd
+df = pd.Series(results).unstack()
+df.index.name, df.columns.name = "α", "ε"
+print("\nMatrice de performances :")
+print(df)
+```
+
+> 🎯 **Question d'analyse :** quelle combinaison (α, ε) donne le meilleur résultat ? Pourquoi un α trop grand est-il instable ? Pourquoi un ε trop petit empêche-t-il d'explorer ?
+
+---
+
+### Notebook complet — 1 lien à partager aux étudiants
+
+Tu peux assembler les 7 pratiques en **un seul notebook Colab** :
+
+1. Cellule 1 : Setup (17a)
+2. Cellule 2-8 : une cellule par pratique (17b à 17h)
+3. Markdown entre chaque pour expliquer
+
+> **Conseil pédagogique :** demande aux étudiants de **modifier les hyperparamètres** et d'**observer l'impact** sur les courbes. C'est ce qui ancre vraiment les concepts.
+
+</details>
+
+<p align="right"><a href="#top">↑ Retour en haut</a></p>
+
+---
+
+<a id="section-18"></a>
+
+<details>
+<summary>18 — Synthèse du chapitre</summary>
 
 <br/>
 
