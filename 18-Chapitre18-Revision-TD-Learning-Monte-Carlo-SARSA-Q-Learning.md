@@ -1,10 +1,8 @@
 <a id="top"></a>
 
-# Pratique 2 de révision — Deuxième quart du cours
+# Révision 3 — Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
 
-# Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
-
-> Document consolidé regroupant et améliorant l'ensemble du contenu de cette pratique : rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
+> Document de révision: rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
 
 ---
 
