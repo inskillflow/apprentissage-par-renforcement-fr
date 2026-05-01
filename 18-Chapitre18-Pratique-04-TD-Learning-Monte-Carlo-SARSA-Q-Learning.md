@@ -1,8 +1,10 @@
 <a id="top"></a>
 
-# Révision 3 — Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
+# Pratique 04 — Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
 
-> Document de révision: rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
+# Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
+
+> Document consolidé regroupant et améliorant l'ensemble du contenu de cette pratique : rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
 
 ---
 
@@ -22,14 +24,18 @@
 | 6 | [SARSA et Q-Learning — rappel](#section-6) |
 | 7 | [Études de cas — Série 1 (Monte Carlo vs TD-Learning)](#section-7) |
 | 8 | [Études de cas — Série 2 (les 5 méthodes en compétition)](#section-8) |
-| 9 | [Choix de méthode par élimination — méthode systématique](#section-9) |
-| 10 | [Tableau récapitulatif des 6 études de cas industriels](#section-10) |
+| 9 | [Méthode générique de choix par élimination](#section-9) |
 | 11 | [Quiz 1 — Monte Carlo (20 questions)](#section-11) |
 | 12 | [Quiz 2 — TD-Learning (20 questions)](#section-12) |
 | 13 | [Questions de réflexion — Monte Carlo](#section-13) |
 | 14 | [Questions de réflexion — TD-Learning](#section-14) |
 | 15 | [Pratique de codage — Notebooks Colab](#section-15) |
-| 16 | [Corrigés indicatifs](#section-16) |
+| 16 | [**Corrigés indicatifs (toutes les réponses)**](#section-16) |
+| 16a | &nbsp;&nbsp;&nbsp;↳ [Corrigé Quiz 1 — Monte Carlo](#section-16) |
+| 16b | &nbsp;&nbsp;&nbsp;↳ [Corrigé Quiz 2 — TD-Learning](#section-16) |
+| 16c | &nbsp;&nbsp;&nbsp;↳ [Corrigé Études de cas — Série 1](#section-16) |
+| 16d | &nbsp;&nbsp;&nbsp;↳ [Corrigé Études de cas — Série 2 (analyses détaillées)](#section-16) |
+| 16e | &nbsp;&nbsp;&nbsp;↳ [Tableau récapitulatif des 6 études de cas](#section-16) |
 | 17 | [Synthèse — Ce qu'il faut absolument retenir](#section-17) |
 
 ---
@@ -738,8 +744,19 @@ Pour vous orienter avant de consulter le corrigé :
 
 <br/>
 
-> **Pour chacune des 6 études de cas suivantes, choisissez parmi : TD(0), TD(λ), Q-Learning, SARSA, Monte Carlo.**
-> Justifiez votre choix selon les caractéristiques de l'environnement (stabilité, complexité, dynamique, etc.).
+> **Pour chacune des 6 études de cas suivantes, choisissez la méthode la plus adaptée parmi les 5 options ci-dessous, et justifiez votre choix selon les caractéristiques de l'environnement (stabilité, dynamique, longueur des épisodes, prudence requise, etc.).**
+
+### Les 5 méthodes en compétition
+
+| Option | Méthode | Caractéristique principale |
+|---|---|---|
+| **A** | **TD(0)** | Mise à jour à chaque pas, horizon = 1 |
+| **B** | **TD(λ)** | Combinaison pondérée de tous les horizons |
+| **C** | **Q-Learning** | Off-policy, politique optimale agressive |
+| **D** | **SARSA** | On-policy, politique réelle prudente |
+| **E** | **Monte Carlo** | Mise à jour à la fin de l'épisode |
+
+> **Conseil :** avant de regarder les corrigés (section 16), prenez le temps de **réfléchir** à chaque cas en utilisant la méthode d'**élimination radicale** : éliminez d'abord les options manifestement incompatibles, puis choisissez parmi les candidates restantes.
 
 ---
 
@@ -760,132 +777,102 @@ Le prix de l'électricité dépend de :
 
 Le problème est **dynamique, non stationnaire**, et dépend d'un horizon temporel glissant.
 
-#### Réponse — TD(λ)
+**Questions :**
 
-TD(λ) combine plusieurs niveaux d'information temporelle :
-
-- le présent immédiat (comme TD(0)),
-- les signaux des heures précédentes (comme TD(1), TD(2), etc.),
-- un horizon complet pondéré par λ.
-
-**Pourquoi pas les autres ?**
-
-- **TD(0)** : trop court terme, ignore l'évolution progressive des conditions.
-- **Monte Carlo** : exige un épisode complet (journée), incompatible avec des décisions horaires.
-- **Q-Learning** : cherche une politique optimale qui n'existe pas dans un environnement non stationnaire.
-- **SARSA** : prudent, mais l'objectif n'est pas la sécurité — c'est l'efficacité énergétique.
-
-**Avantage de TD(λ) :** mise à jour incrémentale après chaque heure, pondération décroissante des événements passés, analyse multi-horizon.
+1. Entre **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA**, **E) Monte Carlo**, quelle méthode recommanderiez-vous pour optimiser la gestion d'énergie au fil du temps ?
+2. Expliquez comment la méthode choisie pourrait s'adapter à des changements imprévus dans la consommation d'énergie ou les coûts.
 
 ---
 
 ### Étude de cas 2.2 — Navigation d'un drone en environnement changeant
 
-Un drone doit livrer des colis dans un environnement **dynamique** : obstacles mobiles (oiseaux, autres drones), conditions de vent variables. Récompense positive pour livraison réussie, pénalité pour collision.
+Un drone doit livrer des colis dans un environnement **semi-structuré** et **dynamique** :
 
-#### Réponse — SARSA combiné avec TD(λ)
+- obstacles statiques (bâtiments, arbres),
+- obstacles mobiles (oiseaux, autres drones),
+- rafales de vent changeant en intensité et direction,
+- contraintes de sécurité (éviter les collisions),
+- objectifs de performance (livrer un colis rapidement).
 
-**Pourquoi cette combinaison ?**
+Le drone reçoit une récompense positive pour chaque livraison réussie et une pénalité pour chaque collision.
 
-1. L'environnement est **stochastique** (vent, obstacles imprévisibles) → Q-Learning serait trop optimiste.
-2. La **prudence et la sécurité** du drone sont essentielles → SARSA apprend la politique réellement suivie (plus prudente).
-3. L'agent doit **adapter sa politique en continu** → TD(λ) permet des mises à jour incrémentales sans attendre la fin de l'épisode.
+**Questions :**
 
-**Pourquoi pas les autres ?**
-
-- **TD(0)** : trop local, mauvaise anticipation des dépendances temporelles (rafale de vent).
-- **Q-Learning** : favorise l'action « max Q » même si dangereuse → risque de collision.
-- **Monte Carlo** : impossible d'attendre la fin d'un vol pour mettre à jour.
-- **TD(n)** : moins flexible que TD(λ) car horizon fixe.
+1. Pour un environnement dynamique avec des changements fréquents, recommanderiez-vous **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA** ou **E) Monte Carlo** ? Justifiez en fonction de la capacité d'adaptation requise et de l'enjeu de sécurité.
+2. Quels sont les avantages d'une approche incrémentale dans cet environnement ?
 
 ---
 
 ### Étude de cas 2.3 — Anticipation des demandes dans un supermarché
 
-Un supermarché optimise ses commandes en fonction des **comportements de consommation** et des **événements saisonniers**. La demande fluctue (produits estivaux en été, etc.). L'environnement est **non stationnaire** : les habitudes évoluent, les saisons changent, les promotions perturbent la demande.
+Un supermarché optimise ses commandes en fonction des **comportements de consommation** et des **événements saisonniers**. La demande fluctue (produits estivaux en été, chocolat en hiver, etc.).
 
-#### Réponse — TD(λ)
+L'environnement est **non stationnaire** : les habitudes évoluent, les saisons changent, les promotions perturbent la demande.
 
-TD(λ) permet :
+L'objectif n'est pas seulement de prédire la demande à un instant donné, mais de :
 
-- d'**adapter progressivement** les estimations aux tendances de consommation
-- d'être **sensible aux dépendances temporelles** (les ventes d'aujourd'hui dépendent des jours précédents)
-- de **ne pas attendre la fin d'une saison** entière pour mettre à jour
+- s'adapter progressivement aux changements de comportement des clients,
+- éviter les ruptures de stock,
+- éviter les surstocks coûteux.
 
-**Pourquoi pas les autres ?**
+**Questions :**
 
-- **TD(0)** : trop sensible au bruit (une journée exceptionnelle perturbe les estimations).
-- **Monte Carlo** : mise à jour trop tardive (fin de saison), incapable de réagir à un produit qui devient viral en quelques jours.
-- **Q-Learning** : suppose un environnement stable, ce qui n'est pas le cas.
-- **SARSA** : la prudence n'est pas l'enjeu central ici.
-
-**Avantage spécifique :** TD(λ) distingue une **fluctuation ponctuelle** (un seul jour anormal) d'un **changement réel de tendance** (hausse sur plusieurs jours).
+1. Entre **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA** ou **E) Monte Carlo**, quelle méthode serait la mieux adaptée pour s'adapter aux changements de tendances dans les habitudes de consommation ?
+2. Quel serait l'avantage de la méthode choisie pour distinguer une fluctuation ponctuelle d'un changement réel de tendance ?
 
 ---
 
 ### Étude de cas 2.4 — Apprentissage d'un jeu vidéo de combat
 
-Un agent IA doit anticiper les mouvements d'un **adversaire virtuel**. Chaque mouvement (attaquer, esquiver) a une probabilité de succès qui dépend des actions précédentes de l'IA et de l'adversaire.
+Un agent IA est entraîné à jouer dans un jeu vidéo de combat où il doit **anticiper les mouvements d'un adversaire virtuel**. Chaque mouvement (attaquer, esquiver, contre) a une probabilité de succès qui dépend des actions précédentes de l'IA et de l'adversaire.
 
-#### Réponse — Q-Learning (si adversaire stable) ou SARSA (si adversaire non déterministe)
+L'IA doit apprendre les meilleures actions en fonction de l'état du jeu et des comportements **prévisibles ou changeants** de l'adversaire.
 
-**Cas adversaire stable → Q-Learning :**
+**Questions :**
 
-- Permet d'extraire la politique optimale théorique
-- Exploite les faiblesses fixes de l'adversaire
-- Apprend des actions agressives qui maximisent la récompense à long terme
-
-**Cas adversaire non déterministe → SARSA :**
-
-- Politique plus prudente (basée sur les actions réellement effectuées)
-- Adaptation stable face à un comportement variable
-- Évite les stratégies sur-optimistes basées sur des situations idéales
-
-**Pourquoi pas les autres ?**
-
-- **TD(0)** : trop local pour capturer les longues séquences d'actions.
-- **Monte Carlo** : variance trop élevée dans les jeux adversariaux, mises à jour tardives.
+1. Recommanderiez-vous **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA** ou **E) Monte Carlo** pour entraîner l'IA dans ce contexte de jeu vidéo ? Justifiez en distinguant le cas d'un adversaire **stable** et celui d'un adversaire **non déterministe**.
+2. Expliquez pourquoi votre choix change selon que l'adversaire suit une stratégie fixe ou variable.
 
 ---
 
 ### Étude de cas 2.5 — Répartition de la charge dans un réseau de serveurs
 
-Une entreprise optimise la répartition de la charge sur un **réseau de serveurs** pour maximiser l'efficacité et minimiser les coûts d'énergie. La charge varie en temps réel.
+Une entreprise optimise la **répartition de la charge** sur un réseau de serveurs (cloud, conteneurs Kubernetes, machines virtuelles) pour maximiser l'efficacité et minimiser les coûts d'énergie.
 
-#### Réponse — TD(λ) (ou SARSA si haute incertitude)
+- La charge fluctue au fil de la journée.
+- Certaines requêtes sont lourdes, d'autres légères.
+- Les décisions de réallocation ont un impact immédiat sur la performance.
+- Les coûts varient selon l'heure (tarifs cloud, énergie, surcharge).
+- Un mauvais équilibrage entraîne soit des latences, soit une surconsommation.
 
-**TD(λ)** capture les dépendances temporelles à court et moyen terme (évolution de charge sur quelques minutes).
+L'environnement est **hautement dynamique**, **non stationnaire**, et soumis à des signaux continus.
 
-**SARSA** est préféré si on veut une politique conservatrice qui évite des décisions trop risquées.
+**Questions :**
 
-**Pourquoi pas les autres ?**
-
-- **TD(0)** : provoque du *thrashing* (réallocation trop fréquente), manque la tendance.
-- **Monte Carlo** : un épisode peut durer une journée → inutilisable.
-- **Q-Learning** : politique trop agressive, risque de surcharge instantanée.
+1. Entre **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA** et **E) Monte Carlo**, quelle approche choisiriez-vous pour optimiser la répartition de la charge ?
+2. Comment la méthode choisie aiderait-elle à s'adapter aux changements imprévus dans la charge des serveurs (pics soudains, anomalies) ?
 
 ---
 
 ### Étude de cas 2.6 — Prédiction des mouvements de marché financier
 
-Un trader algorithmique prédit les variations futures du marché à partir de données historiques de prix, de signaux récents, de news, et de microstructures de marché. Le marché est **non stationnaire** et **volatil**.
+Un trader algorithmique souhaite prédire les variations futures d'un marché boursier à partir de :
 
-#### Réponse — TD(λ)
+- données historiques de prix,
+- signaux récents (trend, momentum, volatilité),
+- événements soudains (news, annonces économiques),
+- microstructures de marché (ticks, spreads, volume).
 
-**Pourquoi TD(λ) ?**
+Le modèle doit être **extrêmement réactif**, tout en exploitant les corrélations temporelles des dernières secondes ou minutes. Le marché est **non stationnaire** : les distributions changent, les tendances s'inversent.
 
-- Le marché exige une mise à jour **en temps réel** (online).
-- Les mouvements de prix dépendent de l'**historique récent** (momentum, micro-tendances).
-- TD(λ) prend en compte une **trace déclinante du passé**.
-- Il **équilibre instantané + mémoire courte** grâce au paramètre λ.
-- Il **réduit la variance** sans sacrifier la réactivité.
-- Il **gère bien les régimes non stationnaires**.
+**Questions :**
 
-**Pourquoi pas les autres ?**
+1. Quel algorithme recommanderiez-vous entre **A) TD(0)**, **B) TD(λ)**, **C) Q-Learning**, **D) SARSA** et **E) Monte Carlo** pour ce problème de prédiction en temps réel ?
+2. Pourquoi le choix d'algorithme est-il particulièrement crucial dans un marché volatil ?
 
-- **TD(0)** : trop court (1 pas), ignore les dépendances multi-temps.
-- **Monte Carlo** : attend la fin d'un épisode (journée entière) → impossible.
-- **Q-Learning et SARSA** : le trading n'est pas un problème « agent → action → récompense », c'est un problème de **prédiction continue** de fonction de valeur.
+---
+
+> **Lorsque vous avez répondu à toutes les études de cas**, consultez la section **16 — Corrigés indicatifs** pour vérifier vos réponses et lire les analyses détaillées (avec la méthode d'élimination radicale et le tableau récapitulatif).
 
 </details>
 
@@ -896,130 +883,55 @@ Un trader algorithmique prédit les variations futures du marché à partir de d
 <a id="section-9"></a>
 
 <details>
-<summary>9 — Choix de méthode par élimination — méthode systématique</summary>
+<summary>9 — Choix de méthode par élimination — la méthode générique (sans réponses)</summary>
 
 <br/>
 
-### Méthode en 3 étapes
+### Méthode systématique en 3 étapes
 
-Pour chaque problème industriel, vous pouvez systématiquement :
+Avant de regarder les solutions, **vous devez** essayer cette démarche pour chaque étude de cas de la section 8 :
 
-1. **Élimination radicale** — éliminer les méthodes manifestement incompatibles avec le contexte.
-2. **Méthodes encore possibles** — identifier les candidates restantes.
-3. **Méthode recommandée** — choisir la plus adaptée et justifier.
+#### Étape 1 — Élimination radicale
 
----
+Posez-vous **5 questions** pour éliminer les méthodes incompatibles avec le contexte :
 
-### Cas 1 — Gestion de l'énergie (maison intelligente)
+| Question | Si OUI → vous éliminez… |
+|---|---|
+| L'agent doit-il décider **en temps réel** sans pouvoir attendre la fin d'un épisode ? | **Monte Carlo** |
+| L'environnement est-il **non stationnaire** (changements continus, dérive de distribution) ? | **Q-Learning** (politique optimale fixe inadéquate) |
+| L'enjeu n'est-il **pas la sécurité** mais la précision/efficacité ? | **SARSA** (prudent → moins optimal) |
+| Y a-t-il des **dépendances temporelles** sur plusieurs pas (tendances, momentum, saisons) ? | **TD(0)** (trop court terme) |
+| Le problème est-il une **prédiction** plutôt qu'un choix d'action ? | **Q-Learning** et **SARSA** (méthodes de contrôle) |
 
-**Élimination radicale :**
+#### Étape 2 — Méthodes encore possibles
 
-- **Monte Carlo** : éliminé. Impossible d'attendre la fin d'une journée pour mettre à jour le modèle.
-- **Q-Learning** : éliminé. Le problème n'est pas centré sur des actions optimales dans un environnement interactif complexe, mais sur une prédiction et un ajustement continu.
-- **SARSA** : éliminé. La prudence n'a pas d'intérêt ici. Le risque n'est pas lié à un agent face à des états dangereux, mais à de la prédiction énergétique.
+Listez les méthodes qui n'ont pas été éliminées.
 
-**Méthodes possibles :** TD(0), TD(λ).
+#### Étape 3 — Méthode recommandée
 
-**Méthode recommandée :** **TD(λ)** — capture les variations instantanées et les tendances récentes.
-
----
-
-### Cas 2 — Drone en environnement changeant
-
-**Élimination radicale :**
-
-- **Monte Carlo** : éliminé. Impossible d'attendre la fin du vol.
-- **TD(0)** : éliminé. Une seule observation est insuffisante dans un environnement physique dynamique.
-- **Q-Learning** : éliminé. Hors politique agressif, instable en environnement non stationnaire.
-
-**Méthodes possibles :** SARSA, TD(λ).
-
-**Méthode recommandée :** **TD(λ)** (combiné avec une politique SARSA-like pour la prudence) — mises à jour incrémentales adaptées aux signaux qui se propagent sur plusieurs pas.
+Parmi les candidates restantes, choisissez celle qui répond **le mieux** aux critères les plus importants du problème, et **justifiez** votre choix.
 
 ---
 
-### Cas 3 — Supermarché
+### Exemple sur un cas générique
 
-**Élimination radicale :**
+Supposons un cas où :
 
-- **TD(0)** : éliminé. Le comportement de consommation ne se décide pas sur un seul pas temporel.
-- **Monte Carlo** : éliminé. Les épisodes saisonniers durent des semaines.
-- **SARSA** : éliminé. Pas d'enjeu de prudence, pas d'interaction agent-environnement.
-- **Q-Learning** : éliminé. Pas un problème d'action optimale, mais d'anticipation continue.
+- L'agent doit décider **chaque seconde**
+- L'environnement est **non stationnaire**
+- Pas d'enjeu de **sécurité critique**
+- Il y a des **dépendances temporelles** sur plusieurs secondes
 
-**Méthodes possibles :** TD(λ).
+**Élimination :**
 
-**Méthode recommandée :** **TD(λ)** — actualise continuellement, capte tendances saisonnières et micro-tendances.
+- Monte Carlo (temps réel impossible) → éliminé
+- Q-Learning (environnement non stationnaire) → éliminé
+- SARSA (pas de sécurité critique) → moins prioritaire
+- TD(0) (dépendances multi-pas) → éliminé
 
----
+**Reste :** TD(λ) → **méthode recommandée**.
 
-### Cas 4 — Jeu vidéo de combat
-
-**Élimination radicale :**
-
-- **Monte Carlo** : éliminé. Adaptation instantanée requise.
-- **TD(0)** : éliminé. Trop court pour les séquences d'actions adverses.
-
-**Méthodes possibles :** Q-Learning, SARSA.
-
-**Méthode recommandée :** **SARSA** si adversaire non déterministe, **Q-Learning** si adversaire stable.
-
----
-
-### Cas 5 — Réseau de serveurs
-
-**Élimination radicale :**
-
-- **Monte Carlo** : éliminé. Impossible d'attendre la fin de la journée.
-- **Q-Learning** : éliminé. Politiques agressives instables dans un centre de données.
-- **SARSA** : non éliminé mais sous-optimal. Possible mais insuffisant pour capturer les tendances temporelles.
-
-**Méthodes possibles :** TD(0), TD(λ).
-
-**Méthode recommandée :** **TD(λ)** — combine réactivité et capture de tendances.
-
----
-
-### Cas 6 — Marché financier
-
-**Élimination radicale :**
-
-- **Monte Carlo** : éliminé. Le modèle doit réagir immédiatement.
-- **Q-Learning** : éliminé. Pas un problème d'action optimale mais de prédiction continue.
-- **SARSA** : éliminé. Pas un environnement interactif requérant une politique prudente.
-- **TD(0)** : non éliminé mais insuffisant. Réagit vite mais ne capture pas les dépendances multi-temps.
-
-**Méthodes possibles :** TD(λ).
-
-**Méthode recommandée :** **TD(λ)** — met à jour à chaque nouvelle donnée tout en intégrant un historique pondéré.
-
-</details>
-
-<p align="right"><a href="#top">Retour en haut</a></p>
-
----
-
-<a id="section-10"></a>
-
-<details>
-<summary>10 — Tableau récapitulatif des 6 études de cas industriels</summary>
-
-<br/>
-
-| Étude de cas | Méthodes éliminées radicalement | Méthodes encore possibles | Méthode recommandée | Justification finale |
-|---|---|---|---|---|
-| **1. Gestion de l'énergie (maison intelligente)** | Monte Carlo (retard immense), Q-Learning (type contrôle inutile), SARSA (prudence non pertinente) | TD(0), TD(λ) | **TD(λ)** | Capture les tendances temporelles tout en restant réactif aux variations du coût et de la météo. |
-| **2. Drone en environnement changeant** | Monte Carlo (mise à jour trop tardive), TD(0) (vision trop courte), Q-Learning (instable en environnement non stationnaire) | SARSA, TD(λ) | **TD(λ)** | Mise à jour incrémentale adaptée aux conditions dynamiques et obstacles mouvants. |
-| **3. Prévision de demande en supermarché** | TD(0) (trop court terme), Monte Carlo (épisodes trop longs), SARSA (non pertinent), Q-Learning (problème non décisionnel) | TD(λ) | **TD(λ)** | Suivi continu des tendances saisonnières avec mémoire pondérée du passé récent. |
-| **4. Jeu vidéo de combat (agent vs adversaire)** | Monte Carlo (retard trop long), TD(0) (incapacité à capturer séquences adverses) | Q-Learning, SARSA | **SARSA** | S'adapte aux adversaires non déterministes en apprenant une politique alignée avec ses actions réelles. |
-| **5. Répartition de charge (serveurs)** | Monte Carlo (trop lent), Q-Learning (risque agressif), SARSA (prudence mais pas optimal), TD(0) (trop limité) | TD(λ) | **TD(λ)** | Combine réactivité en temps réel et prise en compte des variations structurelles de la charge. |
-| **6. Marchés financiers (prédiction)** | Monte Carlo (retard immense), SARSA (non pertinent), Q-Learning (pas un problème d'actions optimales), TD(0) (pas assez riche) | TD(λ) | **TD(λ)** | Gère mieux la volatilité grâce à une trace d'historique pondérée, essentielle dans les marchés instables. |
-
----
-
-### Résumé global en une phrase
-
-> Dans les six cas industriels proposés, **TD(λ) domine la majorité des scénarios** grâce à sa capacité d'intégrer simultanément la réactivité de TD(0) et la mémoire des tendances récentes, tandis que Monte Carlo, Q-Learning et SARSA ne répondent pas aux contraintes temporelles ou structurelles des systèmes réels — sauf dans le cas du jeu vidéo où SARSA est préféré.
+> **À vous de jouer !** Appliquez cette méthode aux 6 cas de la section 8, puis comparez vos réponses au corrigé en section 16.
 
 </details>
 
@@ -1591,7 +1503,11 @@ Lien vers les ressources complémentaires :
 
 <br/>
 
-### Quiz 1 — Monte Carlo (réponses)
+> **À ne consulter qu'après avoir essayé de répondre par vous-même** aux quiz, aux questions de réflexion et aux études de cas.
+
+---
+
+### 16a — Quiz 1 — Monte Carlo (réponses)
 
 | Question | Réponse |
 |---:|---|
@@ -1618,7 +1534,7 @@ Lien vers les ressources complémentaires :
 
 ---
 
-### Quiz 2 — TD-Learning (réponses)
+### 16b — Quiz 2 — TD-Learning (réponses)
 
 | Question | Réponse |
 |---:|---|
@@ -1645,28 +1561,157 @@ Lien vers les ressources complémentaires :
 
 ---
 
-### Études de cas — Série 1 (réponses indicatives)
+### 16c — Corrigé Études de cas — Série 1 (Monte Carlo vs TD-Learning)
 
 | Cas | Méthode recommandée | Raison principale |
 |---|---|---|
-| 1.1 Températures | **TD-Learning** | Série temporelle, dépendances entre jours |
-| 1.2 Ventes en ligne | **Monte Carlo** | Périodes complètes (promotions), besoin de valeur moyenne |
-| 1.3 Événements météo extrêmes | **TD-Learning** | Adaptable à l'évolution climatique |
-| 1.4 Robot dans entrepôt | **TD-Learning** | Trajets uniques, besoin de réactivité |
-| 1.5 Comportements d'achat | **TD-Learning** | Habitudes évoluent continuellement |
+| **1.1** Températures | **TD-Learning** | Série temporelle, dépendances entre jours |
+| **1.2** Ventes en ligne | **Monte Carlo** | Périodes complètes (promotions), besoin de valeur moyenne |
+| **1.3** Événements météo extrêmes | **TD-Learning** | Adaptable à l'évolution climatique |
+| **1.4** Robot dans entrepôt | **TD-Learning** | Trajets uniques, besoin de réactivité |
+| **1.5** Comportements d'achat | **TD-Learning** | Habitudes évoluent continuellement |
+
+> **Rappel :** Monte Carlo est plus adapté quand des **épisodes complets** sont disponibles et indépendants. TD-Learning convient mieux dans les environnements où une **mise à jour progressive** est nécessaire.
 
 ---
 
-### Études de cas — Série 2 (réponses indicatives)
+### 16d — Corrigé Études de cas — Série 2 (analyses détaillées)
 
-| Cas | Méthode recommandée |
-|---|---|
-| 2.1 Énergie maison | **TD(λ)** |
-| 2.2 Drone | **TD(λ) + SARSA** |
-| 2.3 Supermarché | **TD(λ)** |
-| 2.4 Jeu vidéo combat | **SARSA** (adversaire imprévisible) ou **Q-Learning** (adversaire stable) |
-| 2.5 Serveurs | **TD(λ)** |
-| 2.6 Marché financier | **TD(λ)** |
+#### Cas 2.1 — Gestion de l'énergie (maison intelligente)
+
+**Réponse : B) TD(λ)**
+
+**Élimination :**
+
+- **Monte Carlo** : éliminé. Impossible d'attendre la fin d'une journée pour mettre à jour le modèle.
+- **Q-Learning** : éliminé. Le problème n'est pas un choix d'actions optimales mais un ajustement continu.
+- **SARSA** : éliminé. La prudence n'a pas d'intérêt ici (pas d'enjeu de sécurité critique).
+- **TD(0)** : possible mais trop court terme (ignore l'évolution progressive des conditions).
+
+**Pourquoi TD(λ) ?**
+
+- Mise à jour incrémentale après chaque heure
+- Pondération décroissante des événements passés
+- Analyse multi-horizon (présent + heures précédentes pondérées par λ)
+
+---
+
+#### Cas 2.2 — Drone en environnement changeant
+
+**Réponse : B) TD(λ) (combiné avec une politique on-policy à la SARSA)**
+
+**Élimination :**
+
+- **Monte Carlo** : éliminé. Impossible d'attendre la fin du vol.
+- **TD(0)** : éliminé. Trop local, mauvaise anticipation des dépendances temporelles (rafale de vent).
+- **Q-Learning** : éliminé. Politique trop optimiste/agressive en environnement non stationnaire → risque de collision.
+
+**Pourquoi TD(λ) (avec esprit on-policy) ?**
+
+1. Environnement **stochastique** (vent, obstacles imprévisibles)
+2. **Prudence et sécurité** essentielles → on apprend la politique réellement suivie
+3. Adaptation **continue** sans attendre la fin de l'épisode
+
+---
+
+#### Cas 2.3 — Anticipation des demandes dans un supermarché
+
+**Réponse : B) TD(λ)**
+
+**Élimination :**
+
+- **TD(0)** : éliminé. Trop sensible au bruit (une journée exceptionnelle perturbe les estimations).
+- **Monte Carlo** : éliminé. Mise à jour trop tardive (fin de saison) — incapable de réagir à un produit qui devient viral en quelques jours.
+- **Q-Learning** : éliminé. Pas un problème d'action optimale, mais d'anticipation continue dans un environnement non stationnaire.
+- **SARSA** : éliminé. La prudence n'est pas l'enjeu central ici.
+
+**Pourquoi TD(λ) ?**
+
+- Adapte progressivement les estimations aux tendances de consommation
+- Sensible aux dépendances temporelles (les ventes d'aujourd'hui dépendent des jours précédents)
+- Distingue une **fluctuation ponctuelle** (un seul jour anormal) d'un **changement réel de tendance** (hausse sur plusieurs jours)
+
+---
+
+#### Cas 2.4 — Jeu vidéo de combat (agent vs adversaire)
+
+**Réponse : C) Q-Learning si adversaire stable, ou D) SARSA si adversaire non déterministe**
+
+**Élimination :**
+
+- **Monte Carlo** : éliminé. Adaptation instantanée requise.
+- **TD(0)** : éliminé. Trop court pour les séquences d'actions adverses (combos, enchaînements).
+
+**Cas adversaire stable → Q-Learning :**
+
+- Permet d'extraire la politique optimale théorique
+- Exploite les faiblesses fixes de l'adversaire
+- Apprend des actions agressives qui maximisent la récompense
+
+**Cas adversaire non déterministe → SARSA :**
+
+- Politique plus prudente (basée sur les actions réellement effectuées)
+- Adaptation stable face à un comportement variable
+- Évite les stratégies sur-optimistes basées sur des situations idéales
+
+---
+
+#### Cas 2.5 — Répartition de la charge dans un réseau de serveurs
+
+**Réponse : B) TD(λ) (ou D) SARSA si haute incertitude)**
+
+**Élimination :**
+
+- **Monte Carlo** : éliminé. Un épisode peut durer une journée → inutilisable.
+- **Q-Learning** : éliminé. Politique trop agressive, risque de surcharge instantanée.
+- **TD(0)** : possible mais trop limité. Provoque du *thrashing* (réallocation trop fréquente), manque la tendance.
+
+**Pourquoi TD(λ) ?**
+
+- Capture les dépendances temporelles à court et moyen terme (évolution de charge sur quelques minutes)
+- Réduit la variance par rapport à Monte Carlo
+- Équilibre réactivité et stabilité grâce au paramètre λ
+
+**SARSA est préféré si** on veut une politique **conservatrice** qui évite des décisions trop risquées dans un environnement très incertain.
+
+---
+
+#### Cas 2.6 — Prédiction des mouvements de marché financier
+
+**Réponse : B) TD(λ)**
+
+**Élimination :**
+
+- **Monte Carlo** : éliminé. Attend la fin d'un épisode (journée entière) → impossible.
+- **Q-Learning et SARSA** : éliminés. Le trading n'est pas un problème « agent → action → récompense », c'est un problème de **prédiction continue** de fonction de valeur.
+- **TD(0)** : possible mais insuffisant. Réagit vite mais ne capture pas les dépendances multi-temps.
+
+**Pourquoi TD(λ) ?**
+
+- Mise à jour **en temps réel** (online) à chaque nouvelle observation
+- Trace déclinante du passé : les mouvements de prix dépendent de l'historique récent (momentum, micro-tendances)
+- Équilibre instantané + mémoire courte grâce au paramètre λ
+- Réduit la variance sans sacrifier la réactivité
+- Gère bien les régimes non stationnaires
+
+---
+
+### 16e — Tableau récapitulatif des 6 études de cas industriels
+
+| Étude de cas | Méthodes éliminées radicalement | Méthodes encore possibles | Méthode recommandée | Justification finale |
+|---|---|---|---|---|
+| **1. Gestion de l'énergie (maison intelligente)** | Monte Carlo (retard immense), Q-Learning (type contrôle inutile), SARSA (prudence non pertinente) | TD(0), TD(λ) | **TD(λ)** | Capture les tendances temporelles tout en restant réactif aux variations du coût et de la météo. |
+| **2. Drone en environnement changeant** | Monte Carlo (mise à jour trop tardive), TD(0) (vision trop courte), Q-Learning (instable en environnement non stationnaire) | SARSA, TD(λ) | **TD(λ)** | Mise à jour incrémentale adaptée aux conditions dynamiques et obstacles mouvants. |
+| **3. Prévision de demande en supermarché** | TD(0) (trop court terme), Monte Carlo (épisodes trop longs), SARSA (non pertinent), Q-Learning (problème non décisionnel) | TD(λ) | **TD(λ)** | Suivi continu des tendances saisonnières avec mémoire pondérée du passé récent. |
+| **4. Jeu vidéo de combat (agent vs adversaire)** | Monte Carlo (retard trop long), TD(0) (incapacité à capturer séquences adverses) | Q-Learning, SARSA | **SARSA** ou **Q-Learning** | SARSA si adversaire non déterministe (prudence). Q-Learning si adversaire stable (politique optimale agressive). |
+| **5. Répartition de charge (serveurs)** | Monte Carlo (trop lent), Q-Learning (risque agressif), SARSA (prudence mais pas optimal), TD(0) (trop limité) | TD(λ) | **TD(λ)** | Combine réactivité en temps réel et prise en compte des variations structurelles de la charge. |
+| **6. Marchés financiers (prédiction)** | Monte Carlo (retard immense), SARSA (non pertinent), Q-Learning (pas un problème d'actions optimales), TD(0) (pas assez riche) | TD(λ) | **TD(λ)** | Gère mieux la volatilité grâce à une trace d'historique pondérée, essentielle dans les marchés instables. |
+
+---
+
+### Résumé global en une phrase
+
+> Dans les six cas industriels proposés, **TD(λ) domine la majorité des scénarios** grâce à sa capacité d'intégrer simultanément la réactivité de TD(0) et la mémoire des tendances récentes, tandis que Monte Carlo, Q-Learning et SARSA ne répondent pas aux contraintes temporelles ou structurelles des systèmes réels — sauf dans le cas du jeu vidéo où SARSA est préféré.
 
 </details>
 
