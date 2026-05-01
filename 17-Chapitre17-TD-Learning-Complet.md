@@ -344,6 +344,53 @@ Le TD-Learning permet :
 
 ---
 
+#### 📌 Rappel rapide — Monte Carlo et Programmation dynamique
+
+Avant d'aller plus loin, deux notions à avoir en tête :
+
+##### Monte Carlo (MC)
+
+- **Définition :** méthode qui apprend uniquement à partir d'**expériences complètes** — on attend la **fin de l'épisode** pour calculer le retour total $G_t$ et mettre à jour les valeurs.
+- **Caractéristique clé :** **pas de modèle requis**, mais on doit **attendre la fin** pour apprendre.
+
+> **Exemple — un match de la Coupe du Monde :** *« Je regarde France contre Brésil. Pour dire **quelle équipe a bien joué** et juger la performance de chaque joueur, je ne peux pas décider après 5 minutes : je dois **attendre la fin du match** (90 minutes + prolongations + tirs au but si nécessaire). C'est seulement à la fin, en voyant le score final et toute la performance, que je peux évaluer **les deux équipes**. »*
+
+> **Exemple — un film au cinéma :** *« Pour dire si c'est un **bon film** ou pas, je ne peux pas trancher après les 10 premières minutes. Beaucoup de films démarrent lentement et deviennent excellents à la fin (ou l'inverse — ils commencent fort puis s'écroulent). Je dois **regarder le film en entier** pour donner une vraie note. »*
+
+> _C'est exactement ça Monte Carlo : **on attend la fin** de l'épisode (match, film, partie, trajet) pour évaluer la valeur de chaque action prise pendant l'épisode._
+
+---
+
+##### Programmation dynamique (DP)
+
+- **Définition :** méthode **planificatrice** qui calcule les valeurs **directement** à partir des équations de Bellman, en utilisant un **modèle complet** de l'environnement (probabilités de transition $P(s' \mid s, a)$ et récompenses $R(s, a)$ connues).
+- **Caractéristique clé :** **diviser un gros problème en petits sous-problèmes** plus simples, et combiner leurs solutions. **Pas besoin d'expérimenter**, mais il faut **connaître les règles** à l'avance.
+
+> **L'idée centrale :** *« Un gros problème compliqué = la somme de plusieurs petits sous-problèmes plus simples, dont les solutions se combinent. C'est le principe « **diviser pour régner** ». »*
+
+> **Exemple — faire un doctorat (PhD) :** *« Faire un doctorat en 5 ans est un projet **énorme**. Personne ne le résout d'un seul coup. On le **divise en sous-problèmes** : (1) trouver un sujet de recherche, (2) faire la revue de littérature, (3) publier 3 articles, (4) écrire la thèse, (5) la soutenir. Chaque sous-problème est lui-même divisé : pour publier un article, il faut concevoir l'expérience, collecter les données, écrire, soumettre, réviser. La solution finale (le PhD obtenu) **combine** toutes les solutions des sous-problèmes. »*
+
+> **Exemple — jouer aux échecs avec les règles connues :** *« On peut analyser une position en se demandant : « quelle est la valeur de ma position après mon prochain coup ? ». Pour répondre, on simule tous les coups possibles, puis pour chacun on se redemande la même question récursivement. Le gros problème « quel est mon meilleur coup ? » se décompose en plein de petits sous-problèmes « quelle est la valeur de cette position ? », qui se résolvent à leur tour par décomposition. C'est exactement ce que fait Bellman. »*
+
+> **Exemple — le GPS :** *« Pour aller de Montréal à Vancouver, le GPS ne calcule pas le trajet complet d'un coup. Il **divise** : « Quel est le meilleur trajet de Montréal à chaque ville intermédiaire ? Puis de chaque ville intermédiaire à Vancouver ? ». Il combine ensuite ces sous-trajets optimaux pour reconstruire l'itinéraire global. »*
+
+---
+
+##### Tableau de synthèse — TD = MC + DP
+
+| | Monte Carlo | Programmation dynamique | **TD-Learning** |
+|---|---|---|---|
+| **Modèle requis ?** | ❌ Non | ✅ Oui | ❌ Non |
+| **Attendre la fin ?** | ✅ Oui (épisode complet) | ❌ Non (planification) | ❌ Non (mise à jour à chaque pas) |
+| **Bootstrap ?** | ❌ Non (vraies récompenses) | ✅ Oui (utilise $V(s')$) | ✅ Oui (utilise $V(s')$ ou $Q(s', a')$) |
+| **Type d'apprentissage** | Empirique, lent | Théorique, calculé | Empirique, rapide |
+
+> 💡 **TD-Learning prend le meilleur des deux :**
+> - de **Monte Carlo** : il **n'a pas besoin de modèle** (apprend par expérience).
+> - de **Programmation dynamique** : il utilise le **bootstrap** (n'attend pas la fin de l'épisode).
+
+---
+
 ### 1b — Idée centrale : apprendre au fil de l'expérience
 
 ```mermaid
