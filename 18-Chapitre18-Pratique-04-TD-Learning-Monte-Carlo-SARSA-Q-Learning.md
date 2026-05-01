@@ -2,9 +2,7 @@
 
 # Pratique 04 — Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
 
-# Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
-
-> Document consolidé regroupant et améliorant l'ensemble du contenu de cette pratique : rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
+> rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
 
 ---
 
