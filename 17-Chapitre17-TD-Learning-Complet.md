@@ -616,6 +616,17 @@ $$V(S_t) \leftarrow (1-\alpha)  V(S_t) + \alpha \left[ R\_{t+1} + \gamma  V(S\_{
 
 ### 4a — TD(1), TD(2), TD(3), …, TD(n)
 
+> ## À retenir en GRAND
+>
+> ### **TD(1) → 1 horizon**
+> ### **TD(2) → 2 horizons**
+> ### **TD(3) → 3 horizons**
+> ### **…**
+> ### **TD(n) → n horizons** (nombre **entier** de pas regardés)
+> ### **TD(λ) → pondération d'horizons** (combinaison de **tous** les horizons avec des poids λ, λ², λ³, ...)
+
+---
+
 Au lieu de regarder un seul pas comme TD(0), on peut accumuler **n récompenses futures** avant de bootstraper avec la valeur de l'état atteint.
 
 | Méthode | Combien d'étapes futures regardées avant de bootstraper ? |
