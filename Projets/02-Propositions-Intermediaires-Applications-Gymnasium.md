@@ -1,4 +1,4 @@
-# Propositions de Projets
+# Propositions de Projets Intermédiares
 
 # **1. LunarLander (Facile à Moyen)**  
 **Description :**  
