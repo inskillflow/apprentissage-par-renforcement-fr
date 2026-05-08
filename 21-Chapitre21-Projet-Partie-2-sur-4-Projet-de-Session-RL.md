@@ -2,19 +2,8 @@
 
 # Guide Partie 2 / 4
 
-Ce document regroupe en un seul guide tout ce qui est nécessaire pour concevoir, choisir, structurer et réussir le **mini-projet de session** en apprentissage par renforcement.
+> Projet de session - Apprentissage par Renforcement
 
-Il propose :
-
-- une démarche pédagogique générale,
-- un catalogue d'idées de projets,
-- une procédure d'utilisation d'un dépôt GitHub existant,
-- deux études de cas détaillées,
-- une synthèse comparative et une checklist finale.
-
-> _Le ton de ce document est neutre et académique. L'objectif est de fournir un cadre clair, applicable à tout projet d'apprentissage par renforcement réalisable dans le temps imparti._
-
----
 
 ## Table des matières
 
@@ -58,6 +47,17 @@ Il propose :
 Le mini-projet de session vise à mettre en pratique les concepts d'**apprentissage par renforcement** vus en cours. L'apprenant doit concevoir un agent capable d'apprendre par essai-erreur dans un environnement défini, puis analyser le comportement obtenu.
 
 L'objectif n'est pas uniquement de produire du code fonctionnel. Le projet doit démontrer la **compréhension du problème**, la **modélisation RL**, la **stratégie d'apprentissage** choisie, ainsi qu'une **analyse critique** des résultats.
+
+Ce document regroupe en un seul guide tout ce qui est nécessaire pour concevoir, choisir, structurer et réussir le **mini-projet de session** en apprentissage par renforcement.
+
+Il propose :
+
+- une démarche pédagogique générale,
+- un catalogue d'idées de projets,
+- une procédure d'utilisation d'un dépôt GitHub existant,
+- deux études de cas détaillées,
+- une synthèse comparative et une checklist finale.
+
 
 ```mermaid
 flowchart LR
