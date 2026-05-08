@@ -1,8 +1,13 @@
 <a id="top"></a>
 
-# Projet de session - Apprentissage par Renforcement
 
-## Table des matières
+# Guide Partie 1 / 4
+
+> Projet de session - Apprentissage par Renforcement
+
+
+## Table des matières 
+
 
 | # | Section |
 |---|---|
