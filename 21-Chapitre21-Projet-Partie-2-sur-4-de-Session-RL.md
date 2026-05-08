@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Votre mini-projet de session - Guide complet
+# Guide Partie 2 / 4
 
 Ce document regroupe en un seul guide tout ce qui est nécessaire pour concevoir, choisir, structurer et réussir le **mini-projet de session** en apprentissage par renforcement.
 
