@@ -1,8 +1,6 @@
 <a id="top"></a>
 
-# Révision 04 — Troisième quart du cours
-
-# Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
+# Révision 04 — Troisième quart du cours - Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
 
 > Document consolidé regroupant et améliorant l'ensemble du contenu de cette pratique : rappels théoriques, comparaisons fines, études de cas industrielles, quiz, questions de réflexion, et liens vers les notebooks de code.
 
