@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Projets RL simples pour débutants - Q-Learning, SARSA, Monte Carlo
+# Projets RL simples - Q-Learning, SARSA, Monte Carlo
 
 - Ce document propose une sélection de **mini-projets très simples** d'apprentissage par renforcement. 
 - Tous les projets reposent **uniquement sur les notions fondamentales du cours** :
