@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Pratique 2 de révision — Troisième quart du cours
+# Révision 04 — Troisième quart du cours
 
 # Monte Carlo, TD-Learning, TD(λ), SARSA et Q-Learning
 
