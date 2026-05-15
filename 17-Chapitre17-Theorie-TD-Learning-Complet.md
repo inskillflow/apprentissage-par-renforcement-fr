@@ -287,7 +287,7 @@ C'est comme si **TD(0), TD(1), TD(2), TD(3)… travaillaient ensemble**, avec de
 
 ### Le piège
 
-Beaucoup d'étudiants confondent **TD(n)** et **TD(λ)** parce que les notations se ressemblent. **Il faut absolument séparer les deux.**
+Beaucoup confondent **TD(n)** et **TD(λ)** parce que les notations se ressemblent. **Il faut absolument séparer les deux.**
 
 ---
 
