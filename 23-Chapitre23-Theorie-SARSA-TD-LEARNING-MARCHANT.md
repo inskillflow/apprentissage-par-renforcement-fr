@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 23 - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
+# Chapitre 15-bis - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
 
 ## Table des matières
 
