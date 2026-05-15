@@ -33,6 +33,105 @@
 
 ---
 
+## Équations de référence
+
+<a id="eq-objectif"></a>
+
+**Éq. (1)** — Objectif du bandit (maximisation de la récompense cumulée)
+
+$$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
+
+<a id="eq-q-star"></a>
+
+**Éq. (2)** — Vraie valeur d'une action
+
+$$q_*(a) = \mathbb{E}[R_t \mid A_t = a]$$
+
+<a id="eq-q-empirique"></a>
+
+**Éq. (3)** — Estimation par moyenne empirique
+
+$$Q_t(a) = \frac{\sum_{i=1}^{t-1} R_i \cdot \mathbb{1}_{A_i = a}}{N_t(a)}$$
+
+<a id="eq-q-incremental"></a>
+
+**Éq. (4)** — Mise à jour incrémentale (sans tout stocker)
+
+$$Q_{n+1}(a) = Q_n(a) + \frac{1}{n}\left[R_n - Q_n(a)\right]$$
+
+<a id="eq-q-alpha"></a>
+
+**Éq. (5)** — Mise à jour avec taux d'apprentissage α (forme TD)
+
+$$Q_{n+1}(a) \leftarrow Q_n(a) + \alpha \left[R_n - Q_n(a)\right]$$
+
+<a id="eq-regret"></a>
+
+**Éq. (6)** — Regret cumulé
+
+$$\mathcal{R}(T) \;=\; T \cdot q_*(a^*) \;-\; \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]$$
+
+avec $a^* = \arg\max_a q_*(a)$.
+
+<a id="eq-epsilon-greedy"></a>
+
+**Éq. (7)** — Décision ε-greedy
+
+- Avec probabilité $1 - \varepsilon$ : $A_t = \arg\max_a Q_t(a)$ (exploitation)
+- Avec probabilité $\varepsilon$ : $A_t \sim \mathcal{U}(\{1,\dots,k\})$ (exploration uniforme)
+
+<a id="eq-epsilon-decay"></a>
+
+**Éq. (8)** — ε avec décroissance
+
+$$\varepsilon_t = \max\left(\varepsilon_{\min}, \; \varepsilon_0 \cdot \text{decay}^t\right)$$
+
+<a id="eq-ucb"></a>
+
+**Éq. (9)** — Sélection UCB (Upper Confidence Bound)
+
+$$A_t = \arg\max_a \left[\, Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \,\right]$$
+
+<a id="eq-softmax"></a>
+
+**Éq. (10)** — Politique softmax (Gradient Bandit)
+
+$$\pi_t(a) = \frac{e^{H_t(a)}}{\sum_{b=1}^{k} e^{H_t(b)}}$$
+
+<a id="eq-gradient-chosen"></a>
+
+**Éq. (11)** — Mise à jour Gradient Bandit pour l'action choisie $A_t$
+
+$$H_{t+1}(A_t) \leftarrow H_t(A_t) + \alpha (R_t - \bar{R}_t)(1 - \pi_t(A_t))$$
+
+<a id="eq-gradient-others"></a>
+
+**Éq. (12)** — Mise à jour Gradient Bandit pour les autres actions $a \neq A_t$
+
+$$H_{t+1}(a) \leftarrow H_t(a) - \alpha (R_t - \bar{R}_t) \pi_t(a)$$
+
+<a id="eq-contextual-objectif"></a>
+
+**Éq. (13)** — Objectif d'un bandit contextuel
+
+$$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^T r_t \mid \pi\right]$$
+
+<a id="eq-linucb"></a>
+
+**Éq. (14)** — Sélection LinUCB
+
+$$a_t = \arg\max_a \left[\, x_t^T \hat{\theta}_a + \alpha \sqrt{x_t^T A_a^{-1} x_t} \,\right]$$
+
+<a id="eq-non-stationnaire"></a>
+
+**Éq. (15)** — Forme exponentielle pondérée (bandit non-stationnaire)
+
+$$Q_{n+1}(a) = (1-\alpha)^n Q_0(a) + \sum_{i=1}^{n} \alpha (1-\alpha)^{n-i} R_i$$
+
+> _Toutes les équations utilisées dans le reste du chapitre sont rassemblées ici. Les équations dont le rendu Markdown peut poser problème (cas multiples avec `\begin{cases}` et expressions denses) ne sont **pas répétées dans le corps du texte** — elles sont remplacées par un lien vers cette section._
+
+---
+
 <a id="section-1"></a>
 
 <details>
@@ -44,6 +143,15 @@ Un **problème de bandit** est la **forme la plus simple** d'apprentissage par r
 
 > _Si l'apprentissage par renforcement complet (MDP) est comme un jeu d'échecs avec des centaines de positions différentes, le **bandit** est comme un casino avec **plusieurs machines à sous identiques visuellement, mais avec des taux de gains cachés différents**. Votre seule décision : quelle machine jouer maintenant ?_
 
+> [!TIP]
+> **Vie réelle — Vous êtes un bandit tous les jours sans le savoir !**
+>
+> - 🍕 Vous arrivez dans un nouveau quartier : **5 restaurants à essayer**. Chaque dîner = un essai. Comment trouver votre préféré sans gaspiller 6 mois à manger « moyen » ?
+> - ☕ Vous testez une nouvelle marque de café : achetez-vous toujours la même (exploitation) ou variez-vous pour découvrir mieux (exploration) ?
+> - 🎵 Spotify vous propose 3 playlists : laquelle choisir aujourd'hui ?
+>
+> **Toutes ces situations sont des bandits multi-bras**. Votre cerveau les résout intuitivement. Dans ce chapitre, on apprend à les résoudre **mathématiquement et à grande échelle**.
+
 ---
 
 ### L'origine du nom : la machine à sous
@@ -51,6 +159,9 @@ Un **problème de bandit** est la **forme la plus simple** d'apprentissage par r
 Le nom **« bandit manchot »** (*one-armed bandit*) vient de l'argot américain désignant les **machines à sous des casinos** — celles qui « volent l'argent des joueurs » avec leur **unique bras** (la manivelle).
 
 Un **bandit multi-bras** (*multi-armed bandit*, ou **MAB**) est l'extension naturelle : imaginez un casino avec **k machines à sous différentes**, chacune ayant une probabilité de gain inconnue. Votre objectif : **maximiser vos gains totaux** sur un nombre limité d'essais.
+
+> [!NOTE]
+> **Pourquoi « manchot » ?** Les anciennes machines à sous mécaniques avaient une seule manivelle (un seul bras), d'où *one-armed bandit*. Quand on a voulu modéliser le problème avec **plusieurs choix simultanés**, on a parlé de *multi-armed bandit* — comme s'il y avait plusieurs leviers à tirer.
 
 ```mermaid
 flowchart LR
@@ -79,6 +190,14 @@ flowchart LR
 | **Difficulté principale** | Exploration vs Exploitation | Exploration + crédit assignment + planification |
 
 > _Un bandit est un MDP avec **|S| = 1**. C'est pourquoi les bandits sont étudiés en premier dans tous les cours de RL (notamment dans **Sutton & Barto, Chapitre 2**) : ils permettent d'isoler le dilemme exploration/exploitation sans la complexité du **credit assignment** (savoir quelle action passée mérite quelle récompense future)._
+
+> [!IMPORTANT]
+> **Règle pour ne jamais confondre :**
+>
+> - **Bandit** = « Quelle pizza commander ce soir ? » → choix indépendants, sans conséquences futures
+> - **MDP / RL complet** = « Quel coup jouer aux échecs ? » → chaque choix change la situation et influence les coups suivants
+>
+> Si votre problème **n'a pas d'état qui change** au fil des décisions, c'est un **bandit**, et vous n'avez pas besoin de Q-Learning ou PPO. Un simple ε-greedy suffit (et bat souvent les méthodes complexes en production !).
 
 ```mermaid
 flowchart TD
@@ -129,6 +248,13 @@ L'agent ne connaît pas $q_*(a)$ — il doit l'**estimer** à partir de ses obse
 
 > _Si l'agent connaissait parfaitement $q_*(a)$ pour chaque action, le problème serait trivial : il suffirait de toujours choisir $a^* = \arg\max_a q_*(a)$. **Tout le défi du bandit est dans cette ignorance initiale**._
 
+> [!TIP]
+> **Vulgarisation — Qu'est-ce que $q_*(a)$ dans la vraie vie ?**
+>
+> Imaginez que vous évaluez **5 restaurants** sur une échelle de 1 à 10. Si Dieu vous chuchotait à l'oreille « Le restaurant n°3 a une vraie qualité moyenne de 8.7/10, le n°1 de 6.2/10... » — ces nombres seraient $q_*(a)$.
+>
+> Mais Dieu ne parle pas. **Vous devez aller manger** dans chaque restaurant pour estimer ces notes. Et chaque dîner est bruité (un soir le chef est fatigué, un autre c'est exceptionnel). Votre estimation $Q_t(a)$ s'améliore à chaque visite, mais ne sera **jamais parfaitement égale** à la vérité $q_*(a)$.
+
 ---
 
 ### L'estimation par moyenne empirique
@@ -151,15 +277,20 @@ $$Q_{n+1}(a) \leftarrow Q_n(a) + \alpha \left[R_n - Q_n(a)\right]$$
 
 > _Vous reconnaissez ici la **structure classique des mises à jour TD** (Temporal Difference) que l'on retrouve dans Q-Learning et SARSA. Le bandit est le **terrain d'entraînement** pour comprendre cette équation fondamentale._
 
+> [!NOTE]
+> **Vie réelle — La mise à jour incrémentale, vous la faites déjà.**
+>
+> Quand un ami vous dit « Tu sais, ce restaurant que je trouvais excellent, j'y suis retourné hier et c'était décevant... », vous mettez à jour mentalement votre opinion. Votre nouvelle estimation est **un mélange entre l'ancienne et la nouvelle expérience**, pas un remplacement total.
+>
+> C'est exactement la formule : $Q_{nouveau} = Q_{ancien} + \alpha \cdot (\text{surprise})$. Avec $\alpha = 0.1$, une visite décevante ne suffit pas à tout détruire (10% de poids), mais elle compte. Notre cerveau utilise probablement $\alpha \approx 0.1\text{-}0.3$ — nous sommes des bandits stochastiques ambulants !
+
 ---
 
 ### Le concept central : le regret
 
-Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui connaîtrait toujours la meilleure action :
+Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui connaîtrait toujours la meilleure action.
 
-$$\mathcal{R}(T) = T \cdot q_*(a^*) - \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
-
-où $a^* = \arg\max_a q_*(a)$ est la meilleure action.
+➡️ Voir [**Éq. (6) — Regret cumulé**](#eq-regret) en haut du document, où $a^* = \arg\max_a q_*(a)$ est la meilleure action.
 
 | Type de regret | Comportement souhaité |
 |---|---|
@@ -168,6 +299,13 @@ où $a^* = \arg\max_a q_*(a)$ est la meilleure action.
 | **Regret en racine** $\mathcal{R}(T) \sim \sqrt{T}$ | ⚠️ Acceptable mais sous-optimal |
 
 > _Les bons algorithmes de bandit (UCB, Thompson Sampling) atteignent la borne **logarithmique** — cela signifie que **plus le temps passe, plus l'agent fait des choix optimaux**, à un rythme idéal._
+
+> [!CAUTION]
+> **Danger — Le piège du regret linéaire.**
+>
+> Un agent qui choisit **toujours au hasard** (random) a un regret **linéaire** : à chaque pas il perd la même chose en moyenne. Sur 1 million d'utilisateurs, cela représente des **millions d'euros perdus** pour une plateforme comme Spotify ou Amazon.
+>
+> Le passage de **regret linéaire → logarithmique** est ce qui justifie économiquement tout l'effort d'ingénierie d'un système de bandits. C'est aussi pourquoi déployer **un mauvais bandit** (mal calibré) peut être pire que **pas de bandit du tout** — vous bloquez l'agent sur de mauvaises actions.
 
 ```mermaid
 flowchart LR
@@ -196,6 +334,16 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 
 > _Anecdote : **Microsoft Research** a publié en 2014 que ses systèmes de personnalisation de news **MSN.com** utilisaient des bandits contextuels servant **plusieurs millions de décisions par jour** — une stack RL plus simple que le Deep RL, mais infiniment plus rentable à grande échelle._
 
+> [!IMPORTANT]
+> **Pour les ingénieurs : choisissez un bandit AVANT un Deep RL.**
+>
+> Quand on découvre le RL, la tentation est de tout faire avec PPO ou DQN. **Erreur classique en industrie**. Avant de sortir l'artillerie lourde, demandez-vous :
+>
+> 1. Est-ce que mon problème **a vraiment plusieurs états** qui changent avec mes décisions ?
+> 2. Si non → **bandit suffit** (et apprendra 100× plus vite avec 100× moins de données).
+>
+> 90% des cas d'usage industriels « RL » sont en réalité des **bandits déguisés**. Spotify, Amazon, Microsoft Personalizer, Vowpal Wabbit... tous tournent sur des bandits, pas sur du Deep RL exotique.
+
 ---
 
 ### 3.1 — Tests A/B intelligents (publicité, e-commerce)
@@ -212,6 +360,13 @@ Les **bandits remplacent les tests A/B** : le trafic est **réorienté dynamique
 | **Utilisé par** | Tout le monde (par défaut) | Google Ads, Microsoft, Optimizely |
 
 > _Économie typique : un bandit bien réglé fait gagner **20-30% de revenus supplémentaires** par rapport à un test A/B classique sur la même durée._
+
+> [!TIP]
+> **Vie réelle — Pourquoi votre boutique en ligne préférée vous propose toujours « le bon produit ».**
+>
+> Quand Amazon teste 5 designs différents pour son bouton « Acheter », un test A/B classique enverrait 20% des utilisateurs sur chaque design pendant 2 semaines. Un bandit envoie **automatiquement** plus de visiteurs sur le design qui convertit le mieux, **dès la première heure**.
+>
+> Résultat : si le design n°3 est clairement meilleur, après 1 jour seuls 5% des visiteurs voient encore les designs perdants — vs 80% avec un test A/B classique. **C'est cette mécanique invisible qui finance les ingénieurs ML.**
 
 ---
 
@@ -329,7 +484,7 @@ flowchart TD
 - **Avec probabilité $1 - \varepsilon$** : choisit l'action **gloutonne** (greedy) $A_t = \arg\max_a Q_t(a)$ — **EXPLOITATION**
 - **Avec probabilité $\varepsilon$** : choisit une action **aléatoire** uniforme — **EXPLORATION**
 
-$$A_t = \begin{cases} \arg\max_a Q_t(a) & \text{avec probabilité } 1 - \varepsilon \\ \text{action uniforme} & \text{avec probabilité } \varepsilon \end{cases}$$
+➡️ Voir [**Éq. (7) — Décision ε-greedy**](#eq-epsilon-greedy) en haut du document.
 
 #### Choix de ε
 
@@ -340,6 +495,20 @@ $$A_t = \begin{cases} \arg\max_a Q_t(a) & \text{avec probabilité } 1 - \varepsi
 | **ε = 0.1** | Standard, bon compromis | Référence par défaut |
 | **ε = 0.3** | Beaucoup d'exploration | Environnements très bruités |
 | **ε = 1** | Exploration pure (random) | Baseline pour comparaison |
+
+> [!CAUTION]
+> **Piège classique — Ne JAMAIS utiliser ε = 0.**
+>
+> Avec ε = 0, l'agent **n'explore plus jamais**. Si les premières observations malchanceuses lui font croire qu'une action est mauvaise, il **ne lui redonnera jamais sa chance** — même si en réalité elle était excellente.
+>
+> **Exemple réel :** un système de recommandation Netflix qui décide après 2 affichages malchanceux qu'un film est nul. Ce film **disparaît à jamais** de l'algorithme alors qu'il aurait pu plaire à des millions d'utilisateurs. C'est **une perte de revenus permanente** par excès de confiance.
+
+> [!TIP]
+> **Vie réelle — ε-greedy, c'est votre comportement au resto.**
+>
+> Vous avez un restaurant favori où vous allez **9 fois sur 10** (exploitation, $1-\varepsilon = 0.9$). Mais **1 fois sur 10**, vous tentez quelque chose de nouveau (exploration, $\varepsilon = 0.1$). Si la nouvelle adresse est meilleure, elle deviendra votre nouveau favori. Sinon, vous n'avez « gaspillé » qu'un seul dîner.
+>
+> ε-greedy = **routine + curiosité contrôlée**. C'est le compromis le plus naturel et le plus utilisé en production.
 
 #### ε-greedy avec décroissance (decay)
 
@@ -377,6 +546,13 @@ Astuce élégante : initialiser **$Q_0(a)$ à une valeur très optimiste** (par 
 
 > _Anecdote : Sutton & Barto montrent que sur le 10-armed testbed standard, **Optimistic Init** ($Q_0 = 5$, ε = 0) bat **ε-greedy** ($Q_0 = 0$, ε = 0.1) après ~1000 itérations._
 
+> [!WARNING]
+> **Limite à connaître — Optimistic Init échoue en environnement non-stationnaire.**
+>
+> Imaginez que vous évaluez 5 nouveaux smartphones en partant du principe que tous valent 10/10 (optimisme). Vous testez chacun, vous baissez vos notes, et vous concluez que le n°2 est le meilleur. Parfait... **jusqu'à ce que le constructeur sorte une mise à jour qui rend le n°4 bien meilleur** 6 mois plus tard.
+>
+> L'astuce optimiste **ne fonctionne qu'au démarrage**. Une fois que les valeurs $Q$ ont convergé vers le « vrai » niveau bas, l'agent n'a plus aucune raison d'explorer. **Si le monde change**, il est aveugle au changement. Préférez ε-greedy avec α constant ou UCB pour ces cas.
+
 ---
 
 ### 4c — UCB (Upper Confidence Bound) — L'optimisme face à l'incertitude
@@ -401,6 +577,17 @@ $$A_t = \arg\max_a \left[ Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right]$$
 - Plus le **temps passe** ($\ln t$ croît) → exploration légèrement augmentée pour rester curieux
 
 > _**UCB est mathématiquement prouvé optimal** : il atteint la borne logarithmique du regret $\mathcal{R}(T) = O(\log T)$. C'est pourquoi UCB est massivement utilisé en pratique (Microsoft Personalizer, par exemple)._
+
+> [!TIP]
+> **Vie réelle — UCB, c'est l'attitude du bon manager.**
+>
+> Un bon manager qui répartit les missions :
+>
+> - Donne plus de missions à ses **collaborateurs éprouvés** (exploitation : $Q(a)$ élevé)
+> - Mais donne aussi **régulièrement leur chance aux nouveaux** ou aux moins testés (exploration : bonus $\sqrt{\ln t / N(a)}$ élevé)
+> - Diminue le bonus à mesure que la personne se prouve (ou se dément) après plusieurs missions
+>
+> UCB = « **donner le bénéfice du doute aux options peu testées** », pondéré exactement comme il faut. Aucun autre algorithme aussi simple n'atteint cette élégance théorique.
 
 ---
 
@@ -429,6 +616,17 @@ Au lieu de maintenir une **valeur ponctuelle** $Q(a)$, on maintient une **distri
 - Peut intégrer facilement des **a priori** bayésiens (connaissance experte initiale)
 
 > _Anecdote : Thompson Sampling a été inventé par **William R. Thompson en 1933** — soit **40 ans avant la formalisation moderne du RL**. Longtemps oublié, il a été redécouvert dans les années 2010 et est aujourd'hui un standard industriel._
+
+> [!IMPORTANT]
+> **Pourquoi Thompson est utilisé chez Microsoft, Yahoo!, Stitch Fix, Netflix ?**
+>
+> Trois raisons techniques :
+>
+> 1. **Performance pure** : il bat UCB sur la majorité des benchmarks réels (essais cliniques, recommandation, RTB)
+> 2. **Intégration d'a priori** : si vous savez que « le bouton rouge convertit historiquement à 5% », vous l'encodez dans la distribution Beta initiale → l'algorithme démarre informé
+> 3. **Calcul léger** : un échantillonnage Beta = 2 lignes de code, scalable à des milliards de décisions/jour
+>
+> **Vulgarisation :** TS = « je n'ai pas une opinion ferme, j'ai une **distribution d'opinions** ». Et au moment de décider, je tire **au hasard dans cette distribution**, comme si je consultais une foule d'experts internes plutôt qu'un seul.
 
 ```mermaid
 flowchart LR
@@ -500,6 +698,13 @@ $$H_{t+1}(a) \leftarrow H_t(a) - \alpha (R_t - \bar{R}_t) \pi_t(a)$$
 - Si la récompense est **pire que la moyenne** → on **diminue** $H(A_t)$ et augmente les autres → l'action choisie devient moins probable
 
 > _C'est exactement le principe du **gradient de politique** vu au Chapitre 8 (REINFORCE), appliqué au cas dégénéré $|S| = 1$. Maîtriser le gradient bandit vous prépare directement aux méthodes Policy-Based en RL profond._
+
+> [!NOTE]
+> **Vie réelle — Le Gradient Bandit, c'est apprendre une langue par immersion.**
+>
+> Quand vous apprenez l'anglais en immersion, vous ne mémorisez pas une « table » du sens de chaque mot ($Q(a)$). Vous développez plutôt des **préférences instinctives** ($H(a)$) sur ce qui « sonne juste ». Quand vous tentez une phrase et qu'on vous comprend (récompense > moyenne), vous renforcez ce style de phrase. Quand on vous regarde bizarrement, vous le diminuez.
+>
+> Vous n'avez **pas de note explicite** par mot, juste une **distribution de probabilités** d'usage. C'est exactement ce que fait le Gradient Bandit — et c'est la même mécanique au cœur de **ChatGPT** (entraîné par PPO, descendant du Gradient Bandit).
 
 ---
 
@@ -673,6 +878,27 @@ flowchart TD
 
 > _Pour les bandits, les hyperparamètres par défaut suivants fonctionnent dans 80% des cas : **ε = 0.1**, **c = 2** pour UCB, **α = 0.1** pour le gradient. Commencez par là, ajustez ensuite avec validation croisée si nécessaire._
 
+> [!TIP]
+> **Règles d'or pour ne pas perdre du temps en tuning :**
+>
+> | Algorithme | Valeur de départ | Quand augmenter | Quand diminuer |
+> |---|---|---|---|
+> | ε-greedy | $\varepsilon = 0.1$ | Récompenses très bruitées | Vous avez beaucoup de pas |
+> | UCB | $c = 2$ | Vous voulez plus d'exploration | Vous avez peu de pas |
+> | Gradient | $\alpha = 0.1$ | Récompenses stables | Apprentissage instable |
+> | Optimistic | $Q_0 = 5$ × max attendu | Démarrage froid | Quasi-jamais |
+>
+> **Règle pratique :** ne touchez aux hyperparamètres **qu'après** avoir prouvé que les valeurs par défaut ne suffisent pas. 80% des « problèmes de tuning » sont en réalité des bugs d'implémentation cachés.
+
+> [!WARNING]
+> **Erreur classique — Confondre le tuning d'hyperparamètres avec « tester sur les données de production ».**
+>
+> Si vous changez $\varepsilon$ et observez que ça améliore votre métrique sur 1 semaine en production, vous **biaisez** vos prochaines mesures (l'environnement a vu votre modification, vos utilisateurs ont changé de comportement). Toujours valider sur :
+>
+> 1. **Simulation hors-ligne** (replay des logs) — gratuit, rapide, reproductible
+> 2. **A/B test contrôlé** sur un petit % de trafic — vrai test, mais risque limité
+> 3. **Déploiement complet** — seulement après les deux étapes précédentes
+
 </details>
 
 <p align="right"><a href="#top">↑ Retour en haut</a></p>
@@ -693,6 +919,17 @@ Cette section fournit une **implémentation complète et exécutable** d'un envi
 ```bash
 pip install numpy matplotlib
 ```
+
+> [!CAUTION]
+> **Pièges classiques d'implémentation à éviter à tout prix :**
+>
+> 1. **Oublier de fixer la `seed`** → vos résultats varient à chaque exécution, impossible de comparer correctement deux algorithmes
+> 2. **Diviser par zéro dans UCB** quand $N(a) = 0$ → toujours forcer une **première visite** de chaque action avant la formule
+> 3. **Softmax non stabilisé** dans le Gradient Bandit → faire `exp(H - max(H))` pour éviter les overflow
+> 4. **Confondre $\arg\max$ avec $\max$** : np.argmax retourne **l'indice**, np.max retourne **la valeur**
+> 5. **Oublier d'incrémenter $N(a)$ et $t$** dans `update()` → le bonus UCB devient incohérent
+>
+> Le code ci-dessous **gère tous ces pièges**. Lisez-le ligne par ligne avant de l'adapter.
 
 ---
 
@@ -1026,6 +1263,13 @@ La récompense observée peut prendre plusieurs formes :
 
 > _Avec 1000 articles et un top-10 à choisir, il est **impossible** de traiter chaque combinaison comme un bras indépendant. Les algorithmes combinatoires (CombUCB, CascadeUCB1, ColocadingUCB) exploitent la **structure** du problème pour rester efficaces._
 
+> [!CAUTION]
+> **Danger — L'explosion combinatoire tue les approches naïves.**
+>
+> Imaginez que vous voulez composer le **menu parfait d'un restaurant** : 5 entrées + 8 plats + 4 desserts à choisir parmi un catalogue. Au lieu de 17 décisions indépendantes, vous avez en théorie $\binom{50}{5} \times \binom{50}{8} \times \binom{50}{4} \approx 10^{18}$ menus possibles.
+>
+> Si vous testez **un menu par jour**, il vous faudrait **3000 milliards d'années** pour tous les essayer. C'est pourquoi tous les algorithmes combinatoires industriels font une **hypothèse simplificatrice** (ex : « la qualité d'un menu = somme des qualités des plats individuels »). Sans cette hypothèse, le problème est **mathématiquement intractable**.
+
 #### Algorithmes principaux
 
 | Algorithme | Particularité |
@@ -1073,6 +1317,15 @@ flowchart LR
 ```
 
 > _Les bandits contextuels sont la **passerelle naturelle** entre les bandits simples et le RL complet. Mathématiquement, c'est un MDP **sans transition d'état** (chaque contexte est tiré indépendamment) — donc plus simple que Q-Learning, mais bien plus puissant qu'un bandit basique._
+
+> [!IMPORTANT]
+> **Vie réelle — Le bandit contextuel = la vraie personnalisation web.**
+>
+> - **YouTube** ne montre pas la même thumbnail à tout le monde pour la même vidéo. Selon votre âge, votre historique, votre device, l'algorithme choisit **la miniature** la plus susceptible de vous faire cliquer
+> - **Amazon** n'affiche pas le même prix « recommandé » à tous (légal en e-commerce, illégal en assurance)
+> - **Tinder** réordonne les profils selon votre comportement passé
+>
+> Tout cela = **bandits contextuels** avec un vecteur de contexte $x_t$ = votre profil utilisateur. La même action (« afficher cette miniature ») a une récompense différente selon $x_t$. **Si vous travaillez en growth marketing ou data, c'est l'algo le plus rentable à maîtriser.**
 
 #### Algorithmes principaux
 
@@ -1123,6 +1376,18 @@ Les bandits combinatoires et contextuels sont **déployés à très grande éche
 - **Algorithme** : LinUCB (Yahoo!) ou Vowpal Wabbit (Microsoft)
 
 > _Yahoo! a publié en 2010 un papier fondateur (Li et al., "A Contextual-Bandit Approach to Personalized News Article Recommendation") montrant **+12.5% de CTR** par rapport à un système non personnalisé._
+
+> [!TIP]
+> **Vie réelle — Comment Spotify choisit votre playlist du lundi matin.**
+>
+> Spotify n'a pas un éditeur humain qui choisit votre Discover Weekly. Un bandit contextuel :
+>
+> 1. Observe votre **contexte** : heure de la journée, jour de la semaine, dernier morceau écouté, genre préféré récent
+> 2. Choisit parmi **des milliers de morceaux candidats** ceux qui ont la plus grande probabilité de vous garder à l'écoute
+> 3. Mesure la **récompense** : avez-vous écouté > 30 secondes ? Liké ? Skippé ?
+> 4. Met à jour ses paramètres en temps réel pour vous **et tous les utilisateurs au profil similaire**
+>
+> Résultat : votre playlist est différente d'il y a 6 mois, **sans que personne chez Spotify n'ait écrit une ligne de code spécifique pour vous**.
 
 ---
 
@@ -1279,6 +1544,13 @@ Les algorithmes de bandits classiques **convergent vers une politique fixe** —
 - Détection de changement (CUSUM, Page-Hinkley)
 - Ré-initialisation périodique
 
+> [!WARNING]
+> **Vie réelle — Pourquoi votre fil Instagram devient « bizarre » après les fêtes.**
+>
+> Si vous avez beaucoup liké des contenus de Noël en décembre, l'algo continue à vous proposer ce type de contenu en janvier — alors que vous n'avez plus envie. **C'est de la non-stationnarité non gérée**. Les bons systèmes oublient progressivement les vieilles données ; les mauvais vous enferment dans une bulle obsolète.
+>
+> **Test simple** : si votre algo recommande encore aujourd'hui des choses que vous aimiez **il y a 6 mois mais plus aujourd'hui**, il a un problème de gestion de la non-stationnarité.
+
 ---
 
 ### 11.4 — Biais de sélection (selection bias)
@@ -1331,6 +1603,17 @@ Les algorithmes de bandits classiques **convergent vers une politique fixe** —
 - Bandits sous **contraintes d'équité** (Constrained Bandits)
 - Audit régulier des décisions par sous-population
 - Régulation : RGPD, AI Act européen, FDA pour le médical
+
+> [!CAUTION]
+> **Danger éthique majeur — Discrimination invisible par boucle de rétroaction.**
+>
+> Cas réels documentés :
+>
+> - **Recrutement Amazon (2018)** : un bandit qui apprenait à filtrer les CV s'est mis à **pénaliser les candidats féminins** (mot « women's chess club » = malus) parce que l'historique était majoritairement masculin. Amazon a abandonné l'outil.
+> - **Pricing dynamique iOS vs Android** : certains sites affichaient des prix plus élevés aux utilisateurs iPhone (présumés plus fortunés). Légal, mais éthiquement contestable.
+> - **Bulles d'information** : YouTube/TikTok enferment les utilisateurs dans un type de contenu, contribuant à la polarisation sociale.
+>
+> **Règle déontologique :** chaque déploiement de bandit en production doit avoir un **audit régulier par sous-population** (genre, âge, géo, ethnie quand mesurable). Sinon vous **automatisez vos biais à grande échelle**.
 
 ---
 
@@ -1960,6 +2243,27 @@ flowchart TD
 - 🛠️ **Vowpal Wabbit** (Microsoft) — bibliothèque open-source pour bandits contextuels en production
 - 🛠️ **Azure Personalizer** — service managé Microsoft basé sur des bandits contextuels
 - 📄 Li et al., 2010 — "A Contextual-Bandit Approach to Personalized News Article Recommendation" (papier fondateur Yahoo!)
+
+> [!TIP]
+> **Dernière pensée — Pourquoi ce chapitre est probablement le plus rentable du cours.**
+>
+> Si vous êtes en transition vers le ML / data science, **les bandits sont l'algorithme RL le plus demandé en entretien** (start-ups, growth marketing, e-commerce, AdTech). Plus que Q-Learning ou PPO. Pourquoi ?
+>
+> 1. **Implémentation rapide** : un MVP en quelques jours, pas en mois
+> 2. **ROI immédiat et mesurable** : +10-30% de revenus typiquement
+> 3. **Transversal** : utilisable dans tous les secteurs (web, finance, santé, télécoms)
+> 4. **Pédagogique** : c'est aussi la meilleure base pour comprendre tout le reste du RL
+>
+> **Action concrète :** prenez un projet personnel (votre playlist Spotify, vos courses, vos investissements) et modélisez-le comme un bandit. Implémentez ε-greedy en 30 lignes de Python. C'est **le meilleur exercice** pour ancrer les concepts.
+
+> [!IMPORTANT]
+> **Erreurs à ne plus faire après ce chapitre :**
+>
+> - ❌ « J'utilise Deep Q-Learning pour mon problème » → vérifiez d'abord si c'est un bandit déguisé
+> - ❌ « Je fais un test A/B 50/50 sur mon site » → un bandit est presque toujours plus rentable
+> - ❌ « Je ne fixe pas de seed dans mes expériences » → résultats non reproductibles
+> - ❌ « ε = 0 c'est plus efficace » → vous bloquez l'exploration à jamais
+> - ❌ « Mon bandit en production tourne tout seul » → audit fairness obligatoire
 
 </details>
 
