@@ -128,7 +128,7 @@ $$a_t = \arg\max_a \left[\, x_t^T \hat{\theta}_a + \alpha \sqrt{x_t^T A_a^{-1} x
 
 $$Q_{n+1}(a) = (1-\alpha)^n Q_0(a) + \sum_{i=1}^{n} \alpha (1-\alpha)^{n-i} R_i$$
 
-> _Toutes les équations utilisées dans le reste du chapitre sont rassemblées ici. Les équations dont le rendu Markdown peut poser problème (cas multiples avec `\begin{cases}` et expressions denses) ne sont **pas répétées dans le corps du texte** — elles sont remplacées par un lien vers cette section._
+> _Toutes les équations utilisées dans le chapitre sont rassemblées ci-dessus. Dans le texte, on renvoie systématiquement à leur numéro plutôt que de les réécrire._
 
 ---
 
@@ -163,8 +163,7 @@ Un **bandit multi-bras** (*multi-armed bandit*, ou **MAB**) est l'extension natu
 > **ℹ️ Remarque**
 > **Pourquoi « manchot » ?** Les anciennes machines à sous mécaniques avaient une seule manivelle (un seul bras), d'où *one-armed bandit*. Quand on a voulu modéliser le problème avec **plusieurs choix simultanés**, on a parlé de *multi-armed bandit* — comme s'il y avait plusieurs leviers à tirer.
 
-> **❓ FAQ pédagogique**
-> **À utiliser tel quel face à des étudiants qui découvrent le concept.**
+> **❓ FAQ**
 >
 > **Q : Pourquoi on appelle ça un « bandit » ?**
 > R : C'est une référence au **« bandit manchot »**, surnom américain des machines à sous. Avec leur **bras mécanique unique** (la manivelle latérale), elles te prenaient ton argent essai après essai. Le mot « bandit » est **imagé et humoristique** — la machine ne « vole » rien d'illégal, mais sur le long terme **le casino a un avantage statistique**, donc le joueur perd un peu à chaque tour. D'où l'image du braquage en douceur.
@@ -222,8 +221,8 @@ flowchart LR
 >
 > Si votre problème **n'a pas d'état qui change** au fil des décisions, c'est un **bandit**, et vous n'avez pas besoin de Q-Learning ou PPO. Un simple ε-greedy suffit (et bat souvent les méthodes complexes en production !).
 
-> **❓ FAQ pédagogique**
-> **Pour vos étudiants : la différence bandit ↔ MDP en 30 secondes.**
+> **❓ FAQ**
+> **La différence bandit ↔ MDP en 30 secondes.**
 >
 > **Q : C'est quoi exactement la différence entre un bandit multi-bras et un MDP complet ?**
 > R : C'est le **temps** et **les conséquences futures** qui changent tout :
@@ -273,7 +272,7 @@ L'**objectif** de l'agent est de maximiser la **récompense cumulée** sur un ho
 
 $$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 
-> **❓ FAQ pédagogique**
+> **❓ FAQ**
 > **Comment expliquer simplement « maximiser une somme de récompenses » ?**
 >
 > **Q : C'est quoi cette « espérance d'une somme de R » ?**
@@ -282,7 +281,7 @@ $$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 > **Q : Pourquoi « espérance » (le E) et pas juste « somme » ?**
 > R : Parce que les récompenses sont **stochastiques** (aléatoires). Si tu joues 1 000 fois, tu n'auras pas exactement la même somme à chaque simulation. L'espérance E[…] = **la moyenne sur un très grand nombre de simulations**. C'est cette moyenne que l'agent cherche à rendre maximale.
 >
-> **Q : En une phrase pour mes étudiants ?**
+> **Q : En une phrase, comment résumer ?**
 > R : « **Tu prends une décision pas pour le plaisir immédiat d'un gros gain, mais pour qu'au fil du temps, tu accumules un maximum de bénéfices.** » C'est l'inverse de la mentalité « tout, tout de suite » : on accepte de **tester un peu** au début pour gagner **beaucoup plus** ensuite.
 
 ---
@@ -356,7 +355,7 @@ Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui co
 >
 > Le passage de **regret linéaire → logarithmique** est ce qui justifie économiquement tout l'effort d'ingénierie d'un système de bandits. C'est aussi pourquoi déployer **un mauvais bandit** (mal calibré) peut être pire que **pas de bandit du tout** — vous bloquez l'agent sur de mauvaises actions.
 
-> **❓ FAQ pédagogique**
+> **❓ FAQ**
 > **Les types de regret expliqués avec un joueur de casino.**
 >
 > **Q : C'est quoi le regret cumulé ?**
@@ -417,8 +416,8 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 >
 > 90% des cas d'usage industriels « RL » sont en réalité des **bandits déguisés**. Spotify, Amazon, Microsoft Personalizer, Vowpal Wabbit... tous tournent sur des bandits, pas sur du Deep RL exotique.
 
-> **❓ FAQ pédagogique**
-> **Pour vos étudiants : « concrètement, qui utilise ça et pourquoi ? »**
+> **❓ FAQ**
+> **Concrètement : qui utilise ça et pourquoi ?**
 >
 > **Q : Est-ce vrai que MSN.com / Yahoo / LinkedIn personnalisent leur fil d'actualité avec des bandits ?**
 > R : Oui — Microsoft Research a publié en **2014** que MSN.com utilisait des **bandits contextuels** pour servir **plusieurs millions de décisions par jour**. C'est une stack RL **plus simple que le Deep RL**, mais **infiniment plus rentable à grande échelle** : on personnalise, on teste, on optimise en continu, et avec des millions d'utilisateurs **les gains s'accumulent vite**.
@@ -426,7 +425,7 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 > **Q : Et Google Ads / Facebook Ads, ils utilisent vraiment des bandits ?**
 > R : Oui. Au lieu de répartir un budget publicitaire **à parts égales** entre plusieurs créations, le bandit **identifie celle qui marche le mieux** (taux de clic le plus élevé) et **réoriente automatiquement plus de budget dessus**. On **explore au début** (toutes les pubs sont testées un peu), puis on **exploite ce qui marche** (les pubs gagnantes reçoivent presque tout le budget).
 >
-> **Q : Vulgarisation pour des étudiants débutants ?**
+> **Q : Une vulgarisation simple ?**
 > R : « Tu as **5 affiches publicitaires**, mais tu ne sais pas laquelle attire le plus de clients. Tu commences par les tester **toutes un peu**. Dès que tu vois laquelle marche le mieux, tu **mets plus d'argent sur celle-là**. C'est exactement ça qu'un bandit fait, **automatiquement**, des milliers de fois par seconde. »
 >
 > **Q : Mais alors, ce n'est pas équitable entre les annonceurs ?**
@@ -570,8 +569,8 @@ flowchart TD
     style G fill:#16a34a,color:#fff
 ```
 
-> **❓ FAQ pédagogique**
-> **Les 4 algorithmes en une phrase chacun (à donner aux étudiants).**
+> **❓ FAQ**
+> **Les 4 algorithmes en une phrase chacun.**
 >
 > **Q : Quelle est la différence entre ε-greedy, Optimistic, UCB et Thompson Sampling ?**
 > R : Tous résolvent le même problème (équilibrer exploration/exploitation), **mais avec une philosophie différente** :
@@ -641,7 +640,7 @@ Exemple : $\varepsilon_0 = 1.0$, $\text{decay} = 0.995$, $\varepsilon_{\min} = 0
 
 > _Avantages d'ε-greedy : trivial à implémenter (3 lignes de code), aucun hyperparamètre exotique. Inconvénients : exploration **non informative** — il essaie aussi des actions clairement mauvaises avec la même probabilité que des actions prometteuses-mais-incertaines._
 
-> **❓ FAQ pédagogique**
+> **❓ FAQ**
 > **« ε-greedy classique » vs « ε-greedy decay » : quelle différence ?**
 >
 > **Q : Quelle est la différence entre ε-greedy normal et ε-greedy decay ?**
@@ -652,7 +651,7 @@ Exemple : $\varepsilon_0 = 1.0$, $\text{decay} = 0.995$, $\varepsilon_{\min} = 0
 > **Q : Lequel choisir en pratique ?**
 > R : **Decay**, presque toujours, **si tu connais ton horizon** (le nombre de tours total). Pour un problème **stationnaire** (la meilleure action ne change pas dans le temps), decay donne un **regret bien meilleur** (proche du logarithmique). Pour un problème **non-stationnaire** (la meilleure action évolue), garde **ε-greedy fixe** : tu as besoin d'**explorer en permanence** au cas où la situation change.
 >
-> **Q : Vie réelle pour mes étudiants ?**
+> **Q : Une analogie de la vie réelle ?**
 > R : « **Au début de tes études tu explores beaucoup** (cours variés, stages, expériences). Plus tu avances dans ta carrière, **plus tu te spécialises** sur ce qui marche pour toi (exploitation). C'est exactement ε-greedy decay : exploration intense au début, exploitation progressive ensuite. »
 >
 > **Q : Et si j'ai déjà trouvé la femme/le job/le restaurant parfait ?**
