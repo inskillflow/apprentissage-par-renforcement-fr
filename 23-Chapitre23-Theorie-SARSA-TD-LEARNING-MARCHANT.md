@@ -142,42 +142,22 @@ C'est l'**algorithme TD on-policy de référence** — l'agent apprend la politi
 
 ### Pourquoi le nom « SARSA » ?
 
-Le nom est l'**acronyme** des 5 informations utilisées à chaque mise à jour :
+Le nom est l'**acronyme** des 5 informations utilisées à chaque mise à jour. La chaîne se lit de gauche à droite :
 
-<!-- Diagramme SARSA : Mermaid + tableau Markdown (GitHub ignore souvent les couleurs HTML et les alertes [!TYPE]) -->
-
-**Séquence SARSA (vue d'ensemble)** — même information, deux rendus possibles :
-
-> **Affichage GitHub :** les encadrés utilisent **emoji + gras** (pas de syntaxe `[!IMPORTANT]`). Le tableau coloré en HTML est remplacé ci‑dessous par un **tableau Markdown** lisible partout.
-
-```mermaid
-flowchart LR
-    SARSA_S1["S<br/>État courant"] --> SARSA_A1["A<br/>Action faite"]
-    SARSA_A1 --> SARSA_R["R<br/>Récompense"]
-    SARSA_R --> SARSA_S2["S<br/>État suivant"]
-    SARSA_S2 --> SARSA_A2["A<br/>Action suivante"]
-    style SARSA_S1 fill:#2563eb,stroke:#1e3a8a,color:#fff
-    style SARSA_A1 fill:#9333ea,stroke:#6b21a8,color:#fff
-    style SARSA_R fill:#16a34a,stroke:#166534,color:#fff
-    style SARSA_S2 fill:#2563eb,stroke:#1e3a8a,color:#fff
-    style SARSA_A2 fill:#9333ea,stroke:#6b21a8,color:#fff
+```text
+    S    ─►    A    ─►    R    ─►    S'   ─►    A'
+  (état)  (action)  (récomp.) (état suiv.) (action suiv.)
 ```
 
-> _Si le schéma Mermaid ne s'affiche pas (certaines plateformes, export PDF), le **tableau Markdown** ci‑dessous reprend exactement la même chaîne._
+Et la même chaîne sous forme de tableau, **lettre par lettre** :
 
-**Séquence en tableau (lisible sur GitHub — GitHub retire souvent les couleurs du HTML)** :
-
-| 🔵 **S** &nbsp;*($s_t$)* | → | 🟣 **A** &nbsp;*($a_t$)* | → | 🟢 **R** &nbsp;*($r_{t+1}$)* | → | 🔵 **S** &nbsp;*($s_{t+1}$)* | → | 🟣 **A** &nbsp;*($a_{t+1}$)* |
-|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| État courant | | Action faite | | Récompense | | État suivant | | Prochaine action (choisie) |
-
-| Lettre | Signification | Rôle dans la mise à jour |
-|---|---|---|
-| **S** | $s_t$ — état actuel | Là où je suis maintenant |
-| **A** | $a_t$ — action faite | Ce que je viens de décider |
-| **R** | $r_{t+1}$ — récompense reçue | Le retour immédiat |
-| **S** | $s_{t+1}$ — état suivant | Où ma décision m'a mené |
-| **A** | $a_{t+1}$ — action **suivante choisie** | La prochaine décision (exploration comprise) |
+| Lettre | Symbole | Signification | Rôle dans la mise à jour |
+|:--:|:--:|---|---|
+| **S** | s<sub>t</sub> | État actuel | Là où je suis maintenant |
+| **A** | a<sub>t</sub> | Action faite | Ce que je viens de décider |
+| **R** | r<sub>t+1</sub> | Récompense reçue | Le retour immédiat |
+| **S** | s<sub>t+1</sub> | État suivant | Où ma décision m'a mené |
+| **A** | a<sub>t+1</sub> | Action **suivante choisie** | La prochaine décision (exploration comprise) |
 
 > **📌 À retenir**
 > **Le 5e élément (A') est la clé.** Q-Learning utilise la cible avec **max sur a'** (la meilleure action **possible**). SARSA utilise la cible avec **a' réellement choisi** par la politique courante. Les formules complètes sont rassemblées dans [**Éq. (10)**](#eq-sarsa-vs-q). C'est cette nuance qui fait toute la différence — voir aussi [Section 3](#section-3).
