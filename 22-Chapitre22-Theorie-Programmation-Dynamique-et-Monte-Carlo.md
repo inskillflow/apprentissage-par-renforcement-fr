@@ -165,24 +165,24 @@ Un **bandit multi-bras** (*multi-armed bandit*, ou **MAB**) est l'extension natu
 
 > **❓ FAQ**
 >
-> **Q : Pourquoi on appelle ça un « bandit » ?**
+> **Q : D'où provient l'usage du terme « bandit » dans cette classe de problèmes ?**
 > R : C'est une référence au **« bandit manchot »**, surnom américain des machines à sous. Avec leur **bras mécanique unique** (la manivelle latérale), elles te prenaient ton argent essai après essai. Le mot « bandit » est **imagé et humoristique** — la machine ne « vole » rien d'illégal, mais sur le long terme **le casino a un avantage statistique**, donc le joueur perd un peu à chaque tour. D'où l'image du braquage en douceur.
 >
-> **Q : Et « manchot », c'est l'oiseau ?**
+> **Q : Quelle est l'origine du qualificatif « manchot » associé aux machines à sous ?**
 > R : Au départ non — *manchot* signifie ici « **qui n'a qu'un seul bras** ». Mais l'image est d'autant plus drôle que le mot désigne aussi le **pingouin** (cet oiseau d'Antarctique aux ailes atrophiées qui ne vole pas). Une machine à sous = un « bandit » avec un seul bras = un manchot. **Le double sens est volontairement amusant.**
 >
-> **Q : Et « multi-bras », ça veut dire quoi ?**
+> **Q : Que désigne précisément le qualificatif « multi-bras » (multi-armed) ?**
 > R : Plusieurs leviers, donc **plusieurs options possibles**. Un bandit multi-bras, c'est un casino imaginaire avec **k machines** alignées : à chaque tour tu choisis **un seul** levier à tirer, et tu observes la récompense. Chaque bras = une **action possible**.
 >
-> **Q : Le casino vole vraiment ?**
+> **Q : La métaphore du « vol » par la machine reflète-t-elle un mécanisme réel ?**
 > R : Non, c'est juste de la **probabilité**. Les machines sont calibrées pour rendre, en moyenne, **un peu moins** que ce que tu mises. Sur 1 000 joueurs, le casino gagne. Sur **un** joueur chanceux, il peut perdre. Le « banditisme » est juste une métaphore pour dire « **avantage statistique du casino sur le long terme** ».
 >
-> **Q : Bandit à 1 bras vs bandit multi-bras ?**
+> **Q : Quelle est la distinction formelle entre un bandit à un bras et un bandit multi-bras ?**
 > R :
 > - **1 bras** = **1 seule action possible** à chaque tour. Trivial : tu n'as pas de choix.
 > - **Multi-bras** = **plusieurs actions possibles** à chaque tour, à partir du même état. **C'est là que le dilemme exploration/exploitation apparaît.** C'est ce qu'on étudie dans ce chapitre.
 >
-> **Q : Et nous, on est des bandits ?**
+> **Q : Dans quelle mesure le formalisme du bandit s'applique-t-il aux décisions humaines quotidiennes ?**
 > R : Oui, **chaque jour**, sans le savoir. Choisir un restaurant, accepter ou refuser un job, tester une nouvelle marque de café : à chaque fois, **vous arbitrez entre l'exploitation** (rester dans ce que vous connaissez et qui fonctionne) **et l'exploration** (tenter quelque chose de nouveau, en risquant de moins bien). Notre cerveau résout ce dilemme **en permanence et intuitivement** — ici, on apprend à le résoudre **mathématiquement et à grande échelle**.
 
 ```mermaid
@@ -224,15 +224,15 @@ flowchart LR
 > **❓ FAQ**
 > **La différence bandit ↔ MDP en 30 secondes.**
 >
-> **Q : C'est quoi exactement la différence entre un bandit multi-bras et un MDP complet ?**
+> **Q : Quelle est la différence formelle entre un bandit multi-bras et un MDP complet ?**
 > R : C'est le **temps** et **les conséquences futures** qui changent tout :
 > - **Bandit** = **un coup à la fois**. Tu choisis ta pizza ce soir → tu reçois une récompense (tu aimes ou pas) → demain, c'est un nouveau choix indépendant. **Aucune conséquence sur la suite.**
 > - **MDP** = **toute une stratégie dans le temps**. Tu joues un coup d'échecs → l'échiquier change → ton prochain coup dépend de la nouvelle position. Chaque action **influence l'état suivant**.
 >
-> **Q : Donc c'est juste le temps qui termine la différence ?**
+> **Q : La temporalité est-elle l'unique critère qui distingue ces deux modèles ?**
 > R : Plus précisément, c'est la **séquence d'états**. Dans un bandit, il y a **un seul état** (toujours le même, ou pas d'état du tout). Dans un MDP, il y a **plusieurs états**, et tes actions **font transiter** entre eux. Un bandit, c'est un MDP avec **|S| = 1**.
 >
-> **Q : Mais sur le long terme, le bandit aussi cumule des récompenses, non ?**
+> **Q : Le bandit n'accumule-t-il pas, lui aussi, des récompenses sur l'horizon de décision ?**
 > R : Oui, exactement. **Les deux maximisent une somme de récompenses.** La différence, c'est que dans le bandit chaque récompense est **indépendante** (le choix d'aujourd'hui ne change pas les options de demain), alors que dans le MDP chaque action **modifie le futur** (donc il faut planifier).
 
 ```mermaid
@@ -275,13 +275,13 @@ $$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 > **❓ FAQ**
 > **Comment expliquer simplement « maximiser une somme de récompenses » ?**
 >
-> **Q : C'est quoi cette « espérance d'une somme de R » ?**
+> **Q : Comment interpréter l'expression « espérance d'une somme de récompenses » E[Σ R_t] ?**
 > R : Imagine qu'**à chaque action choisie, tu reçois une petite récompense**. La somme des R, c'est tout simplement **l'accumulation de toutes ces petites récompenses** au fil du temps. L'objectif n'est pas de gagner gros une fois, c'est que **sur le long terme, le total soit le plus grand possible**.
 >
-> **Q : Pourquoi « espérance » (le E) et pas juste « somme » ?**
+> **Q : Pourquoi l'objectif est-il formulé en espérance E[…] plutôt qu'en somme déterministe ?**
 > R : Parce que les récompenses sont **stochastiques** (aléatoires). Si tu joues 1 000 fois, tu n'auras pas exactement la même somme à chaque simulation. L'espérance E[…] = **la moyenne sur un très grand nombre de simulations**. C'est cette moyenne que l'agent cherche à rendre maximale.
 >
-> **Q : En une phrase, comment résumer ?**
+> **Q : Comment formuler l'objectif du bandit en une phrase synthétique ?**
 > R : « **Tu prends une décision pas pour le plaisir immédiat d'un gros gain, mais pour qu'au fil du temps, tu accumules un maximum de bénéfices.** » C'est l'inverse de la mentalité « tout, tout de suite » : on accepte de **tester un peu** au début pour gagner **beaucoup plus** ensuite.
 
 ---
@@ -358,10 +358,10 @@ Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui co
 > **❓ FAQ**
 > **Les types de regret expliqués avec un joueur de casino.**
 >
-> **Q : C'est quoi le regret cumulé ?**
+> **Q : Comment définit-on formellement le regret cumulé R(T) ?**
 > R : C'est la **différence entre ce que tu aurais pu gagner** si tu avais toujours joué la **meilleure machine** (l'oracle qui connaît toutes les vraies probas), **et ce que tu as réellement gagné**. C'est le **« manque à gagner »** lié à tes choix imparfaits, surtout au début quand tu explores. **Plus tu apprends vite, plus ton regret diminue vite.**
 >
-> **Q : Linéaire vs logarithmique vs racine — explique avec un joueur de casino.**
+> **Q : Quelles sont les différences entre les régimes de regret linéaire, logarithmique et en racine ?**
 > R : Imagine un joueur qui va au casino **tous les jours** et qui « perd » à cause de ses mauvais choix.
 >
 > | Type | Exemple chiffré | Comportement |
@@ -370,13 +370,13 @@ Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui co
 > | **Racine** R(T) ∝ √T | Jour 1 : 10 $ — Jour 4 : 20 $ — Jour 9 : 30 $ — Jour 100 : 100 $ | Le joueur **apprend lentement**, ses pertes augmentent **de moins en moins vite**. ⚠️ |
 > | **Logarithmique** R(T) ∝ log T | Jour 1 : 10 $ — Jour 10 : 23 $ — Jour 100 : 46 $ — Jour 1000 : 69 $ | Le joueur **apprend très vite** : après 1 000 jours il a **à peine 70 $** de regret. ✅ |
 >
-> **Q : Lequel est le plus agressif (le pire) ?**
+> **Q : Quel régime de regret est le plus défavorable pour l'agent ?**
 > R : Le **regret linéaire**. Tes pertes **continuent d'augmenter au même rythme** sans jamais ralentir. C'est ce qu'on veut **absolument éviter**. Les regrets **log et racine** sont **doux** : on perd encore un peu, mais **de moins en moins vite** parce qu'on apprend.
 >
-> **Q : Classement du meilleur au pire ?**
+> **Q : Comment classer ces régimes du plus optimal au moins optimal ?**
 > R : **Log < Racine < Linéaire** (du moins de regret au plus de regret). Le but de toute la théorie des bandits, c'est d'**atteindre la borne logarithmique** (UCB et Thompson y arrivent — voir [Section 4](#section-4)).
 >
-> **Q : Pourquoi ε-greedy basique a un regret linéaire si ε reste fixe ?**
+> **Q : Pourquoi ε-greedy à ε constant produit-il un regret linéaire ?**
 > R : Parce que même après avoir trouvé la meilleure action, l'agent continue de **gaspiller ε% du temps en exploration aléatoire** — donc il continue de perdre une petite somme **constante à chaque pas**. Avec **ε-greedy decay** (ε qui diminue avec le temps), on s'approche du **regret logarithmique**.
 
 ```mermaid
@@ -419,24 +419,24 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 > **❓ FAQ**
 > **Concrètement : qui utilise ça et pourquoi ?**
 >
-> **Q : Est-ce vrai que MSN.com / Yahoo / LinkedIn personnalisent leur fil d'actualité avec des bandits ?**
+> **Q : MSN.com, Yahoo! et LinkedIn utilisent-ils effectivement des bandits pour la personnalisation de contenu ?**
 > R : Oui — Microsoft Research a publié en **2014** que MSN.com utilisait des **bandits contextuels** pour servir **plusieurs millions de décisions par jour**. C'est une stack RL **plus simple que le Deep RL**, mais **infiniment plus rentable à grande échelle** : on personnalise, on teste, on optimise en continu, et avec des millions d'utilisateurs **les gains s'accumulent vite**.
 >
-> **Q : Et Google Ads / Facebook Ads, ils utilisent vraiment des bandits ?**
+> **Q : Google Ads et Facebook Ads s'appuient-ils sur des bandits pour l'allocation budgétaire en temps réel ?**
 > R : Oui. Au lieu de répartir un budget publicitaire **à parts égales** entre plusieurs créations, le bandit **identifie celle qui marche le mieux** (taux de clic le plus élevé) et **réoriente automatiquement plus de budget dessus**. On **explore au début** (toutes les pubs sont testées un peu), puis on **exploite ce qui marche** (les pubs gagnantes reçoivent presque tout le budget).
 >
-> **Q : Une vulgarisation simple ?**
+> **Q : Quelle est l'intuition sous-jacente à l'allocation budgétaire par bandit ?**
 > R : « Tu as **5 affiches publicitaires**, mais tu ne sais pas laquelle attire le plus de clients. Tu commences par les tester **toutes un peu**. Dès que tu vois laquelle marche le mieux, tu **mets plus d'argent sur celle-là**. C'est exactement ça qu'un bandit fait, **automatiquement**, des milliers de fois par seconde. »
 >
-> **Q : Mais alors, ce n'est pas équitable entre les annonceurs ?**
+> **Q : Ce mécanisme introduit-il une inégalité de traitement entre les annonceurs ?**
 > R : Au contraire — c'est **plus efficace pour tout le monde**. Si deux annonceurs paient 4 $ et que la pub de l'un performe mieux (les utilisateurs cliquent plus), la plateforme va lui donner **plus de visibilité**. Les annonceurs avec de **bonnes pubs** ont **plus de résultats**, et les utilisateurs voient des pubs qui les **intéressent davantage**. C'est gagnant–gagnant : **pas une question d'équité, mais d'efficacité**.
 >
-> **Q : Et dans le médical ? Les bandits sauvent vraiment des vies ?**
+> **Q : Quel est l'intérêt des bandits dans le contexte des essais cliniques adaptatifs ?**
 > R : Oui — c'est la magie des **essais cliniques adaptatifs**. Imagine deux traitements à comparer :
 > - **Essai classique** : tu testes le traitement A sur 500 patients et le traitement B sur 500 autres, **pendant 2 ans**, puis tu compares.
 > - **Essai adaptatif (bandit)** : tu testes les deux sur **quelques patients d'abord**. Dès que tu vois que **le traitement A semble mieux marcher**, tu **donnes A à plus de patients** dans la suite de l'essai. Tu **augmentes ainsi les chances d'aider plus de monde rapidement**, et tu **arrêtes plus tôt** ce qui ne marche pas.
 >
-> **Q : Exemple réel ?**
+> **Q : Existe-t-il un exemple documenté d'application clinique récente ?**
 > R : Pendant la pandémie de **COVID-19**, plusieurs essais (notamment **RECOVERY** au UK) ont utilisé des designs adaptatifs proches des bandits pour **identifier vite la dexaméthasone** (efficace) et **abandonner l'hydroxychloroquine** (non efficace). **Cela a probablement sauvé des milliers de vies** par rapport à un essai classique qui aurait pris des mois de plus.
 
 ---
@@ -582,7 +582,7 @@ flowchart TD
 > | **UCB** | « Je joue ce qui est prometteur **ET incertain** (bonus d'exploration calculé)» | Le **manager rationnel** : « ce candidat est bon **et je le connais peu** → essayons-le » |
 > | **Thompson Sampling** | « Je tire **au hasard intelligemment** selon mes croyances bayésiennes » | Le **joueur intuitif** qui parie selon sa **confiance probabiliste** |
 >
-> **Q : Lequel marche le mieux en pratique ?**
+> **Q : Quelles sont les performances comparées de ces algorithmes sur le 10-armed testbed standard ?**
 > R : Sur le **10-armed testbed standard** (Sutton & Barto), après **1000 pas** :
 > - Random (baseline) : récompense moyenne **≈ 1.0**
 > - ε-greedy (ε = 0.01) : **≈ 1.42** — peu d'exploration, performance modérée
@@ -591,8 +591,36 @@ flowchart TD
 >
 > Conclusion : **un peu d'exploration améliore les résultats** sur la durée. **Trop peu** = on reste bloqué sur une bonne mais pas optimale. **Trop** = on gaspille des essais.
 >
-> **Q : « Optimiste », ça veut dire quoi en pratique ?**
+> **Q : Que désigne précisément le qualificatif « optimiste » dans Optimistic Initial Values ?**
 > R : Au lieu de partir avec Q(a) = 0 pour toutes les actions (« je ne connais rien »), tu pars avec Q(a) = 5 pour tout le monde (« **je suppose que tout est top** »). Du coup, dès qu'une action déçoit, sa valeur **chute** et l'agent essaie spontanément les actions encore non testées (qui sont **toujours au max optimiste**). **L'exploration est intégrée dans l'initialisation** — pas besoin de hasard.
+>
+> **Q : Quelle est l'intuition sous-jacente au bonus d'exploration de UCB ?**
+> R : Imagine que tu es dans un parc d'attractions avec **plusieurs stands de glaces**. Chaque stand a un goût différent, mais tu ne sais pas encore lequel est le meilleur. À chaque fois que tu choisis un stand, tu regardes **deux choses** :
+> 1. **Combien de bonnes glaces tu as eues en moyenne** dans ce stand jusqu'à présent (la moyenne Q(a)).
+> 2. **À quel point tu as encore besoin de le tester** : si tu y es allé seulement 1 fois, tu n'es pas vraiment sûr de la qualité, donc tu lui ajoutes un **« bonus de doute »** ; si tu y es allé 50 fois, ce bonus est minuscule.
+>
+> Le stand que tu choisis à chaque tour est celui qui a la **somme moyenne + bonus** la plus élevée. Résultat : les stands prometteurs sont vite re-testés, **les stands peu visités gardent une chance** (à cause du bonus), et au fil du temps tu finis par concentrer tes visites sur **le meilleur stand** sans jamais avoir laissé tomber les autres trop tôt. C'est ça UCB : **équilibrer ce que tu sais déjà avec ce qu'il te reste à apprendre**, mais en le calculant **avec une formule mathématique précise** au lieu d'un simple tirage au hasard comme ε-greedy.
+>
+> **Q : La distinction entre ces algorithmes se réduit-elle au seul dosage exploration/exploitation ?**
+> R : Oui — fondamentalement, **tous** les algorithmes de bandit résolvent **le même dilemme exploration / exploitation**, mais chacun avec une **mécanique différente** :
+> - **ε-greedy** explore avec une probabilité fixe ε (par exemple 10 %) en tirant **au hasard** parmi toutes les actions, et exploite le reste du temps.
+> - **Optimistic Init** ne fait **aucun tirage aléatoire** : il triche sur les valeurs initiales pour forcer l'agent à tout tester au moins une fois.
+> - **UCB** explore en privilégiant **mathématiquement** les actions peu testées via un bonus calculé, sans tirage aléatoire.
+> - **Thompson Sampling** explore via des **tirages probabilistes** dans une distribution de croyance, l'exploration diminuant naturellement au fil des essais.
+> - **Gradient Bandit** ajuste directement les **probabilités de chaque action** selon la récompense reçue, sans calculer de Q(a).
+>
+> Donc oui, c'est « **comment je dose la curiosité** » qui change d'un algo à l'autre — mais la différence de **performance** entre ces approches peut être énorme (jusqu'à 5-10× sur le regret cumulé).
+>
+> **Q : Pourquoi ε-greedy demeure-t-il l'algorithme le plus utilisé en industrie malgré sa sub-optimalité théorique ?**
+> R : Pour **trois raisons concrètes** qui pèsent plus lourd que la théorie en production :
+> 1. **Simplicité extrême** : trois lignes de code, **un seul hyperparamètre** à régler (ε), aucune mathématique avancée. N'importe quel développeur le code et le débogue en 10 minutes.
+> 2. **Robustesse** : il donne des résultats **corrects dans énormément de contextes**, même quand il n'est pas optimal. C'est rarement le meilleur, mais c'est rarement catastrophique.
+> 3. **Pédagogie et adoption** : il est facile à expliquer en réunion, à un produit, à un manager non-technique. Cela facilite son **adoption dans les équipes**, ce qui compte plus en industrie qu'un gain théorique de 10 % de performance.
+>
+> En général, on commence par ε-greedy comme **baseline**, on mesure ses limites sur le vrai problème, et **seulement si ça ne suffit pas**, on passe à UCB ou Thompson. C'est le « pragmatisme avant l'élégance ».
+>
+> **Q : Quel algorithme occupe la deuxième place en termes d'adoption après ε-greedy ?**
+> R : C'est **UCB**, sans hésitation. Il est très populaire pour deux raisons : il offre un **équilibre exploration/exploitation automatique** (pas de paramètre ε à régler à la main, tout est dans la formule), et il est **prouvé optimal** au sens du regret logarithmique. Il est massivement cité en milieu **académique** (cours, papiers de recherche) et utilisé dans plein de systèmes industriels (Microsoft Personalizer, Vowpal Wabbit). Si ε-greedy est l'algo « par défaut » qu'on essaie en premier, **UCB est l'algo « sérieux » qu'on essaie juste après** quand on veut une vraie garantie de performance.
 
 ---
 
@@ -600,9 +628,7 @@ flowchart TD
 
 #### Principe
 
-À chaque étape, l'agent :
-- **Avec probabilité $1 - \varepsilon$** : choisit l'action **gloutonne** (greedy) $A_t = \arg\max_a Q_t(a)$ — **EXPLOITATION**
-- **Avec probabilité $\varepsilon$** : choisit une action **aléatoire** uniforme — **EXPLORATION**
+ε-greedy est de loin l'algorithme de bandit **le plus simple à comprendre et à coder** : à chaque pas de temps, l'agent tire un nombre au hasard entre 0 et 1, et si ce nombre est **inférieur à ε** (typiquement 0.1, soit 10 % du temps), il choisit une action **complètement au hasard** parmi toutes les actions possibles, sinon il choisit l'action ayant la **meilleure valeur estimée Q(a)** jusqu'à présent. Le paramètre ε contrôle ainsi de manière directe et lisible le **dosage entre exploration et exploitation** : plus ε est grand, plus l'agent passe de temps à tester des choses au hasard, et plus il est petit, plus il se contente d'exploiter ce qu'il sait déjà. Toute la logique tient en **trois lignes de code**, ne demande aucune mathématique avancée et fonctionne raisonnablement bien dans énormément de contextes — c'est précisément cette **robustesse minimaliste** qui en a fait le standard de fait dans l'industrie. Sa limite principale est que l'exploration est **non informative** : quand le tirage aléatoire se déclenche, l'agent peut tout aussi bien retester une action déjà identifiée comme catastrophique qu'une action prometteuse mais peu testée, ce qui gaspille des essais. Pour corriger en partie ce défaut, on combine souvent ε-greedy avec une décroissance progressive d'ε (variante decay) ou avec une initialisation optimiste, deux astuces vues juste après.
 
 ➡️ Voir [**Éq. (7) — Décision ε-greedy**](#eq-epsilon-greedy) en haut du document.
 
@@ -648,13 +674,13 @@ Exemple : $\varepsilon_0 = 1.0$, $\text{decay} = 0.995$, $\varepsilon_{\min} = 0
 > - **ε-greedy normal** : tu gardes **toujours le même petit pourcentage d'exploration**, par exemple **10 %** à chaque pas, **du début à la fin**. C'est simple, mais tu **continues de gaspiller** une partie du temps même quand tu as **déjà trouvé** la meilleure action.
 > - **ε-greedy decay** : au début tu **explores beaucoup** (par ex. ε = 1, 100 % aléatoire), puis ε **diminue progressivement** (ε → 0.5 → 0.1 → 0.01) au fil des essais. Tu deviens **de plus en plus concentré** sur ce qui marche déjà bien.
 >
-> **Q : Lequel choisir en pratique ?**
+> **Q : Quel critère guide le choix entre ε constant et ε décroissant ?**
 > R : **Decay**, presque toujours, **si tu connais ton horizon** (le nombre de tours total). Pour un problème **stationnaire** (la meilleure action ne change pas dans le temps), decay donne un **regret bien meilleur** (proche du logarithmique). Pour un problème **non-stationnaire** (la meilleure action évolue), garde **ε-greedy fixe** : tu as besoin d'**explorer en permanence** au cas où la situation change.
 >
-> **Q : Une analogie de la vie réelle ?**
+> **Q : Existe-t-il une analogie pratique pour illustrer la décroissance d'ε ?**
 > R : « **Au début de tes études tu explores beaucoup** (cours variés, stages, expériences). Plus tu avances dans ta carrière, **plus tu te spécialises** sur ce qui marche pour toi (exploitation). C'est exactement ε-greedy decay : exploration intense au début, exploitation progressive ensuite. »
 >
-> **Q : Et si j'ai déjà trouvé la femme/le job/le restaurant parfait ?**
+> **Q : Quel est le risque associé à ε = 0 (exploitation pure) ?**
 > R : Mets ton **ε à zéro** : pure exploitation, plus aucune exploration. **Mais attention** : si la situation peut changer (le resto change de chef, ton job perd son intérêt), tu **rateras les nouvelles bonnes options**. C'est précisément le **piège du ε = 0** vu dans l'encadré ⚠️ ci-dessus.
 
 ---
@@ -663,23 +689,7 @@ Exemple : $\varepsilon_0 = 1.0$, $\text{decay} = 0.995$, $\varepsilon_{\min} = 0
 
 #### Principe
 
-Astuce élégante : initialiser **$Q_0(a)$ à une valeur très optimiste** (par ex. $Q_0(a) = 5$ alors que les vraies récompenses moyennes sont autour de 0).
-
-**Conséquence automatique :**
-- Toutes les actions semblent « bonnes » au début
-- Quand l'agent en essaie une et obtient une récompense plus faible que prévu, son $Q$ baisse
-- L'agent essaie naturellement les actions qui n'ont pas encore été testées (car leurs $Q$ sont encore au max)
-- Au bout d'un moment, toutes les actions sont calibrées et l'agent **converge vers la vraie meilleure action**
-
-#### Avantages
-
-- **Aucune randomisation explicite** nécessaire — l'exploration est intégrée dans l'initialisation
-- **Très efficace** dans les premiers pas
-- Combinable avec ε-greedy
-
-#### Limite
-
-- **Ne fonctionne que pour les bandits stationnaires** — si la vraie distribution change avec le temps, les valeurs optimistes initiales sont vite oubliées et n'aident plus
+L'astuce d'**Optimistic Initial Values** est aussi élégante qu'inattendue : au lieu d'initialiser l'estimation Q(a) à zéro pour toutes les actions (« je ne connais rien »), on l'initialise à une valeur **artificiellement très haute** (par exemple Q₀(a) = 5 alors que les vraies récompenses oscillent autour de 0). Comme toutes les actions semblent **également excellentes** au départ, l'agent les essaie toutes au moins une fois — et à chaque test, la valeur Q(a) baisse vers la réalité, ce qui pousse spontanément l'agent à essayer les actions encore non testées (qui sont toujours « au sommet » de l'optimisme initial). Petit à petit, les estimations convergent vers les vraies récompenses, et l'agent finit par exploiter la meilleure action **sans jamais avoir eu besoin d'une seule décision aléatoire**. C'est donc une forme d'exploration **complètement déterministe**, intégrée dans l'initialisation, ce qui la rend particulièrement efficace dans les premiers pas et explique pourquoi elle bat souvent ε-greedy sur le 10-armed testbed standard. Sa grande faiblesse : elle ne fonctionne **qu'en environnement stationnaire** — dès que la distribution des récompenses change après convergence, l'agent n'explore plus du tout et reste aveugle au changement.
 
 > _Anecdote : Sutton & Barto montrent que sur le 10-armed testbed standard, **Optimistic Init** ($Q_0 = 5$, ε = 0) bat **ε-greedy** ($Q_0 = 0$, ε = 0.1) après ~1000 itérations._
 
@@ -696,7 +706,7 @@ Astuce élégante : initialiser **$Q_0(a)$ à une valeur très optimiste** (par 
 
 #### Principe
 
-Au lieu de choisir aléatoirement avec ε-greedy, **UCB choisit l'action qui a le plus grand potentiel** : la valeur estimée **plus un bonus d'exploration** proportionnel à l'incertitude.
+UCB (**Upper Confidence Bound**, ou borne supérieure de confiance) est l'aristocrate théorique des algorithmes de bandits : au lieu d'explorer **au hasard** comme ε-greedy, il explore **intelligemment** en privilégiant systématiquement les actions à la fois prometteuses **et mal connues**. Sa formule additionne deux termes — la valeur estimée Q(a) actuelle, et un **bonus mathématique** qui croît quand l'action a été peu testée et qui décroît à mesure qu'on accumule des essais sur elle — concrètement, plus l'agent a peu d'information sur une action, plus il lui donne le **bénéfice du doute**. Ce mécanisme garantit, sur le plan théorique, un **regret logarithmique** R(T) ∝ log T, qui est la borne **optimale** prouvée par Lai et Robbins (1985), ce qu'aucune méthode plus simple ne peut atteindre. Contrairement à ε-greedy, UCB n'a besoin **d'aucun tirage aléatoire** : à chaque pas, le choix est entièrement déterministe, ce qui le rend reproductible, facile à déboguer et stable d'une exécution à l'autre. Il est massivement utilisé dans des systèmes industriels comme Microsoft Personalizer ou Vowpal Wabbit, et reste le **standard académique** quand on veut prouver formellement les propriétés d'un système de décision.
 
 $$A_t = \arg\max_a \left[ Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right]$$
 
@@ -732,25 +742,13 @@ $$A_t = \arg\max_a \left[ Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right]$$
 
 #### Principe
 
-Au lieu de maintenir une **valeur ponctuelle** $Q(a)$, on maintient une **distribution de probabilité** sur les valeurs possibles de $Q(a)$ — typiquement une **distribution Beta** pour les récompenses binaires (0/1).
+Thompson Sampling adopte une **philosophie radicalement différente** des trois précédents : au lieu de maintenir une seule estimation Q(a) par action, on garde **toute une distribution de probabilité** sur les valeurs possibles de Q(a) — typiquement une distribution Beta pour les récompenses binaires (0/1) — ce qui encode naturellement l'**incertitude** sur cette valeur. À chaque pas, l'agent **tire une valeur au hasard** dans la distribution de chaque action et choisit celle dont le tirage est le plus haut, ce qui revient à interroger une « foule d'avis internes » plutôt qu'un seul expert. Plus une action est peu testée, plus sa distribution est large et plus la valeur tirée peut varier, ce qui produit naturellement de l'**exploration** ; plus une action est bien testée, plus sa distribution se resserre, ce qui produit naturellement de l'**exploitation**, sans qu'aucun paramètre ε ou bonus c n'ait à être réglé manuellement. Cette approche est mathématiquement **bayésienne**, ce qui permet d'intégrer une connaissance a priori (par exemple « historiquement, le bouton rouge convertit à 5 % ») directement dans la distribution initiale, faisant démarrer l'algorithme **déjà informé**. En pratique, Thompson Sampling **bat souvent UCB** sur les benchmarks réels (essais cliniques, recommandation, real-time bidding), tout en restant calculatoirement très léger — c'est pourquoi il est devenu le choix par défaut chez Yahoo!, Microsoft Personalizer, Stitch Fix et Netflix.
 
 **À chaque étape :**
 1. Pour chaque action $a$, **échantillonner** une valeur $\tilde{Q}(a) \sim \text{Beta}(\alpha_a, \beta_a)$
 2. Choisir $A_t = \arg\max_a \tilde{Q}(a)$
 3. Observer $R_t$
 4. Mettre à jour la distribution : si $R_t = 1$, $\alpha_a \leftarrow \alpha_a + 1$ ; sinon $\beta_a \leftarrow \beta_a + 1$
-
-#### Pourquoi ça marche
-
-- L'**incertitude est naturellement encodée** dans la distribution
-- Plus une action est **peu testée**, plus la distribution est large → plus la valeur échantillonnée varie → exploration naturelle
-- Plus une action est **bien testée**, plus la distribution se concentre → exploitation naturelle
-
-#### Avantages
-
-- Performance souvent **meilleure que UCB** en pratique
-- Utilisé par **Yahoo!**, **Microsoft Personalizer**, **Stitch Fix**, **Netflix**
-- Peut intégrer facilement des **a priori** bayésiens (connaissance experte initiale)
 
 > _Anecdote : Thompson Sampling a été inventé par **William R. Thompson en 1933** — soit **40 ans avant la formalisation moderne du RL**. Longtemps oublié, il a été redécouvert dans les années 2010 et est aujourd'hui un standard industriel._
 
@@ -794,6 +792,8 @@ Les algorithmes vus précédemment apprennent **les valeurs $Q(a)$** des actions
 ---
 
 ### Principe : préférences et softmax
+
+Gradient Bandit suit une logique **complètement à part** des quatre algorithmes précédents : au lieu d'estimer la valeur Q(a) de chaque action, on maintient pour chaque action une **préférence numérique** H(a) qui n'a aucune signification absolue, mais qui est comparée aux autres préférences via la fonction **softmax** pour produire une distribution de probabilité π(a). À chaque essai, l'agent **tire son action selon ces probabilités** (donc sans argmax brutal), observe la récompense, puis ajuste les préférences par **montée de gradient stochastique** : la préférence de l'action choisie augmente si la récompense dépasse la moyenne historique R̄, diminue sinon, et symétriquement les préférences des actions non choisies bougent dans le sens opposé. Ce mécanisme est l'**ancêtre direct** des méthodes Policy-Based modernes (REINFORCE, PPO, A2C) où l'on apprend directement la politique sans passer par une fonction de valeur. Sa force principale : Gradient Bandit fonctionne très bien quand les **récompenses sont biaisées** (par exemple toutes positives ou toutes négatives), là où les algorithmes value-based ont tendance à mal calibrer leur exploration. Sa limite principale : la convergence est plus sensible au taux d'apprentissage α et à la **présence d'une baseline** (la moyenne historique R̄), sans laquelle l'algorithme peut devenir très instable.
 
 Pour chaque action $a$, on maintient une **préférence numérique** $H_t(a)$. La probabilité de choisir l'action $a$ est donnée par la **distribution softmax** :
 
