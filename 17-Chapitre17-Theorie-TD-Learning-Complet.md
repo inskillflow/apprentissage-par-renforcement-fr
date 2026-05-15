@@ -1955,7 +1955,7 @@ flowchart LR
 
 ---
 
-### 18.6 — Phrase parfaite à dire à l'étudiant
+### 18.6 — Résumé
 
 > **TD(n)**, c'est **choisir un seul horizon**. <br/>
 > **TD(λ)**, c'est **ne pas choisir** : on **mélange** plusieurs horizons avec des poids. <br/>
