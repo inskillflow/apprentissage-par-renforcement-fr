@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 23 - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
+# Chapitre 15-bis - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
 
 ## Table des matières
 
@@ -94,12 +94,29 @@ $$\sum_{t=1}^{\infty} \alpha_t = \infty \quad \text{et} \quad \sum_{t=1}^{\infty
 
 **Éq. (10)** — La différence essentielle SARSA ↔ Q-Learning
 
-| Algorithme | Cible TD utilisée |
-|---|---|
-| **SARSA** | $r + \gamma\, Q(s', a'_{\text{choisi}})$ |
-| **Q-Learning** | $r + \gamma \max_{a'} Q(s', a')$ |
+$$\text{SARSA} : \quad \text{cible} = r + \gamma\, Q(s', a'_{\text{choisi}})$$
 
-> _Toutes les équations utilisées dans le chapitre sont rassemblées ici. Dans les sections, on renvoie systématiquement à ces numéros — pas besoin de réécrire les formules à chaque endroit._
+$$\text{Q-Learning} : \quad \text{cible} = r + \gamma\, \max_{a'} Q(s', a')$$
+
+où $a'_{\text{choisi}}$ est l'action **réellement** sélectionnée dans $s'$ par la politique courante (ε-greedy).
+
+<a id="eq-sarsa-egal-q"></a>
+
+**Éq. (11)** — Cas particulier ε = 0 (politique purement greedy)
+
+$$Q(s', a'_{\text{choisi}}) \;=\; \max_{a'} Q(s', a') \quad \text{lorsque } \varepsilon = 0$$
+
+→ Avec une politique sans exploration, **SARSA et Q-Learning produisent la même mise à jour**.
+
+<a id="eq-expected-sarsa"></a>
+
+**Éq. (12)** — Cible TD d'**Expected SARSA** (variante)
+
+$$\text{TD-Target}_{\text{Expected SARSA}} \;=\; r + \gamma\, \mathbb{E}_{a' \sim \pi}\!\left[ Q(s', a') \right]$$
+
+→ Au lieu de prendre $Q(s', a'_{\text{choisi}})$ (un seul tirage), on prend l'**espérance** sur toutes les actions possibles pondérée par la politique $\pi$.
+
+> _Toutes les équations utilisées dans le chapitre sont rassemblées ici. Dans les sections, on renvoie systématiquement à ces numéros — pas besoin de réécrire les formules à chaque endroit (cela évite aussi les bugs de rendu Markdown sur GitHub)._
 
 ---
 
@@ -114,7 +131,7 @@ $$\sum_{t=1}^{\infty} \alpha_t = \infty \quad \text{et} \quad \sum_{t=1}^{\infty
 
 C'est l'**algorithme TD on-policy de référence** — l'agent apprend la politique **qu'il suit réellement**, exploration comprise.
 
-> [!TIP]
+> **💡 Astuce**
 > **Vie réelle — SARSA, c'est l'apprenti qui apprend en marchant.**
 >
 > Imaginez un nouveau livreur Uber Eats qui découvre une ville. Il essaie un trajet (parfois bon, parfois mauvais), reçoit un feedback (note du client, temps de livraison), et **ajuste sa stratégie selon ce qu'il a réellement fait** — pas selon le trajet « théoriquement parfait » qu'il aurait pu prendre.
@@ -127,18 +144,32 @@ C'est l'**algorithme TD on-policy de référence** — l'agent apprend la politi
 
 Le nom est l'**acronyme** des 5 informations utilisées à chaque mise à jour :
 
+<!-- Diagramme SARSA : Mermaid + tableau Markdown (GitHub ignore souvent les couleurs HTML et les alertes [!TYPE]) -->
+
+**Séquence SARSA (vue d'ensemble)** — même information, deux rendus possibles :
+
+> **Affichage GitHub :** les encadrés utilisent **emoji + gras** (pas de syntaxe `[!IMPORTANT]`). Le tableau coloré en HTML est remplacé ci‑dessous par un **tableau Markdown** lisible partout.
+
 ```mermaid
 flowchart LR
-    S["S<br/>État sₜ"] --> A["A<br/>Action aₜ"]
-    A --> R["R<br/>Récompense rₜ"]
-    R --> S2["S<br/>État suivant sₜ₊₁"]
-    S2 --> A2["A<br/>Action suivante aₜ₊₁"]
-    style S fill:#2563eb,color:#fff
-    style A fill:#9333ea,color:#fff
-    style R fill:#16a34a,color:#fff
-    style S2 fill:#2563eb,color:#fff
-    style A2 fill:#9333ea,color:#fff
+    SARSA_S1["S<br/>État courant"] --> SARSA_A1["A<br/>Action faite"]
+    SARSA_A1 --> SARSA_R["R<br/>Récompense"]
+    SARSA_R --> SARSA_S2["S<br/>État suivant"]
+    SARSA_S2 --> SARSA_A2["A<br/>Action suivante"]
+    style SARSA_S1 fill:#2563eb,stroke:#1e3a8a,color:#fff
+    style SARSA_A1 fill:#9333ea,stroke:#6b21a8,color:#fff
+    style SARSA_R fill:#16a34a,stroke:#166534,color:#fff
+    style SARSA_S2 fill:#2563eb,stroke:#1e3a8a,color:#fff
+    style SARSA_A2 fill:#9333ea,stroke:#6b21a8,color:#fff
 ```
+
+> _Si le schéma Mermaid ne s'affiche pas (certaines plateformes, export PDF), le **tableau Markdown** ci‑dessous reprend exactement la même chaîne._
+
+**Séquence en tableau (lisible sur GitHub — GitHub retire souvent les couleurs du HTML)** :
+
+| 🔵 **S** &nbsp;*($s_t$)* | → | 🟣 **A** &nbsp;*($a_t$)* | → | 🟢 **R** &nbsp;*($r_{t+1}$)* | → | 🔵 **S** &nbsp;*($s_{t+1}$)* | → | 🟣 **A** &nbsp;*($a_{t+1}$)* |
+|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
+| État courant | | Action faite | | Récompense | | État suivant | | Prochaine action (choisie) |
 
 | Lettre | Signification | Rôle dans la mise à jour |
 |---|---|---|
@@ -148,8 +179,8 @@ flowchart LR
 | **S** | $s_{t+1}$ — état suivant | Où ma décision m'a mené |
 | **A** | $a_{t+1}$ — action **suivante choisie** | La prochaine décision (exploration comprise) |
 
-> [!IMPORTANT]
-> **Le 5e élément (A') est la clé.** Q-Learning utilise $\max_{a'} Q(s', a')$ (la meilleure action **possible**). SARSA utilise $Q(s', a'_{\text{choisi}})$ (l'action **réellement** prise par la politique courante). C'est cette nuance qui fait toute la différence — voir [Section 3](#section-3).
+> **📌 À retenir**
+> **Le 5e élément (A') est la clé.** Q-Learning utilise la cible avec **max sur a'** (la meilleure action **possible**). SARSA utilise la cible avec **a' réellement choisi** par la politique courante. Les formules complètes sont rassemblées dans [**Éq. (10)**](#eq-sarsa-vs-q). C'est cette nuance qui fait toute la différence — voir aussi [Section 3](#section-3).
 
 ---
 
@@ -180,7 +211,7 @@ flowchart TD
 | **Cousin direct** | Q-Learning (Off-Policy) |
 | **Extension** | SARSA(λ) avec eligibility traces |
 
-> [!NOTE]
+> **ℹ️ Remarque**
 > **Anecdote historique.** SARSA s'appelait à l'origine **« Modified Q-Learning »** dans le papier de Rummery & Niranjan (1994). C'est **Sutton & Barto** qui ont rebaptisé l'algorithme **SARSA** dans leur livre, parce que le nom mnémotechnique était **trop élégant** pour ne pas l'adopter. La proposition initiale (« MQL ») a totalement disparu.
 
 </details>
@@ -228,7 +259,9 @@ flowchart LR
 
 ### Lecture en mots
 
-> _« Ma nouvelle estimation $Q(s, a)$ = mon ancienne estimation + un petit pas $\alpha$ dans la direction de l'erreur que je viens de commettre. Si l'erreur est positive (j'avais sous-estimé), j'augmente $Q$. Si elle est négative (j'avais surestimé), je diminue $Q$. »_
+> _« Ma nouvelle estimation Q(s, a) = mon ancienne estimation + un petit pas α dans la direction de l'erreur que je viens de commettre. Si l'erreur est positive (j'avais sous-estimé), j'augmente Q. Si elle est négative (j'avais surestimé), je diminue Q. »_
+>
+> ➡️ Forme symbolique : voir [**Éq. (4)**](#eq-sarsa).
 
 ### Cas particuliers de α
 
@@ -239,7 +272,7 @@ flowchart LR
 | **α = 0.5** | Compromis équilibré entre passé et nouvelle observation |
 | **α = 1** | L'agent **oublie tout** — chaque observation remplace totalement l'estimation |
 
-> [!TIP]
+> **💡 Astuce**
 > **Vie réelle — α, c'est votre « scepticisme face à une nouvelle expérience ».**
 >
 > Si quelqu'un vous dit « ce restaurant est nul ! » :
@@ -254,12 +287,13 @@ flowchart LR
 
 ➡️ Voir [**Éq. (5) — Forme refactorisée**](#eq-sarsa-refactorisee).
 
-Cette forme rend visible le fait que la nouvelle valeur est une **moyenne pondérée** entre l'ancienne et la cible :
+Cette forme rend visible le fait que la nouvelle valeur est une **moyenne pondérée** entre l'ancienne valeur et la cible TD :
 
-$$Q(s, a) \leftarrow \underbrace{(1 - \alpha)}_{\text{poids du passé}} Q(s, a) + \underbrace{\alpha}_{\text{poids du nouveau}} \cdot \big[r + \gamma\, Q(s', a')\big]$$
+- poids du **passé** = $(1 - \alpha)$
+- poids du **nouveau** (cible TD) = $\alpha$
 
-> [!NOTE]
-> **Pourquoi deux formes équivalentes ?** La forme standard met en avant l'**erreur TD δ** (concept crucial pour comprendre TD-Learning et l'extension SARSA(λ)). La forme refactorisée met en avant le caractère de **moyenne pondérée**. Les deux sont mathématiquement identiques — utilisez celle qui vous parle le plus selon le contexte.
+> **ℹ️ Remarque**
+> **Pourquoi deux formes équivalentes ?** La forme standard ([Éq. 4](#eq-sarsa)) met en avant l'**erreur TD δ** (concept crucial pour comprendre TD-Learning et l'extension SARSA(λ)). La forme refactorisée ([Éq. 5](#eq-sarsa-refactorisee)) met en avant le caractère de **moyenne pondérée**. Les deux sont mathématiquement identiques — utilisez celle qui vous parle le plus selon le contexte.
 
 </details>
 
@@ -294,7 +328,7 @@ C'est **la question** qui revient toujours en cours de RL : quelle est la vraie 
 | **On-Policy** | L'agent apprend la valeur de **la politique qu'il suit réellement**, exploration comprise | SARSA |
 | **Off-Policy** | L'agent apprend la valeur de la politique **optimale** (greedy), même s'il en utilise une autre pour explorer | Q-Learning |
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Métaphore décisive — Imaginez deux étudiants qui révisent le code de la route.**
 >
 > - **L'étudiant SARSA (on-policy)** étudie en faisant des **vraies sessions de conduite** avec un instructeur. Il apprend ce qui marche **dans la réalité**, avec ses propres hésitations, erreurs et explorations. Il sera **prudent** parce qu'il intègre la possibilité de faire des erreurs.
@@ -318,7 +352,7 @@ Imaginez un environnement avec :
 | **Q-Learning** | Chemin court (au bord du précipice) | Il ignore le risque d'exploration ε-greedy : il croit qu'il fera toujours la meilleure action |
 | **SARSA** | Chemin long (loin du précipice) | Il intègre le fait qu'avec probabilité ε, il fera une action aléatoire — donc il évite les zones où une erreur coûte cher |
 
-> [!CAUTION]
+> **🛑 Danger**
 > **Conséquence pratique.** Si vous déployez un agent en **production avec exploration continue** (par exemple un robot qui doit toujours pouvoir s'adapter), **SARSA est souvent plus sûr** que Q-Learning. Q-Learning peut « apprendre la politique optimale » mais s'effondrer en pratique parce qu'il sous-estime le coût de ses propres explorations.
 
 ---
@@ -352,7 +386,7 @@ flowchart TD
     style S fill:#16a34a,color:#fff
 ```
 
-> [!TIP]
+> **💡 Astuce**
 > **Règle pratique de choix :**
 >
 > - Vous **simulez** dans un environnement sans coût d'erreur (jeu vidéo, sim 3D) → **Q-Learning**
@@ -420,12 +454,12 @@ flowchart TD
 | 5 | Mise à jour Q(s, a) | Application de l'équation TD avec $a'$ déterminé à l'étape 4 |
 | 6 | $s \leftarrow s'$, $a \leftarrow a'$ | On avance dans l'épisode en réutilisant l'action déjà choisie |
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Point subtil — Pourquoi avancer avec `a ← a'` ?**
 >
 > Comme SARSA a déjà choisi $a'$ à l'étape 4 pour faire la mise à jour, **il serait absurde de re-tirer une action différente** au prochain pas. L'agent **agit selon $a'$** au pas suivant, garantissant que ce qui est appris (mise à jour) correspond exactement à ce qui sera fait (action exécutée). C'est l'essence du **« on-policy »**.
 
-> [!CAUTION]
+> **🛑 Danger**
 > **Erreur classique — Ne PAS faire ça :**
 >
 > ```python
@@ -543,14 +577,14 @@ $$Q((1,1), D) \leftarrow 0 + 0.1 \times \big[-10 + 0.9 \times 0 - 0\big] = 0.1 \
 | (1,0) | 0 | **−0.1** | 0 | 0 |
 | (1,1) | 0 | 0 | 0 | **−1.0** |
 
-> [!NOTE]
+> **ℹ️ Remarque**
 > **Observations pédagogiques importantes :**
 >
 > 1. **Seules les Q-valeurs des états visités** sont mises à jour. Tout le reste reste à 0
 > 2. **L'effet de la pénalité piège (−10)** ne s'est propagé qu'à $Q((1,1), D)$ — pas encore aux états précédents
 > 3. **Pour propager** la connaissance « ne pas aller vers (1,1) en faisant D », il faut **plusieurs épisodes**. C'est exactement l'effet du **bootstrapping TD**
 
-> [!TIP]
+> **💡 Astuce**
 > **Vie réelle — Pourquoi il faut plusieurs épisodes.**
 >
 > Pensez à un nouvel employé qui se trompe de bureau et tombe sur la salle des photocopieuses bruyante. Lors de sa **première erreur**, il apprend juste « cette dernière action était mauvaise ». Pour qu'il apprenne « il ne faut pas tourner à droite il y a 2 étapes », il doit **revivre la séquence plusieurs fois** — c'est exactement ce que SARSA fait par bootstrapping. Au bout de 50 épisodes, l'information « danger » s'est **propagée en arrière** sur toute la trajectoire menant au piège.
@@ -637,12 +671,12 @@ Il existe **deux politiques très différentes** :
 
 ### Pourquoi SARSA prend le « chemin sûr »
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Mécanisme précis — pourquoi SARSA évite le bord.**
 >
 > Quand SARSA met à jour $Q((3,0), \text{Droite})$, il utilise $Q((3,1), a'_{\text{choisi}})$. Mais **avec probabilité ε = 0.1**, l'action $a'$ peut être « Bas » → l'agent tombe → reçoit −100 → la valeur $Q((3,1), \text{Bas})$ devient très négative. Cette pénalité **se propage** vers $Q((3,0), \text{Droite})$, qui devient très négative aussi. **SARSA apprend que « être au bord est risqué »** parce qu'il intègre dans sa cible le coût des erreurs réelles d'exploration.
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Pourquoi Q-Learning prend le « chemin au bord ».**
 >
 > Q-Learning utilise $\max_{a'} Q((3,1), a')$ — donc il ne considère **jamais** l'action « Bas » (qui mène à la falaise) dans sa cible. Pour Q-Learning, la valeur de $(3, 1)$ est **toujours évaluée comme si l'agent allait faire l'action optimale ensuite**. Il **sous-estime** complètement le risque d'exploration et apprend que le bord est fantastique.
@@ -655,7 +689,7 @@ Il existe **deux politiques très différentes** :
 | **Q-Learning** | Chemin au bord | **−25 à −80** instable (chutes fréquentes) |
 | **Q-Learning après ε → 0** | Chemin au bord | **−13** optimal théorique |
 
-> [!CAUTION]
+> **🛑 Danger**
 > **Leçon industrielle.** Si vous déployez Q-Learning avec exploration continue (par exemple un robot qui doit toujours s'adapter), vous obtenez **la pire performance pratique** : il choisit la politique théoriquement optimale, mais elle s'effondre dès qu'il explore. **SARSA, plus humble, donne de meilleurs résultats réels.**
 
 ```mermaid
@@ -732,14 +766,14 @@ Pour chaque épisode :
         s ← s', a ← a'
 ```
 
-> [!TIP]
+> **💡 Astuce**
 > **Vie réelle — Pourquoi λ accélère l'apprentissage.**
 >
 > Imaginez que vous apprenez à cuisiner une recette. Lorsque le **plat final est délicieux** (récompense +10), SARSA classique attribue **tout le mérite à la dernière action** (sortir du four). C'est absurde — le succès vient de TOUTES les étapes.
 >
 > Avec $\lambda = 0.7$, SARSA(λ) **rétro-attribue** une partie du mérite à toutes les actions récentes : assaisonner (poids 0.7), mélanger (poids 0.49), couper (poids 0.34)... C'est plus juste **et plus rapide à apprendre**.
 
-> [!WARNING]
+> **⚠️ Attention**
 > **Limites de SARSA(λ).**
 >
 > - Coût de calcul : on parcourt **tous les couples (s, a)** à chaque pas (au lieu d'un seul) — coûteux en grandes grilles
@@ -769,7 +803,7 @@ Cette section fournit une **implémentation pédagogique et complète** de SARSA
 pip install numpy matplotlib
 ```
 
-> [!CAUTION]
+> **🛑 Danger**
 > **Pièges classiques d'implémentation SARSA :**
 >
 > 1. **Choisir $a'$ après l'update** au lieu d'avant → vous codez Q-Learning sans le savoir
@@ -899,7 +933,7 @@ class QLearningAgent:
         self._q(s)[a] += self.alpha * (target - self._q(s)[a])
 ```
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Comparez les méthodes `update()` ligne par ligne.** Ce sont les deux **seules lignes différentes** entre SARSA et Q-Learning :
 >
 > ```python
@@ -1016,7 +1050,7 @@ Après exécution, vous observerez :
 
 Cette figure reproduit **fidèlement la Figure 6.4 de Sutton & Barto**.
 
-> [!TIP]
+> **💡 Astuce**
 > **Variations à explorer pour aller plus loin :**
 >
 > 1. **ε qui décroît** : avec $\varepsilon \to 0$, Q-Learning finit par battre SARSA (il converge vers la politique vraiment optimale)
@@ -1062,7 +1096,7 @@ flowchart TD
     style C fill:#16a34a,color:#fff
 ```
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Vie réelle — Comment Tesla, Waymo, OpenAI choisissent.**
 >
 > - **Tesla / Waymo** entraînent leurs voitures principalement en **simulation** (millions de km virtuels avec Q-Learning ou PPO) → coût d'erreur nul. Puis fine-tuning très prudent en réel.
@@ -1170,27 +1204,25 @@ $$= 2 + 0.5 \times \big[5 + 7.2 - 2\big] = 2 + 0.5 \times 10.2 = 2 + 5.1 = \math
 
 **Question 4 :** Quelle est **la SEULE différence** entre la mise à jour SARSA et la mise à jour Q-Learning ?
 
-a) SARSA utilise un $\alpha$ différent
+a) SARSA utilise un α différent
 
-b) SARSA n'utilise pas de $\gamma$
+b) SARSA n'utilise pas de γ
 
-c) SARSA utilise $Q(s', a'_{\text{choisi}})$ alors que Q-Learning utilise $\max_{a'} Q(s', a')$
+c) SARSA utilise l'action **réellement choisie** par la politique courante (a' choisi par ε-greedy), alors que Q-Learning utilise l'action **maximale** sur a' — voir [**Éq. (10)**](#eq-sarsa-vs-q)
 
-d) SARSA met à jour $V(s)$, Q-Learning met à jour $Q(s, a)$
+d) SARSA met à jour V(s), Q-Learning met à jour Q(s, a)
 
 <details>
 <summary>💡 Voir la solution</summary>
 
 ✅ **Réponse : c)**
 
-C'est la **micro-différence fondamentale** :
+C'est la **micro-différence fondamentale** entre les deux algorithmes — les formules complètes sont rassemblées dans [**Éq. (10)**](#eq-sarsa-vs-q) :
 
-| Algorithme | Cible TD |
-|---|---|
-| **SARSA** | $r + \gamma\, Q(s', a'_{\text{choisi}})$ |
-| **Q-Learning** | $r + \gamma \max_{a'} Q(s', a')$ |
+- **SARSA** utilise la cible TD avec a' **choisi** par la politique courante (voir [Éq. 4](#eq-sarsa))
+- **Q-Learning** utilise la cible TD avec **max sur a'** (voir [Éq. 6](#eq-qlearning))
 
-Tout le reste (α, γ, structure, ε-greedy) est **identique**. Cette unique différence est responsable du comportement totalement différent dans les environnements à risque comme Cliff Walking.
+Tout le reste (α, γ, structure de la boucle, ε-greedy pour l'exploration) est **identique**. Cette unique différence est responsable du comportement totalement différent dans les environnements à risque comme Cliff Walking.
 
 </details>
 
@@ -1404,15 +1436,15 @@ Sans ces conditions, SARSA converge seulement vers la valeur de **sa politique c
 
 ✅ **Réponse : VRAI** (sous les conditions de convergence)
 
-Si $\varepsilon \to 0$ progressivement (avec GLIE), **SARSA = Q-Learning** asymptotiquement. Pourquoi ? Parce que :
+Si ε → 0 progressivement (avec GLIE), **SARSA = Q-Learning** asymptotiquement. Pourquoi ? Parce que :
 
-- Avec $\varepsilon = 0$, la politique ε-greedy devient **purement greedy** : $a' = \arg\max_a Q(s', a)$
-- Donc $Q(s', a'_{\text{choisi}}) = \max_{a'} Q(s', a')$
-- La cible TD de SARSA devient **identique** à celle de Q-Learning
+- Avec ε = 0, la politique ε-greedy devient **purement greedy** : a' = argmax_a Q(s', a)
+- Donc l'action choisie **coïncide** avec l'action max → voir [**Éq. (11)**](#eq-sarsa-egal-q)
+- La cible TD de SARSA ([Éq. 4](#eq-sarsa)) devient **identique** à celle de Q-Learning ([Éq. 6](#eq-qlearning))
 
 **La différence n'existe donc que pendant l'exploration**. C'est exactement pourquoi SARSA et Q-Learning produisent les mêmes résultats sur Cliff Walking lorsqu'on annule l'exploration après convergence — ils trouvent tous deux le chemin théoriquement optimal au bord.
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Subtilité** : « la même politique optimale **finale** » ≠ « la même trajectoire d'apprentissage ». Pendant l'apprentissage avec ε > 0, leurs comportements sont **très différents**. C'est cette différence qui compte en pratique.
 
 </details>
@@ -1531,15 +1563,15 @@ flowchart TD
 - 🛠️ **Gymnasium** : `gym.make('CliffWalking-v0')` — environnement Cliff Walking standardisé pour vos expériences
 - 💻 **Stable Baselines3** — implémentations production-ready de SARSA, Q-Learning, DQN, PPO, SAC
 
-> [!TIP]
+> **💡 Astuce**
 > **Action pratique recommandée :**
 >
 > 1. Exécutez le code Python fourni (`sarsa.py`) — observez la différence de récompense
 > 2. Modifiez ε et α — voyez comment les courbes changent
-> 3. Implémentez **Expected SARSA** (variante qui utilise $\mathbb{E}_{a'}[Q(s', a')]$ au lieu de $Q(s', a'_{\text{choisi}})$)
+> 3. Implémentez **Expected SARSA** — variante qui utilise une **espérance** sur les actions au lieu de l'action réellement choisie (voir [**Éq. (12)**](#eq-expected-sarsa) vs [**Éq. (4)**](#eq-sarsa))
 > 4. Implémentez **SARSA(λ)** avec eligibility traces — c'est l'exercice de référence pour tester votre compréhension TD profonde
 
-> [!IMPORTANT]
+> **📌 À retenir**
 > **Erreurs à ne plus faire après ce chapitre :**
 >
 > - ❌ Confondre SARSA et Q-Learning (« c'est pareil, juste une lettre de différence »)
