@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 22 - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
+# Chapitre 1-bis - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
 
 ## Table des matières
 
@@ -45,7 +45,7 @@ $$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 
 **Éq. (2)** — Vraie valeur d'une action
 
-$$q_*(a) = \mathbb{E}[R_t \mid A_t = a]$$
+$$q_{\ast}(a) = \mathbb{E}[R_t \mid A_t = a]$$
 
 <a id="eq-q-empirique"></a>
 
@@ -69,9 +69,9 @@ $$Q_{n+1}(a) \leftarrow Q_n(a) + \alpha \left[R_n - Q_n(a)\right]$$
 
 **Éq. (6)** — Regret cumulé
 
-$$\mathcal{R}(T) \;=\; T \cdot q_*(a^*) \;-\; \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]$$
+$$\mathcal{R}(T) \;=\; T \cdot q_{\ast}(a^{\ast}) \;-\; \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]$$
 
-avec $a^* = \arg\max_a q_*(a)$.
+avec $a^{\ast} = \arg\max_a q_{\ast}(a)$.
 
 <a id="eq-epsilon-greedy"></a>
 
@@ -229,7 +229,7 @@ flowchart TD
 Un **k-armed bandit** est défini par :
 
 - Un ensemble de **k actions** (les « bras ») : $\mathcal{A} = \{a_1, a_2, \dots, a_k\}$
-- Pour chaque action $a$, une **distribution de récompense inconnue** $R_a$ avec une moyenne $q_*(a) = \mathbb{E}[R_a]$
+- Pour chaque action $a$, une **distribution de récompense inconnue** $R_a$ avec une moyenne $q_{\ast}(a) = \mathbb{E}[R_a]$
 - À chaque pas de temps $t$, l'agent choisit une action $A_t \in \mathcal{A}$ et reçoit une récompense $R_t \sim R_{A_t}$
 
 L'**objectif** de l'agent est de maximiser la **récompense cumulée** sur un horizon $T$ :
@@ -238,22 +238,22 @@ $$\text{maximiser} \quad \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 
 ---
 
-### La fonction de valeur d'action $q_*(a)$
+### La fonction de valeur d'action $q_{\ast}(a)$
 
 La **vraie valeur** d'une action $a$ est l'**espérance de récompense** lorsqu'on choisit cette action :
 
-$$q_*(a) = \mathbb{E}[R_t \mid A_t = a]$$
+$$q_{\ast}(a) = \mathbb{E}[R_t \mid A_t = a]$$
 
-L'agent ne connaît pas $q_*(a)$ — il doit l'**estimer** à partir de ses observations. On note $Q_t(a)$ son estimation au temps $t$.
+L'agent ne connaît pas $q_{\ast}(a)$ — il doit l'**estimer** à partir de ses observations. On note $Q_t(a)$ son estimation au temps $t$.
 
-> _Si l'agent connaissait parfaitement $q_*(a)$ pour chaque action, le problème serait trivial : il suffirait de toujours choisir $a^* = \arg\max_a q_*(a)$. **Tout le défi du bandit est dans cette ignorance initiale**._
+> _Si l'agent connaissait parfaitement $q_{\ast}(a)$ pour chaque action, le problème serait trivial : il suffirait de toujours choisir $a^{\ast} = \arg\max_a q_{\ast}(a)$. **Tout le défi du bandit est dans cette ignorance initiale**._
 
 > [!TIP]
-> **Vulgarisation — Qu'est-ce que $q_*(a)$ dans la vraie vie ?**
+> **Vulgarisation — Qu'est-ce que $q_{\ast}(a)$ dans la vraie vie ?**
 >
-> Imaginez que vous évaluez **5 restaurants** sur une échelle de 1 à 10. Si Dieu vous chuchotait à l'oreille « Le restaurant n°3 a une vraie qualité moyenne de 8.7/10, le n°1 de 6.2/10... » — ces nombres seraient $q_*(a)$.
+> Imaginez que vous évaluez **5 restaurants** sur une échelle de 1 à 10. Si Dieu vous chuchotait à l'oreille « Le restaurant n°3 a une vraie qualité moyenne de 8.7/10, le n°1 de 6.2/10... » — ces nombres seraient $q_{\ast}(a)$.
 >
-> Mais Dieu ne parle pas. **Vous devez aller manger** dans chaque restaurant pour estimer ces notes. Et chaque dîner est bruité (un soir le chef est fatigué, un autre c'est exceptionnel). Votre estimation $Q_t(a)$ s'améliore à chaque visite, mais ne sera **jamais parfaitement égale** à la vérité $q_*(a)$.
+> Mais Dieu ne parle pas. **Vous devez aller manger** dans chaque restaurant pour estimer ces notes. Et chaque dîner est bruité (un soir le chef est fatigué, un autre c'est exceptionnel). Votre estimation $Q_t(a)$ s'améliore à chaque visite, mais ne sera **jamais parfaitement égale** à la vérité $q_{\ast}(a)$.
 
 ---
 
@@ -290,7 +290,7 @@ $$Q_{n+1}(a) \leftarrow Q_n(a) + \alpha \left[R_n - Q_n(a)\right]$$
 
 Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui connaîtrait toujours la meilleure action.
 
-➡️ Voir [**Éq. (6) — Regret cumulé**](#eq-regret) en haut du document, où $a^* = \arg\max_a q_*(a)$ est la meilleure action.
+➡️ Voir [**Éq. (6) — Regret cumulé**](#eq-regret) en haut du document, où $a^{\ast} = \arg\max_a q_{\ast}(a)$ est la meilleure action.
 
 | Type de regret | Comportement souhaité |
 |---|---|
@@ -772,7 +772,7 @@ flowchart LR
     style H fill:#16a34a,color:#fff
 ```
 
-> _Ces chiffres reflètent l'expérience classique de **Sutton & Barto, Section 2.3** : récompenses tirées d'une $\mathcal{N}(q_*(a), 1)$ avec $q_*(a) \sim \mathcal{N}(0, 1)$. **UCB et Thompson Sampling dominent** ; ε-greedy reste compétitif et largement déployé pour sa simplicité._
+> _Ces chiffres reflètent l'expérience classique de **Sutton & Barto, Section 2.3** : récompenses tirées d'une $\mathcal{N}(q_{\ast}(a), 1)$ avec $q_{\ast}(a) \sim \mathcal{N}(0, 1)$. **UCB et Thompson Sampling dominent** ; ε-greedy reste compétitif et largement déployé pour sa simplicité._
 
 ---
 
@@ -935,7 +935,7 @@ pip install numpy matplotlib
 
 ### 8a — Simulation de l'environnement statique
 
-L'environnement est un **bandit stationnaire** : la vraie moyenne $q_*(a)$ de chaque bras est tirée une fois pour toute, et les récompenses suivent une loi normale $\mathcal{N}(q_*(a), 1)$.
+L'environnement est un **bandit stationnaire** : la vraie moyenne $q_{\ast}(a)$ de chaque bras est tirée une fois pour toute, et les récompenses suivent une loi normale $\mathcal{N}(q_{\ast}(a), 1)$.
 
 ```python
 import numpy as np
@@ -1209,10 +1209,10 @@ Après exécution, vous observerez les patterns suivants :
 
 Pour aller plus loin, modifiez le code ci-dessus pour tester :
 
-1. **Bandit non-stationnaire** : faire dériver $q_*(a)$ avec le temps (random walk). Comparer ε-greedy avec $\alpha$ constant vs $1/n$.
+1. **Bandit non-stationnaire** : faire dériver $q_{\ast}(a)$ avec le temps (random walk). Comparer ε-greedy avec $\alpha$ constant vs $1/n$.
 2. **k variable** : tester avec $k = 5, 10, 50, 100$. Quelle méthode résiste le mieux ?
 3. **Récompenses binaires** (0/1) : adapter Thompson Sampling avec distributions Beta.
-4. **Régret cumulé** : tracer $\mathcal{R}(T) = T \cdot q_*(a^*) - \sum R_t$ en log-log pour vérifier les bornes.
+4. **Régret cumulé** : tracer $\mathcal{R}(T) = T \cdot q_{\ast}(a^{\ast}) - \sum R_t$ en log-log pour vérifier les bornes.
 
 </details>
 
@@ -2090,7 +2090,7 @@ Cette architecture est exactement celle que **Yahoo!** a utilisée pour son papi
 
 | | Bandit stationnaire | Bandit non-stationnaire |
 |---|---|---|
-| **Vraies valeurs $q_*(a)$** | Fixes pour toujours | Évoluent avec le temps (random walk, dérive) |
+| **Vraies valeurs $q_{\ast}(a)$** | Fixes pour toujours | Évoluent avec le temps (random walk, dérive) |
 | **Exemple** | Casino avec machines fixes | Recommandations news (un article vieillit) |
 | **Mise à jour optimale** | Moyenne empirique : $\alpha_n = 1/n$ | **Moyenne pondérée exponentielle : $\alpha$ constant** |
 
@@ -2177,7 +2177,7 @@ mindmap
 | # | Point clé |
 |---|---|
 | **1** | Un **bandit** est un MDP avec un seul état → c'est l'**exploration vs exploitation à l'état pur** |
-| **2** | La **vraie valeur** $q_*(a)$ est inconnue → on l'**estime** par $Q(a)$ via moyenne empirique |
+| **2** | La **vraie valeur** $q_{\ast}(a)$ est inconnue → on l'**estime** par $Q(a)$ via moyenne empirique |
 | **3** | Le **regret optimal** est **logarithmique** $O(\log T)$ — atteint par UCB et Thompson Sampling |
 | **4** | **ε-greedy** est trivial mais largement utilisé en production pour sa robustesse |
 | **5** | **UCB** ajoute un bonus d'incertitude → action = $Q(a) + c\sqrt{\ln t / N(a)}$ |
