@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 22 - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
+# Chapitre 1-bis - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
 
 ## Table des matières
 
@@ -69,7 +69,7 @@ $$Q_{n+1}(a) \leftarrow Q_n(a) + \alpha \left[R_n - Q_n(a)\right]$$
 
 **Éq. (6)** — Regret cumulé
 
-$$\mathcal{R}(T) \;=\; T \cdot q_{\ast}(a^{\ast}) \;-\; \mathbb{E}\!\left[\sum_{t=1}^{T} R_t\right]$$
+$$\mathcal{R}(T) = T \cdot q_{\ast}(a^{\ast}) - \mathbb{E}\left[\sum_{t=1}^{T} R_t\right]$$
 
 avec $a^{\ast} = \arg\max_a q_{\ast}(a)$.
 
@@ -84,7 +84,7 @@ avec $a^{\ast} = \arg\max_a q_{\ast}(a)$.
 
 **Éq. (8)** — ε avec décroissance
 
-$$\varepsilon_t = \max\left(\varepsilon_{\min}, \; \varepsilon_0 \cdot \text{decay}^t\right)$$
+$$\varepsilon_t = \max\left(\varepsilon_{\min}, \, \varepsilon_0 \cdot \text{decay}^t\right)$$
 
 <a id="eq-ucb"></a>
 
@@ -634,7 +634,7 @@ flowchart TD
 
 Idée : **explorer beaucoup au début**, puis exploiter de plus en plus à mesure qu'on apprend :
 
-$$\varepsilon_t = \max\left(\varepsilon_{\min}, \; \varepsilon_0 \cdot \text{decay}^t\right)$$
+$$\varepsilon_t = \max\left(\varepsilon_{\min}, \, \varepsilon_0 \cdot \text{decay}^t\right)$$
 
 Exemple : $\varepsilon_0 = 1.0$, $\text{decay} = 0.995$, $\varepsilon_{\min} = 0.01$. Après 1000 itérations, $\varepsilon \approx 0.007$ → quasi-pure exploitation.
 
