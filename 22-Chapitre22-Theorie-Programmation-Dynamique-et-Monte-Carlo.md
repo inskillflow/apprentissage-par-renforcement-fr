@@ -128,7 +128,6 @@ $$a_t = \arg\max_a \left[\, x_t^T \hat{\theta}_a + \alpha \sqrt{x_t^T A_a^{-1} x
 
 $$Q_{n+1}(a) = (1-\alpha)^n Q_0(a) + \sum_{i=1}^{n} \alpha (1-\alpha)^{n-i} R_i$$
 
-> _Toutes les équations utilisées dans le reste du chapitre sont rassemblées ici. Les équations dont le rendu Markdown peut poser problème (cas multiples avec `\begin{cases}` et expressions denses) ne sont **pas répétées dans le corps du texte** — elles sont remplacées par un lien vers cette section._
 
 ---
 
