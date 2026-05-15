@@ -104,7 +104,7 @@ où **a' (choisi)** est l'action **réellement** sélectionnée dans s' par la p
 
 **Éq. (11)** — Cas particulier ε = 0 (politique purement greedy)
 
-$$Q(s', a'_{\text{choisi}}) \;=\; \max_{a'} Q(s', a') \quad \text{lorsque } \varepsilon = 0$$
+$$Q(s', a'_{\text{choisi}}) = \max_{a'} Q(s', a') \quad \text{lorsque } \varepsilon = 0$$
 
 → Avec une politique sans exploration, **SARSA et Q-Learning produisent la même mise à jour**.
 
@@ -112,11 +112,11 @@ $$Q(s', a'_{\text{choisi}}) \;=\; \max_{a'} Q(s', a') \quad \text{lorsque } \var
 
 **Éq. (12)** — Cible TD d'**Expected SARSA** (variante)
 
-$$\text{TD-Target}_{\text{Expected SARSA}} \;=\; r + \gamma\, \mathbb{E}_{a' \sim \pi}\!\left[ Q(s', a') \right]$$
+$$\text{TD-Target}_{\text{Expected SARSA}} = r + \gamma\, \mathbb{E}_{a' \sim \pi}\left[ Q(s', a') \right]$$
 
 → Au lieu de prendre la valeur Q(s', a' choisi) sur **un seul tirage** (cf. cible SARSA standard ci-dessus), on prend l'**espérance** sur toutes les actions possibles pondérée par la politique π.
 
-> _Toutes les équations utilisées dans le chapitre sont rassemblées ici. Dans les sections, on renvoie systématiquement à ces numéros — pas besoin de réécrire les formules à chaque endroit (cela évite aussi les bugs de rendu Markdown sur GitHub)._
+> _Toutes les équations utilisées dans le chapitre sont rassemblées ci-dessus. Dans les sections, on renvoie à leur numéro plutôt que de les réécrire à chaque endroit._
 
 ---
 
@@ -137,6 +137,18 @@ C'est l'**algorithme TD on-policy de référence** — l'agent apprend la politi
 > Imaginez un nouveau livreur Uber Eats qui découvre une ville. Il essaie un trajet (parfois bon, parfois mauvais), reçoit un feedback (note du client, temps de livraison), et **ajuste sa stratégie selon ce qu'il a réellement fait** — pas selon le trajet « théoriquement parfait » qu'il aurait pu prendre.
 >
 > Si demain il essaye une nouvelle rue (exploration), il intègre **vraiment** ce que cela donne. Il n'apprend pas une stratégie « idéale en laboratoire » — il apprend la **stratégie réaliste** qui fonctionne dans **sa vraie pratique**.
+
+> **❓ FAQ**
+>
+> **Q : Pourquoi on dit que TD-Learning « apprend en marchant » ?**
+> R : C'est une **métaphore** : au lieu d'avoir tout le savoir d'avance (comme dans Monte Carlo, qui attend la fin d'un épisode complet pour apprendre), l'algorithme **progresse pas à pas**. Comme quand tu marches sur un chemin : tu fais **un pas**, tu observes ce qui se passe, tu **ajustes**, puis tu continues. L'apprentissage se fait **à chaque transition** (s, a, r, s'), au fil des nouvelles expériences, sans attendre la fin de la partie.
+>
+> **Q : Quelle est la différence entre TD-Learning et SARSA ?**
+> R : **TD-Learning est une famille**, SARSA est **un membre** de cette famille.
+> - **TD-Learning** = principe général : « j'estime ma valeur actuelle, j'observe une récompense, j'ajuste mon estimation selon ce que je vois maintenant ». Tous les algorithmes TD partagent cette **structure de mise à jour incrémentale**.
+> - **SARSA** = un cas particulier de TD-Learning qui apprend la valeur **de la politique qu'il suit réellement** (on-policy), en utilisant l'action **prochaine effectivement choisie** (a').
+>
+> Autre membre célèbre : **Q-Learning** (off-policy, utilise max au lieu de a' choisi). Voir [Position de SARSA dans la famille du RL](#section-1) ci-dessous pour la carte complète.
 
 ---
 
@@ -243,6 +255,26 @@ flowchart LR
 >
 > ➡️ Forme symbolique : voir [**Éq. (4)**](#eq-sarsa).
 
+> **❓ FAQ**
+>
+> **Q : Je ne comprends pas l'équation Q(s,a) ← Q(s,a) + α[r + γ·Q(s',a') − Q(s,a)]. Vulgarise.**
+> R : Décompose-la **morceau par morceau** :
+>
+> 1. **Q(s, a)** = ce que tu **pensais** valoir l'action a depuis l'état s (ton **ancienne croyance**).
+> 2. **r** = la récompense que tu viens de **vraiment** recevoir.
+> 3. **γ · Q(s', a')** = la valeur future estimée (ton « espoir » des récompenses à venir, escomptées par γ).
+> 4. **r + γ · Q(s', a')** = ta **nouvelle croyance** (la « cible »).
+> 5. **[cible − ancienne]** = la **surprise** : à quel point tu t'étais trompé.
+> 6. **α × surprise** = de combien tu **bouges** ton ancienne croyance vers la nouvelle.
+>
+> En une phrase : « **Je viens de voir quelque chose, je m'étais un peu trompé, je corrige légèrement mon estimation dans la bonne direction.** »
+>
+> **Q : Qu'est-ce que ça veut dire « mettre à jour la valeur d'un état » ?**
+> R : Tu ajustes ton **estimation de combien cet état est « bon »** (= combien de récompenses futures tu peux espérer en partant de là). Tu prends la valeur actuelle, et tu la **rapproches** de ce que l'expérience te montre maintenant : la récompense reçue, plus la valeur future de l'état suivant pondérée par γ. **SARSA fait cet ajustement en suivant l'action réelle a' que tu vas prendre**, alors que **Q-Learning** le fait en regardant la **meilleure action théorique** (max).
+>
+> **Q : Pourquoi γ (gamma) ? À quoi ça sert ?**
+> R : C'est le **facteur d'escompte** (entre 0 et 1) qui pèse les récompenses futures. Avec γ = 0, l'agent est **myope** (il ne regarde que la récompense immédiate). Avec γ proche de 1, il est **patient** (il anticipe loin dans le futur). Typiquement on prend **γ ≈ 0.9 à 0.99**.
+
 ### Cas particuliers de α
 
 | Valeur de α | Comportement |
@@ -311,13 +343,38 @@ C'est **la question** qui revient toujours en cours de RL : quelle est la vraie 
 | **Off-Policy** | L'agent apprend la valeur de la politique **optimale** (greedy), même s'il en utilise une autre pour explorer | Q-Learning |
 
 > **📌 À retenir**
-> **Métaphore décisive — Imaginez deux étudiants qui révisent le code de la route.**
+> **Métaphore décisive — Deux apprentis conducteurs qui révisent le code de la route.**
 >
-> - **L'étudiant SARSA (on-policy)** étudie en faisant des **vraies sessions de conduite** avec un instructeur. Il apprend ce qui marche **dans la réalité**, avec ses propres hésitations, erreurs et explorations. Il sera **prudent** parce qu'il intègre la possibilité de faire des erreurs.
+> - **SARSA (on-policy)** étudie en faisant des **vraies sessions de conduite** avec un instructeur. Il apprend ce qui marche **dans la réalité**, avec ses propres hésitations, erreurs et explorations. Il sera **prudent** parce qu'il intègre la possibilité de faire des erreurs.
 >
-> - **L'étudiant Q-Learning (off-policy)** étudie un **manuel théorique** parfait. Il apprend la conduite **idéale** sans tenir compte de ses propres erreurs futures. Il sera **plus optimiste**, parce qu'il croit qu'il fera toujours le meilleur choix.
+> - **Q-Learning (off-policy)** étudie un **manuel théorique** parfait. Il apprend la conduite **idéale** sans tenir compte de ses propres erreurs futures. Il sera **plus optimiste**, parce qu'il croit qu'il fera toujours le meilleur choix.
 >
 > Dans un examen théorique, Q-Learning gagnera. Dans la **vraie route avec des erreurs humaines**, SARSA est souvent plus sûr.
+
+> **❓ FAQ**
+>
+> **Q : Donne un exemple concret de la différence avec « j'ai mal à la tête, j'ai 3 actions possibles ».**
+> R : Imagine cette situation :
+> - **État s** : « j'ai mal à la tête, je viens de prendre un médicament »
+> - **Actions possibles** : (1) **dormir**, (2) **faire du sport**, (3) **danser**
+> - **Tu choisis** : dormir → tu te réveilles 1h plus tard, ça va beaucoup mieux (récompense = +5)
+>
+> | Algorithme | Comment il met à jour Q(s, dormir) ? |
+> |---|---|
+> | **SARSA** | Regarde l'action que tu vas **réellement** prendre **après** dormir (a' = par ex. « regarder Netflix »). Il met à jour avec **r + γ · Q(état réveillé, regarder Netflix)**. Il apprend en fonction de ce que tu **fais vraiment ensuite**. |
+> | **Q-Learning** | Regarde la **meilleure action théorique** après dormir (a* = par ex. « boire de l'eau » si c'est la meilleure d'après son estimation). Il met à jour avec **r + γ · max_a' Q(état réveillé, a')**. Même si tu n'as pas bu d'eau, **il apprend comme si tu allais le faire**. |
+>
+> SARSA reste **collé à la réalité** : « ce que tu fais après ». Q-Learning vise **l'idéal** : « ce que tu aurais dû faire après ».
+>
+> **Q : Mais Q-Learning utilise aussi 2 actions, non ? Une faite, une à venir ?**
+> R : **Oui, exactement.** Dans les deux algorithmes, il y a **deux actions** dans la mise à jour : a (l'action que tu viens de faire) et **a'** (l'action suivante).
+> - **SARSA** : a' = **action que tu vas vraiment prendre** ensuite (selon ta politique ε-greedy actuelle).
+> - **Q-Learning** : a' = **action théoriquement optimale** dans l'état suivant (max), même si tu ne la prendras pas.
+>
+> C'est **la seule différence**. Voir [**Éq. (10)**](#eq-sarsa-vs-q) pour les formules côte à côte.
+>
+> **Q : Donc à la fin, c'est juste « max » à la place de « a' choisi » ?**
+> R : **Exactement.** À la place de Q(s', **a'_choisi**), Q-Learning utilise Q(s', **argmax_a' Q(s', a')**) = max_a' Q(s', a'). C'est **un seul caractère qui change** dans le code, et ça change **complètement** le comportement.
 
 ---
 
@@ -456,6 +513,28 @@ flowchart TD
 > ```
 >
 > Beaucoup de bugs SARSA viennent de cette confusion. Vérifiez toujours que **l'action utilisée dans la mise à jour est la même que l'action exécutée au pas suivant**.
+
+> **❓ FAQ**
+>
+> **Q : D'où vient la politique ? Comment elle se calcule ?**
+> R : La politique **n'est pas fixée à l'avance** — elle se **construit au fur et à mesure** de l'apprentissage. Concrètement :
+>
+> 1. **Au départ**, Q(s, a) est initialisé à zéro (ou à une valeur optimiste). Comme toutes les actions ont la même valeur, l'agent **choisit un peu au hasard**.
+> 2. **À chaque pas**, l'agent **observe** ce qui se passe (récompense r, état suivant s') et **met à jour Q(s, a)** via l'équation TD ([Éq. 4](#eq-sarsa)).
+> 3. **La politique** = la **règle de choix** basée sur les Q actuels. Avec ε-greedy : « la plupart du temps je prends l'action de Q maximal, parfois je tire au hasard ».
+> 4. Au fil des essais, **les Q se précisent** → la politique **devient de plus en plus performante** sans qu'on l'ait jamais codée à la main.
+>
+> Autrement dit, la politique **émerge** de l'apprentissage : on n'apprend pas la politique directement, on apprend la **valeur Q**, et la politique se déduit de Q.
+>
+> **Q : Concrètement, comment l'agent choisit son action à chaque pas ?**
+> R : Avec **ε-greedy** ([Éq. 7](#eq-epsilon-greedy)) :
+> - **Avec probabilité 1 − ε** : il choisit **a = argmax_a Q(s, a)** (l'action qui a actuellement la **meilleure valeur estimée**) → **exploitation**
+> - **Avec probabilité ε** : il choisit **une action au hasard** → **exploration**
+>
+> Cette politique est **stochastique** (elle peut tirer une action différente à chaque visite du même état). C'est cette politique courante que SARSA évalue et améliore — d'où le nom **on-policy**.
+>
+> **Q : Et après l'apprentissage, on fait quoi ?**
+> R : On **fige** ε à 0 (pure exploitation) et on déduit la **politique finale** : π(s) = argmax_a Q(s, a). C'est cette politique-là qu'on déploie en production.
 
 </details>
 
@@ -1086,6 +1165,19 @@ flowchart TD
 > - **Boston Dynamics** utilise du SARSA-like et SAC pour le fine-tuning des politiques de robots physiques → un Atlas qui tombe coûte des centaines de milliers de dollars.
 >
 > **Règle d'or industrielle :** simulation = off-policy (Q-Learning, DQN), réel = on-policy (SARSA, PPO).
+
+> **❓ FAQ**
+>
+> **Q : Pourquoi ne pas toujours utiliser Q-Learning, puisqu'il vise « le meilleur » ?**
+> R : Parce que « le meilleur en théorie » **n'est pas toujours le meilleur en pratique**. Q-Learning suppose que tu vas **toujours faire l'action optimale ensuite**, ce qui est **faux** tant que tu explores (ε > 0). Du coup il **sous-estime le risque** des situations où une exploration accidentelle peut être catastrophique.
+>
+> Exemple : un robot qui marche au bord d'une falaise. Q-Learning calcule la trajectoire **optimale au bord** (la plus rapide). Mais si pendant l'apprentissage le robot fait **une erreur d'exploration**, il **tombe**. SARSA, lui, **intègre la possibilité de cette erreur** dans ses estimations → il choisit un chemin **un peu plus long mais sûr**, loin du bord. **Résultat pratique : SARSA livre un robot qui ne casse pas.**
+>
+> **Q : C'est quoi l'avantage de SARSA en une phrase ?**
+> R : **La prudence.** SARSA suit l'action que tu vas **réellement** prendre, donc il apprend à **gérer les situations où tu n'es pas optimal**. Il est **plus sûr dans les environnements réels** où tu ne peux pas garantir une politique parfaite (exploration continue, bruit, défauts physiques). Q-Learning, lui, vise toujours le maximum théorique — **risqué** quand on ne peut pas agir parfaitement.
+>
+> **Q : Donc « optimal théorique » ne veut pas dire « optimal en pratique » ?**
+> R : Exactement. La politique optimale Q* trouvée par Q-Learning est **vraie sous l'hypothèse que tu suis cette politique parfaitement**. Si tu **ne peux pas** (parce que tu explores, parce qu'il y a du bruit, parce qu'un capteur peut faillir), alors la politique **réellement suivie** par l'agent **diffère** de Q*, et la performance peut être **bien pire**. SARSA, en apprenant la politique **qu'il suit vraiment**, donne souvent **de meilleurs résultats réels** que Q-Learning même s'il est « théoriquement sub-optimal ».
 
 ---
 
