@@ -407,7 +407,7 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 > _Anecdote : **Microsoft Research** a publié en 2014 que ses systèmes de personnalisation de news **MSN.com** utilisaient des bandits contextuels servant **plusieurs millions de décisions par jour** — une stack RL plus simple que le Deep RL, mais infiniment plus rentable à grande échelle._
 
 > **📌 À retenir**
-> **Pour les ingénieurs : choisissez un bandit AVANT un Deep RL.**
+> Choisissez un bandit AVANT un Deep RL
 >
 > Quand on découvre le RL, la tentation est de tout faire avec PPO ou DQN. **Erreur classique en industrie**. Avant de sortir l'artillerie lourde, demandez-vous :
 >
