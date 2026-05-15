@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Guide Partie 2 / 4
+# Guide Partie 2 / 2
 
 > Projet de session - Apprentissage par Renforcement
 
