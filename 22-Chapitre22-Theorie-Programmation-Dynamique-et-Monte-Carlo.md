@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 1-bis - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
+# Chapitre 22 - Les Problèmes de Bandits — Le RL dans sa forme la plus pure
 
 ## Table des matières
 
