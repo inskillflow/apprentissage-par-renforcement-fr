@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 15-bis - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
+# Chapitre 23 - SARSA — Le TD-Learning « réaliste » qui apprend en marchant
 
 ## Table des matières
 
@@ -98,7 +98,7 @@ $$\text{SARSA} : \quad \text{cible} = r + \gamma\, Q(s', a'_{\text{choisi}})$$
 
 $$\text{Q-Learning} : \quad \text{cible} = r + \gamma\, \max_{a'} Q(s', a')$$
 
-où $a'_{\text{choisi}}$ est l'action **réellement** sélectionnée dans $s'$ par la politique courante (ε-greedy).
+où **a' (choisi)** est l'action **réellement** sélectionnée dans s' par la politique courante (ε-greedy).
 
 <a id="eq-sarsa-egal-q"></a>
 
@@ -114,7 +114,7 @@ $$Q(s', a'_{\text{choisi}}) \;=\; \max_{a'} Q(s', a') \quad \text{lorsque } \var
 
 $$\text{TD-Target}_{\text{Expected SARSA}} \;=\; r + \gamma\, \mathbb{E}_{a' \sim \pi}\!\left[ Q(s', a') \right]$$
 
-→ Au lieu de prendre $Q(s', a'_{\text{choisi}})$ (un seul tirage), on prend l'**espérance** sur toutes les actions possibles pondérée par la politique $\pi$.
+→ Au lieu de prendre la valeur Q(s', a' choisi) sur **un seul tirage** (cf. cible SARSA standard ci-dessus), on prend l'**espérance** sur toutes les actions possibles pondérée par la politique π.
 
 > _Toutes les équations utilisées dans le chapitre sont rassemblées ici. Dans les sections, on renvoie systématiquement à ces numéros — pas besoin de réécrire les formules à chaque endroit (cela évite aussi les bugs de rendu Markdown sur GitHub)._
 
@@ -292,12 +292,14 @@ C'est **la question** qui revient toujours en cours de RL : quelle est la vraie 
 
 ### Les deux équations côte à côte
 
-| Algorithme | Cible TD |
-|---|---|
-| **SARSA** ([Éq. 4](#eq-sarsa)) | $r + \gamma\, Q(s', \mathbf{a'_{\text{choisi}}})$ |
-| **Q-Learning** ([Éq. 6](#eq-qlearning)) | $r + \gamma \max_{a'} Q(s', a')$ |
+➡️ Voir les deux cibles écrites côte à côte dans [**Éq. (10)**](#eq-sarsa-vs-q) (haut du document).
 
-> _**Le seul changement** : `a'_{choisi}` (action réellement prise par la politique courante) chez SARSA, vs `max a'` (la meilleure action théorique possible) chez Q-Learning. Ce détail change tout._
+| Algorithme | Cible TD (intuition) | Réf. |
+|---|---|---|
+| **SARSA** | r + γ · Q(s', a' **choisi par la politique**) | [Éq. 4](#eq-sarsa) |
+| **Q-Learning** | r + γ · **max** sur a' de Q(s', a') | [Éq. 6](#eq-qlearning) |
+
+> _**Le seul changement** : `a' choisi` (action réellement prise par la politique courante) chez SARSA, vs `max a'` (la meilleure action théorique possible) chez Q-Learning. Ce détail change tout._
 
 ---
 
@@ -654,7 +656,7 @@ Il existe **deux politiques très différentes** :
 > **📌 À retenir**
 > **Mécanisme précis — pourquoi SARSA évite le bord.**
 >
-> Quand SARSA met à jour $Q((3,0), \text{Droite})$, il utilise $Q((3,1), a'_{\text{choisi}})$. Mais **avec probabilité ε = 0.1**, l'action $a'$ peut être « Bas » → l'agent tombe → reçoit −100 → la valeur $Q((3,1), \text{Bas})$ devient très négative. Cette pénalité **se propage** vers $Q((3,0), \text{Droite})$, qui devient très négative aussi. **SARSA apprend que « être au bord est risqué »** parce qu'il intègre dans sa cible le coût des erreurs réelles d'exploration.
+> Quand SARSA met à jour Q((3,0), Droite), il utilise la cible TD avec **a' réellement choisi** dans (3, 1) — voir [**Éq. (4)**](#eq-sarsa). Mais **avec probabilité ε = 0.1**, l'action a' peut être « Bas » → l'agent tombe → reçoit −100 → la valeur Q((3,1), Bas) devient très négative. Cette pénalité **se propage** vers Q((3,0), Droite), qui devient très négative aussi. **SARSA apprend que « être au bord est risqué »** parce qu'il intègre dans sa cible le coût des erreurs réelles d'exploration.
 
 > **📌 À retenir**
 > **Pourquoi Q-Learning prend le « chemin au bord ».**
@@ -1229,7 +1231,7 @@ SARSA apprend le **chemin sûr par le haut**. Pourquoi ?
 
 - Avec $\varepsilon = 0.1$, l'agent **fait parfois** une action aléatoire
 - Au bord de la falaise, une action aléatoire = **chute = −100**
-- SARSA intègre cette pénalité dans sa cible TD (via $Q(s', a'_{\text{choisi}})$ qui peut être très négative si $a'$ = falaise)
+- SARSA intègre cette pénalité dans sa cible TD : la valeur Q(s', a' choisi) peut être très négative si a' = falaise (voir [**Éq. (4)**](#eq-sarsa))
 - Donc $Q(s, a)$ pour les états au bord devient très négatif → SARSA évite cette zone
 
 Q-Learning apprend au contraire le chemin au bord car il utilise $\max_{a'} Q(s', a')$ qui ignore la possibilité de tomber.
@@ -1247,7 +1249,7 @@ Q-Learning apprend au contraire le chemin au bord car il utilise $\max_{a'} Q(s'
 
 Trois raisons techniques liées :
 
-1. **Cible TD réaliste** : SARSA utilise $Q(s', a'_{\text{choisi}})$. Si $a'$ peut être une action aléatoire (à cause de ε), la cible intègre le coût des explorations
+1. **Cible TD réaliste** : SARSA utilise la valeur Q(s', a' choisi) — voir [**Éq. (4)**](#eq-sarsa). Si a' peut être une action aléatoire (à cause de ε), la cible intègre le coût des explorations
 2. **Évite les zones « risque-proche-récompense »** : si une zone est très bonne quand on agit parfaitement mais désastreuse en cas d'erreur, SARSA la fuit
 3. **Convergence vers $Q^{\pi}$ et non $Q^{\ast}$** : SARSA apprend la valeur de **sa politique réelle** (avec exploration), Q-Learning apprend l'idéal théorique inatteignable en pratique
 
@@ -1490,7 +1492,7 @@ mindmap
 | **1** | **SARSA** = State, Action, Reward, State', Action' — les 5 infos utilisées à chaque update |
 | **2** | SARSA est **on-policy** : apprend la valeur de la politique qu'il suit (exploration comprise) |
 | **3** | Équation centrale ([Éq. 4](#eq-sarsa)) : $Q(s,a) \leftarrow Q(s,a) + \alpha[r + \gamma Q(s',a') - Q(s,a)]$ |
-| **4** | La **différence avec Q-Learning** tient en une ligne : $Q(s', a'_{\text{choisi}})$ vs $\max_{a'} Q(s', a')$ |
+| **4** | La **différence avec Q-Learning** tient en une ligne : SARSA prend l'action **a' réellement choisie**, Q-Learning prend l'action **max sur a'** — voir [**Éq. (10)**](#eq-sarsa-vs-q) |
 | **5** | Sur **Cliff Walking**, SARSA prend le chemin sûr, Q-Learning le chemin risqué au bord |
 | **6** | Dans la boucle, **choisir $a'$ AVANT** l'update et **réutiliser $a'$** au pas suivant — sinon ce n'est plus SARSA |
 | **7** | **SARSA(λ)** étend SARSA avec eligibility traces — propagation accélérée |
