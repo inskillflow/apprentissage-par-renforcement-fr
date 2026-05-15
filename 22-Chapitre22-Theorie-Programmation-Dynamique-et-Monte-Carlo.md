@@ -416,6 +416,229 @@ Les bandits ne sont **pas un jouet académique** — ils sont **massivement dép
 >
 > 90% des cas d'usage industriels « RL » sont en réalité des **bandits déguisés**. Spotify, Amazon, Microsoft Personalizer, Vowpal Wabbit... tous tournent sur des bandits, pas sur du Deep RL exotique.
 
+
+
+
+
+
+<details>
+    
+<summary> Description des algorithmes de Bandits </summary>
+
+Le vrai problème derrière tous ces algorithmes est toujours le même :
+
+* Est-ce que je continue à utiliser ce qui marche déjà ? → exploitation
+* Ou est-ce que je teste encore d’autres options ? → exploration
+
+Chaque algorithme gère ça différemment.
+
+| Algorithme                | Idée principale                       | Comment il explore                                               | Comment il exploite                                 | Style de comportement     |
+| ------------------------- | ------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------- | ------------------------- |
+| ε-greedy                  | Explore au hasard un petit % du temps | Exploration aléatoire avec ε                                     | Le reste du temps, prend la meilleure option connue | Simple, direct            |
+| Optimistic Initial Values | Commence en étant “trop optimiste”    | Explore parce qu’il croit que tout est potentiellement excellent | Ensuite garde les meilleures options réelles        | Curieux au début          |
+| UCB                       | Utilise l’incertitude mathématique    | Explore les options peu testées                                  | Exploite celles avec bonne moyenne                  | Intelligent et méthodique |
+| Thompson Sampling         | Utilise des probabilités              | Explore selon les chances probabilistes                          | Exploite les options probablement bonnes            | Naturel et adaptatif      |
+
+Maintenant, vulgarisons chaque un.
+
+---
+
+# 1. ε-greedy
+
+Imagine :
+
+* 90 % du temps → tu fais ce qui marche déjà
+* 10 % du temps → tu testes quelque chose au hasard
+
+Exemple :
+
+Tu commandes toujours le même café car tu l’aimes.
+Mais parfois tu testes une nouvelle boisson “juste pour voir”.
+
+Formule mentale :
+
+> “Je garde mon meilleur choix…
+> mais parfois je tente ma chance.”
+
+Pourquoi il est célèbre ?
+
+* ultra simple
+* facile à coder
+* fonctionne “assez bien”
+* parfait pour apprendre
+
+Faiblesse :
+
+Même après 1 million d’essais…
+il continue parfois à faire des choix stupides au hasard.
+
+---
+
+# 2. Optimistic Initial Values
+
+Ici, on “ment” au système au début.
+
+On dit :
+
+> “Toutes les options semblent incroyables.”
+
+Donc l’algorithme veut toutes les tester.
+
+Exemple :
+
+Tu arrives dans une nouvelle ville.
+Tu supposes que TOUS les restaurants sont excellents.
+
+Donc :
+
+* tu testes restaurant A
+* puis B
+* puis C
+* etc.
+
+Puis la réalité corrige ton optimisme.
+
+Pourquoi c’est intelligent ?
+
+Parce qu’on force l’exploration naturellement,
+sans utiliser ε aléatoire.
+
+Faiblesse :
+
+Si les premières expériences sont mauvaises,
+il peut devenir biaisé rapidement.
+
+---
+
+# 3. UCB (Upper Confidence Bound)
+
+Celui-ci est plus “scientifique”.
+
+Il se dit :
+
+> “Cette option semble bonne…
+> MAIS je ne l’ai pas assez testée.”
+
+Donc il ajoute un bonus aux options peu explorées.
+
+Idée :
+
+Score final =
+
+* moyenne observée
+  PLUS
+* bonus d’incertitude
+
+Donc :
+
+* si une option est peu testée → gros bonus
+* si elle est très testée → petit bonus
+
+Exemple humain :
+
+Tu as :
+
+* un resto que tu connais bien → note 8/10
+* un nouveau resto testé une seule fois → peut-être 9/10 ?
+
+UCB dit :
+
+> “Je vais peut-être re-tester le nouveau,
+> car je manque encore d’informations.”
+
+Pourquoi il est fort ?
+
+* exploration intelligente
+* pas aléatoire
+* très bon théoriquement
+
+Faiblesse :
+
+* plus mathématique
+* moins intuitif
+* parfois rigide
+
+---
+
+# 4. Thompson Sampling
+
+Celui-ci est très élégant.
+
+Il fonctionne avec des probabilités.
+
+Il se dit :
+
+> “Quelle option a probablement la plus grande chance d’être la meilleure ?”
+
+Puis il tire aléatoirement selon ces probabilités.
+
+Exemple :
+
+Tu hésites entre :
+
+* Sushi : 70 % de chance d’être meilleur
+* Pizza : 20 %
+* Burger : 10 %
+
+Alors :
+
+* souvent sushi
+* parfois pizza
+* rarement burger
+
+C’est une exploration “naturelle”.
+
+Pourquoi il est très aimé aujourd’hui ?
+
+Parce qu’il :
+
+* apprend très bien
+* s’adapte rapidement
+* équilibre naturellement exploration/exploitation
+* performe extrêmement bien en pratique
+
+Très utilisé en :
+
+* publicité
+* recommandations
+* A/B testing
+* systèmes IA modernes
+
+---
+
+# Résumé 
+
+| Algorithme | Mentalité                                  |
+| ---------- | ------------------------------------------ |
+| ε-greedy   | “Parfois je tente au hasard.”              |
+| Optimistic | “Je crois que tout est génial au début.”   |
+| UCB        | “Je vais explorer ce qui reste incertain.” |
+| Thompson   | “Je vais suivre les probabilités.”         |
+
+---
+
+# Intuition humaine
+
+Imagine restaurants ou investissements.
+
+| Situation                                          | Algorithme        |
+| -------------------------------------------------- | ----------------- |
+| Tu testes parfois au hasard                        | ε-greedy          |
+| Tu crois que tout le monde est incroyable au début | Optimistic        |
+| Tu explores les personnes ou endroits que tu connais moins     | UCB               |
+| Tu suis ton intuition probabiliste                 | Thompson Sampling |
+
+- Voilà pourquoi ces algorithmes sont fascinants :
+- ils modélisent presque le comportement humain face à l’incertitude.
+
+
+</details>
+
+
+
+
+
+
 > **❓ FAQ**
 > **Concrètement : qui utilise ça et pourquoi ?**
 >
