@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 17-bis - DQN — Quand le Deep Learning rencontre le Q-Learning
+# Chapitre 24 - DQN — Quand le Deep Learning rencontre le Q-Learning
 
 ## Table des matières
 
