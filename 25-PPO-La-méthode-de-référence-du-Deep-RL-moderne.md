@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 25 - PPO — La méthode de référence du Deep RL moderne
+# Chapitre 23-bis - PPO — La méthode de référence du Deep RL moderne
 
 ## Table des matières
 
@@ -80,7 +80,7 @@ $$L^{\text{CPI}}(\theta) = \mathbb{E}_t \left[ r_t(\theta) \cdot \hat{A}_t \righ
 
 **Éq. (5)** — Objectif TRPO (avec contrainte KL)
 
-$$\max_\theta \mathbb{E}_t \left[ r_t(\theta) \hat{A}_t \right] \quad \text{tel que} \quad \mathbb{E}_t \left[ \text{KL}\big( \pi_{\theta_{\text{old}}}(\cdot | s_t) \,\|\, \pi_\theta(\cdot | s_t) \big) \right] \leq \delta$$
+$$\max_\theta \mathbb{E}_t \left[ r_t(\theta) \hat{A}_t \right] \quad \text{tel que} \quad \mathbb{E}_t \big[ D_{\text{KL}}\!\left( \pi_{\theta_{\text{old}}}(\cdot \mid s_t) \,\Vert\, \pi_\theta(\cdot \mid s_t) \right) \big] \leq \delta$$
 
 → Garantie théorique de monotone improvement, mais coûteux (calcul de la Hessienne).
 
@@ -96,7 +96,7 @@ $$L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\Big( r_t(\theta) \hat{A}_t,
 
 **Éq. (7)** — Objectif **PPO-Penalty** (variante moins utilisée)
 
-$$L^{\text{KLPEN}}(\theta) = \mathbb{E}_t \left[ r_t(\theta) \hat{A}_t - \beta \cdot \text{KL}\big( \pi_{\theta_{\text{old}}}(\cdot | s_t) \,\|\, \pi_\theta(\cdot | s_t) \big) \right]$$
+$$L^{\text{KLPEN}}(\theta) = \mathbb{E}_t \left[ r_t(\theta) \hat{A}_t - \beta \cdot D_{\text{KL}}\!\left( \pi_{\theta_{\text{old}}}(\cdot \mid s_t) \,\Vert\, \pi_\theta(\cdot \mid s_t) \right) \right]$$
 
 → Pénalité KL adaptative à la place du clip. Utilisée notamment dans RLHF.
 
@@ -112,13 +112,13 @@ où $V_t^{\text{target}} = \hat{A}_t + V_{\theta_{\text{old}}}(s_t)$ = TD-return
 
 **Éq. (9)** — Bonus d'entropie (encourage l'exploration)
 
-$$S[\pi_\theta](s_t) = -\sum_a \pi_\theta(a | s_t) \log \pi_\theta(a | s_t)$$
+$$H\big(\pi_\theta(\cdot \mid s_t)\big) = -\sum_a \pi_\theta(a \mid s_t) \log \pi_\theta(a \mid s_t)$$
 
 <a id="eq-ppo-total"></a>
 
 **Éq. (10)** — Loss totale de PPO (combinaison policy + value + entropy)
 
-$$L^{\text{TOTAL}}(\theta) = \mathbb{E}_t \left[ L^{\text{CLIP}}(\theta) - c_1 L^{\text{VF}}(\theta) + c_2 S[\pi_\theta](s_t) \right]$$
+$$L^{\text{TOTAL}}(\theta) = \mathbb{E}_t \left[ L^{\text{CLIP}}(\theta) - c_1 L^{\text{VF}}(\theta) + c_2 H\big(\pi_\theta(\cdot \mid s_t)\big) \right]$$
 
 avec typiquement $c_1 = 0.5$ et $c_2 = 0.01$.
 
@@ -220,7 +220,7 @@ Son secret ? Un **équilibre presque parfait** entre :
 | Lettre | Signification | Rôle |
 |:--:|---|---|
 | **P** | Proximal (proche) | La nouvelle politique reste **proche** de l'ancienne |
-| **P** | Policy (politique) | On optimise **directement** la politique $\pi_\theta(a\|s)$ |
+| **P** | Policy (politique) | On optimise **directement** la politique $\pi_\theta(a \mid s)$ |
 | **O** | Optimization | Optimisation par **ascension de gradient** |
 
 > **📌 À retenir**
@@ -257,7 +257,7 @@ flowchart TD
 |---|---|
 | **Famille** | Actor-Critic, Policy-Based, On-Policy |
 | **Type de politique** | **On-Policy** (apprend en suivant sa politique courante) |
-| **Ce qui est appris** | $\pi_\theta(a\|s)$ (acteur) + $V_\theta(s)$ (critique) |
+| **Ce qui est appris** | $\pi_\theta(a \mid s)$ (acteur) + $V_\theta(s)$ (critique) |
 | **Inventeurs** | Schulman, Wolski, Dhariwal, Radford, Klimov (OpenAI, 2017) |
 | **Papier fondateur** | « Proximal Policy Optimization Algorithms » (arXiv, 2017) |
 | **Ancêtre direct** | TRPO (Schulman et al., 2015) |
@@ -395,7 +395,7 @@ Pour comprendre **pourquoi PPO existe**, il faut comprendre les **deux familles 
 
 Au lieu d'optimiser librement, TRPO **maximise** la fonction objectif **sous une contrainte de divergence KL** :
 
-$$\max_\theta \;\; L^{\text{CPI}}(\theta) \;\;\; \text{sous la contrainte} \;\;\; \text{KL}(\pi_{\text{old}} \| \pi_\theta) \leq \delta$$
+$$\max_\theta \;\; L^{\text{CPI}}(\theta) \;\;\; \text{sous la contrainte} \;\;\; D_{\text{KL}}(\pi_{\text{old}} \,\Vert\, \pi_\theta) \leq \delta$$
 
 | Avantage | Détail |
 |---|---|
@@ -625,13 +625,13 @@ flowchart LR
 
 PPO n'optimise pas seulement le clip — il optimise une **combinaison de 3 termes** :
 
-$$L^{\text{TOTAL}}(\theta) = \mathbb{E}_t \left[ \underbrace{L^{\text{CLIP}}(\theta)}_{\text{politique}} - c_1 \underbrace{L^{\text{VF}}(\theta)}_{\text{valeur}} + c_2 \underbrace{S[\pi_\theta]}_{\text{entropie}} \right]$$
+$$L^{\text{TOTAL}}(\theta) = \mathbb{E}_t \left[ \underbrace{L^{\text{CLIP}}(\theta)}_{\text{politique}} - c_1 \underbrace{L^{\text{VF}}(\theta)}_{\text{valeur}} + c_2 \underbrace{H(\pi_\theta)}_{\text{entropie}} \right]$$
 
 | Terme | Symbole | Rôle | Valeur typique de $c$ |
 |---|---|---|---|
 | **Policy loss (clip)** | $L^{\text{CLIP}}$ | Améliorer la politique | Coefficient 1 |
 | **Value loss** | $L^{\text{VF}}$ | Améliorer le critic ($V_\theta$) — voir [Éq. 8](#eq-value-loss) | $c_1 = 0.5$ |
-| **Entropy bonus** | $S[\pi_\theta]$ | Encourager l'exploration — voir [Éq. 9](#eq-entropy) | $c_2 = 0.01$ |
+| **Entropy bonus** | $H(\pi_\theta)$ | Encourager l'exploration — voir [Éq. 9](#eq-entropy) | $c_2 = 0.01$ |
 
 #### Pourquoi le bonus d'entropie ?
 
@@ -738,7 +738,7 @@ for t in reversed(range(T)):
 
 ➡️ Voir [**Éq. (9)**](#eq-entropy).
 
-$$S[\pi_\theta](s_t) = -\sum_a \pi_\theta(a | s_t) \log \pi_\theta(a | s_t)$$
+$$H\big(\pi_\theta(\cdot \mid s_t)\big) = -\sum_a \pi_\theta(a \mid s_t) \log \pi_\theta(a \mid s_t)$$
 
 #### Comportement selon l'entropie
 
@@ -797,7 +797,7 @@ flowchart TD
     B --> C["Pour K époques :"]
     C --> D["  Shuffler les trajectoires"]
     D --> E["  Pour chaque mini-batch :"]
-    E --> F["    Calculer L^CLIP, L^VF, S[π]"]
+    E --> F["    Calculer L^CLIP, L^VF, H(π)"]
     F --> G["    Backprop + Adam step"]
     G --> H{"Fin K époques ?"}
     H -->|"Non"| D
@@ -1083,7 +1083,7 @@ flowchart TD
 > | DQN | PPO |
 > |---|---|
 > | Off-policy (replay buffer) | On-policy (vider après chaque itération) |
-> | Apprend $Q(s,a)$ | Apprend $\pi(a\|s)$ ET $V(s)$ |
+> | Apprend $Q(s,a)$ | Apprend $\pi(a \mid s)$ ET $V(s)$ |
 > | ε-greedy | Politique stochastique naturelle |
 > | Target network | Pas de target network (mais $\theta_{\text{old}}$ joue un rôle similaire) |
 > | Update à chaque pas | Update **par lot** après rollout complet |
@@ -1174,7 +1174,7 @@ Pour bien comprendre PPO, calculons **à la main** une étape complète sur un m
 
 CartPole-v1, mini-rollout de **3 pas**.
 
-| Pas $t$ | État $s_t$ | Action $a_t$ | Récompense $r_t$ | $V_\phi(s_t)$ (prédiction du critic) | $\log \pi_{\theta_{\text{old}}}(a_t\|s_t)$ |
+| Pas $t$ | État $s_t$ | Action $a_t$ | Récompense $r_t$ | $V_\phi(s_t)$ (prédiction du critic) | $\log \pi_{\theta_{\text{old}}}(a_t \mid s_t)$ |
 |---|---|---|---|---|---|
 | 0 | $s_0$ | 1 (Droite) | +1 | 7.2 | $-0.51$ ($\pi = 0.6$) |
 | 1 | $s_1$ | 0 (Gauche) | +1 | 5.5 | $-0.92$ ($\pi = 0.4$) |
@@ -1320,9 +1320,9 @@ $L^{\text{VF}} = (13.88 + 10.05 + 6.76) / 3 = \boxed{10.23}$
 
 ### Étape 9 — Loss totale
 
-$$L^{\text{TOTAL}} = L^{\text{CLIP}} - c_1 L^{\text{VF}} + c_2 S[\pi]$$
+$$L^{\text{TOTAL}} = L^{\text{CLIP}} - c_1 L^{\text{VF}} + c_2 H(\pi)$$
 
-Supposons $S[\pi] = 0.65$ (entropie moyenne, politique encore stochastique).
+Supposons $H(\pi) = 0.65$ (entropie moyenne, politique encore stochastique).
 
 $$L^{\text{TOTAL}} = -0.030 - 0.5 \times 10.23 + 0.01 \times 0.65$$
 $$= -0.030 - 5.115 + 0.0065 = \boxed{-5.138}$$
@@ -1403,7 +1403,7 @@ $$L^{\text{CLIP}} = \mathbb{E}_t \left[ \min(r_t \hat{A}_t, \text{clip}(r_t, 1-\
 
 ➡️ Voir [**Éq. (7)**](#eq-ppo-penalty).
 
-$$L^{\text{KLPEN}} = \mathbb{E}_t \left[ r_t \hat{A}_t - \beta \cdot \text{KL}(\pi_{\text{old}} \| \pi_\theta) \right]$$
+$$L^{\text{KLPEN}} = \mathbb{E}_t \left[ r_t \hat{A}_t - \beta \cdot D_{\text{KL}}(\pi_{\text{old}} \,\Vert\, \pi_\theta) \right]$$
 
 avec $\beta$ **adaptatif** :
 - Si $\text{KL} > 1.5 \delta_{\text{target}}$ : augmenter $\beta$ (pénalité plus forte)
@@ -2823,7 +2823,7 @@ mindmap
 | Aspect | DQN | PPO |
 |---|---|---|
 | **Famille** | Value-Based | Actor-Critic (Policy-Based + Value-Based) |
-| **Politique** | $\pi(s) = \arg\max Q$ (déterministe + ε-greedy) | $\pi(a\|s)$ stochastique |
+| **Politique** | $\pi(s) = \arg\max Q$ (déterministe + ε-greedy) | $\pi(a \mid s)$ stochastique |
 | **Type** | Off-policy | On-policy |
 | **Replay Buffer** | ✅ Oui | ❌ Non (sauf variantes) |
 | **Target network** | ✅ Oui | ❌ Non ($\theta_{\text{old}}$ joue un rôle similaire) |
