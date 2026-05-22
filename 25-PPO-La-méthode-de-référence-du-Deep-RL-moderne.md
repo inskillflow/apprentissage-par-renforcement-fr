@@ -106,7 +106,9 @@ $$L^{\text{KLPEN}}(\theta) = \mathbb{E}_t \left[ r_t(\theta) \hat{A}_t - \beta \
 
 $$L^{\text{VF}}(\theta) = \mathbb{E}_t \left[ \big( V_\theta(s_t) - V_t^{\text{target}} \big)^2 \right]$$
 
-où $V_t^{\text{target}} = \hat{A}_t + V_{\theta_{\text{old}}}(s_t)$ = TD-return.
+où la cible TD-return est donnée par :
+
+$$V_t^{\text{target}} = \hat{A}_t + V_{\theta_{\text{old}}}(s_t)$$
 
 <a id="eq-entropy"></a>
 
@@ -162,7 +164,7 @@ $$\theta \leftarrow \theta + \eta \, \nabla_\theta L^{\text{TOTAL}}(\theta)$$
 
 **Éq. (15)** — La différence essentielle TRPO ↔ PPO
 
-$$\text{TRPO :} \quad \max_\theta L^{\text{CPI}} \;\; \text{s.t.} \;\; \text{KL} \leq \delta \quad \text{(contrainte dure, coûteuse)}$$
+$$\text{TRPO :} \quad \max_\theta L^{\text{CPI}} \quad \text{s.t.} \quad D_{\text{KL}} \leq \delta \quad \text{(contrainte dure, coûteuse)}$$
 
 $$\text{PPO :} \quad \max_\theta L^{\text{CLIP}} \quad \text{(clip simple, gradient pas à pas)}$$
 
@@ -395,7 +397,7 @@ Pour comprendre **pourquoi PPO existe**, il faut comprendre les **deux familles 
 
 Au lieu d'optimiser librement, TRPO **maximise** la fonction objectif **sous une contrainte de divergence KL** :
 
-$$\max_\theta \;\; L^{\text{CPI}}(\theta) \;\;\; \text{sous la contrainte} \;\;\; D_{\text{KL}}(\pi_{\text{old}} \,\Vert\, \pi_\theta) \leq \delta$$
+$$\max_\theta \quad L^{\text{CPI}}(\theta) \quad \text{sous la contrainte} \quad D_{\text{KL}}(\pi_{\text{old}} \,\Vert\, \pi_\theta) \leq \delta$$
 
 | Avantage | Détail |
 |---|---|
