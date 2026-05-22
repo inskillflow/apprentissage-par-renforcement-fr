@@ -1,6 +1,6 @@
 <a id="top"></a>
 
-# Chapitre 23-bis - PPO — La méthode de référence du Deep RL moderne
+# Chapitre 25 - PPO — La méthode de référence du Deep RL moderne
 
 ## Table des matières
 
