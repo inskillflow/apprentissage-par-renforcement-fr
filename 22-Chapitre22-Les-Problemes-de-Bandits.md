@@ -213,6 +213,78 @@ flowchart LR
 
 > _Un bandit est un MDP avec **|S| = 1**. C'est pourquoi les bandits sont étudiés en premier dans tous les cours de RL (notamment dans **Sutton & Barto, Chapitre 2**) : ils permettent d'isoler le dilemme exploration/exploitation sans la complexité du **credit assignment** (savoir quelle action passée mérite quelle récompense future)._
 
+> **💡 Astuce**
+> **C'est quoi exactement $S$ et pourquoi $|S| = 1$ ?**
+>
+> Dans un **MDP**, la lettre $S$ (en majuscule) désigne **l'ensemble de tous les états possibles** du système. C'est l'**univers** dans lequel l'agent peut se trouver à un instant donné.
+>
+> L'écriture $|S| = 1$ se lit « **le cardinal de $S$ vaut 1** », c'est-à-dire :
+>
+> $$|S| = 1 \quad \Longleftrightarrow \quad \text{il n'existe qu'un seul état possible}$$
+>
+> Le symbole $|\cdot|$ (deux barres verticales) signifie **le nombre d'éléments** de l'ensemble. Donc :
+>
+> | Notation | Signification |
+> |---|---|
+> | $S$ | l'**ensemble** des états |
+> | $|S|$ | le **nombre** d'états dans $S$ |
+> | $|S| = 1$ | il y a **un seul** état (l'agent est toujours « au même endroit ») |
+>
+> Dans un problème de bandit, l'agent n'a pas vraiment d'évolution d'état à gérer. À chaque tour, il se retrouve **exactement dans la même situation** :
+>
+> > « Je dois choisir une action parmi plusieurs bras / machines / options. »
+
+> **ℹ️ Remarque**
+> **Exemple ultra-concret — 3 machines à sous.**
+>
+> Imagine que tu as **3 machines** devant toi :
+>
+> ```
+> Machine A
+> Machine B
+> Machine C
+> ```
+>
+> À chaque essai, tu choisis une machine, tu reçois une récompense, **puis tu reviens exactement à la même situation** — la même salle, les mêmes 3 machines, les mêmes choix :
+>
+> ```
+> État unique S₀ :
+>   « Choisir A, B ou C »
+> ```
+>
+> Donc l'ensemble des états ne contient qu'**un seul élément** :
+>
+> $$S = \{S_0\} \quad\Rightarrow\quad |S| = 1$$
+>
+> Concrètement :
+>
+> ```
+> S    = ensemble des états
+> |S|  = nombre d'états
+> |S|  = 1   →  un seul état
+> ```
+>
+> C'est pour ça qu'un bandit est **plus simple** qu'un vrai MDP :
+>
+> - **Pas de chemin** entre états (tu ne te déplaces pas)
+> - **Pas de transition** complexe à modéliser
+> - **Pas de récompense future** à attribuer à une action passée (pas de credit assignment)
+>
+> Il ne reste alors qu'**une seule grande question** à résoudre :
+>
+> > **Dois-je exploiter** l'action que je crois la meilleure pour l'instant,
+> > **ou explorer** une autre action pour apprendre ?
+
+> **⚠️ Attention — Ne pas confondre $S$ (ensemble) et $s$ (élément)**
+>
+> En convention RL standard :
+>
+> - $S$ (majuscule) = l'**ensemble** des états → $S = \{s_0, s_1, \dots\}$
+> - $s$ (minuscule) = un état **particulier** → $s \in S$
+> - $S_t$ = l'**état observé au pas de temps** $t$ (variable aléatoire) → $S_t \in S$
+>
+> Dans un bandit, peu importe le pas de temps $t$, on a toujours $S_t = s_0$. C'est pour cela qu'on **omet l'état dans les notations** : on écrit simplement $Q(a)$ au lieu de $Q(s, a)$. L'état est **implicite** car il n'y en a qu'un seul.
+
 > **📌 À retenir**
 > **Règle pour ne jamais confondre :**
 >
@@ -362,13 +434,74 @@ Le **regret cumulé** mesure la « perte » par rapport à l'agent oracle qui co
 > R : C'est la **différence entre ce que tu aurais pu gagner** si tu avais toujours joué la **meilleure machine** (l'oracle qui connaît toutes les vraies probas), **et ce que tu as réellement gagné**. C'est le **« manque à gagner »** lié à tes choix imparfaits, surtout au début quand tu explores. **Plus tu apprends vite, plus ton regret diminue vite.**
 >
 > **Q : Quelles sont les différences entre les régimes de regret linéaire, logarithmique et en racine ?**
-> R : Imagine un joueur qui va au casino **tous les jours** et qui « perd » à cause de ses mauvais choix.
+> R : Avant de comparer les courbes, posons un **exemple ultra-concret** pour bien voir ce qu'est « perdre 1 $ de regret ».
 >
-> | Type | Exemple chiffré | Comportement |
-> |---|---|---|
-> | **Linéaire** R(T) ∝ T | Jour 1 : perd 10 $ — Jour 2 : 20 $ — Jour 3 : 30 $… toujours **+10 $/jour** | Le joueur **n'apprend rien**, il perd à un rythme **constant**. C'est le pire cas. ❌ |
-> | **Racine** R(T) ∝ √T | Jour 1 : 10 $ — Jour 4 : 20 $ — Jour 9 : 30 $ — Jour 100 : 100 $ | Le joueur **apprend lentement**, ses pertes augmentent **de moins en moins vite**. ⚠️ |
-> | **Logarithmique** R(T) ∝ log T | Jour 1 : 10 $ — Jour 10 : 23 $ — Jour 100 : 46 $ — Jour 1000 : 69 $ | Le joueur **apprend très vite** : après 1 000 jours il a **à peine 70 $** de regret. ✅ |
+> **Setup — 3 machines à sous :**
+>
+> ```
+> Machine A : 10 $ en moyenne par essai   ← LA MEILLEURE
+> Machine B :  7 $ en moyenne par essai
+> Machine C :  2 $ en moyenne par essai
+> ```
+>
+> La **meilleure action**, c'est **A** (récompense optimale $q_\ast = 10$ dollars).
+>
+> - Si l'agent choisit **B** → manque à gagner = $10 - 7 = 3$ → **3 $ de regret** sur ce coup-là
+> - Si l'agent choisit **C** → manque à gagner = $10 - 2 = 8$ → **8 $ de regret** sur ce coup-là
+> - Si l'agent choisit **A** → **0 $ de regret** (choix optimal)
+>
+> Le **regret cumulé** $R(T)$ est la **somme** de ces manques à gagner sur les $T$ premiers essais. On distingue 3 grands régimes selon **à quelle vitesse** ce regret grandit avec $T$ :
+>
+> **Hypothèse pour les exemples ci-dessous** : à chaque mauvais essai, l'agent perd en moyenne **3 $ de regret** (par exemple il choisit B au lieu de A).
+>
+> | Type | Loi | Après 10 essais | Après 100 essais | Après 1 000 essais | Comportement |
+> |---|---|---|---|---|---|
+> | **Linéaire** $R(T) \propto T$ | $R(T) = 3T$ | **30 $** | **300 $** | **3 000 $** | L'agent **n'apprend rien** : il choisit B (ou pire) à chaque essai → perte **constante de 3 $/essai**. C'est le pire cas. ❌ |
+> | **Racine** $R(T) \propto \sqrt{T}$ | $R(T) \approx 3\sqrt{T}$ | **≈ 10 $** | **≈ 30 $** | **≈ 95 $** | L'agent **apprend lentement** : il se trompe encore parfois, mais ses pertes augmentent **de moins en moins vite**. ⚠️ |
+> | **Logarithmique** $R(T) \propto \log T$ | $R(T) \approx 10 \log_{10}(T)$ | **≈ 10 $** | **≈ 20 $** | **≈ 30 $** | L'agent **apprend très vite** : après 1 000 essais, il a **à peine 30 $** de regret. ✅ |
+>
+> **La différence est vertigineuse à long terme :**
+>
+> ```
+> Après 1 000 essais
+> ───────────────────
+>   Linéaire        :  3 000 $   ← perd 3 $/essai, toujours
+>   Racine √T       :  ~ 95 $    ← s'améliore mais lentement
+>   Logarithmique   :  ~ 30 $    ← excellent : converge vers l'optimal
+> ```
+>
+> **Visualisation des 3 courbes :**
+>
+> ```mermaid
+> xychart-beta
+>     title "Regret cumulé R(T) selon le régime"
+>     x-axis "Essais T" [10, 100, 1000, 5000, 10000]
+>     y-axis "Regret cumulé R(T) en $" 0 --> 3000
+>     line "Linéaire R(T) = 3T" [30, 300, 3000, 15000, 30000]
+>     line "Racine R(T) = 3√T" [9, 30, 95, 212, 300]
+>     line "Logarithmique R(T) = 10 log T" [10, 20, 30, 37, 40]
+> ```
+>
+> _Schéma intuitif (ASCII)_ :
+>
+> ```
+> R(T)
+>  ↑
+> 3000│                                          ╱  Linéaire (3T)
+>     │                                       ╱
+> 2000│                                    ╱
+>     │                                 ╱
+> 1000│                              ╱
+>     │                           ╱
+>  300│                        ╱ ___________________  √T (~ √T)
+>     │                  ____/
+>   30│___________ _____/    ────────────────────────  log T
+>     │
+>     └──────┬───────┬───────┬───────┬────────────→ T
+>           10     100     1000   10000  (échelle log)
+> ```
+>
+> → On voit clairement que **la linéaire explose** alors que **le log reste presque plat**. C'est exactement pour ça qu'**UCB et Thompson Sampling**, qui atteignent le régime logarithmique, sont les algorithmes prouvés **optimaux**.
 >
 > **Q : Quel régime de regret est le plus défavorable pour l'agent ?**
 > R : Le **regret linéaire**. Tes pertes **continuent d'augmenter au même rythme** sans jamais ralentir. C'est ce qu'on veut **absolument éviter**. Les regrets **log et racine** sont **doux** : on perd encore un peu, mais **de moins en moins vite** parce qu'on apprend.
@@ -404,7 +537,121 @@ flowchart LR
 
 Les bandits ne sont **pas un jouet académique** — ils sont **massivement déployés** dans l'industrie depuis les années 2000. Leur simplicité et leur robustesse en font l'**outil RL le plus utilisé en production** dans le monde réel.
 
-> _Anecdote : **Microsoft Research** a publié en 2014 que ses systèmes de personnalisation de news **MSN.com** utilisaient des bandits contextuels servant **plusieurs millions de décisions par jour** — une stack RL plus simple que le Deep RL, mais infiniment plus rentable à grande échelle._
+> _Anecdote : Dès **2010**, **Microsoft Research** (avec Yahoo! Labs et John Langford) a publié des travaux fondateurs montrant que la recommandation d'articles sur **MSN.com** se traite comme un problème de **bandit contextuel** : le système choisit séquentiellement quel article afficher selon des informations sur l'utilisateur et l'article, puis apprend du clic ou non-clic. Aujourd'hui, ces systèmes servent **plusieurs millions de décisions par jour** — une stack RL plus simple que le Deep RL, mais infiniment plus rentable à grande échelle._
+
+> **💡 Astuce — L'anecdote MSN.com expliquée pas à pas**
+> **Pourquoi un « petit » bandit contextuel rapporte plus qu'un gros Deep RL ?**
+>
+> **1) Le problème de MSN.com**
+>
+> Imagine la page d'accueil de **MSN.com**. À chaque visiteur, le système doit décider :
+>
+> > « Quel article montrer à **cette** personne, **maintenant** ? »
+>
+> Par exemple :
+>
+> ```
+> Article A : politique
+> Article B : sport
+> Article C : finance
+> Article D : météo
+> Article E : technologie
+> ```
+>
+> Le système **ne sait pas** à l'avance ce que l'utilisateur va aimer. Il doit :
+>
+> 1. **Choisir** un article (action)
+> 2. **Observer** si l'utilisateur clique (récompense)
+> 3. **Apprendre** pour la prochaine fois
+>
+> C'est **exactement** un problème de bandit.
+>
+> **2) Pourquoi « contextuel » ?**
+>
+> Un bandit **classique** choisit simplement entre plusieurs actions (« A, B, C ou D »). Un bandit **contextuel** ajoute du **contexte** $x_t$ avant la décision :
+>
+> | Contexte | Exemple de valeurs |
+> |---|---|
+> | Pays / langue | `FR-CA`, `EN-US`, `JP` |
+> | Heure de la journée | `matin`, `soir` |
+> | Type d'appareil | `mobile`, `desktop`, `tablet` |
+> | Historique de clics | « lit beaucoup de sport » |
+> | Catégorie préférée | `tech`, `finance` |
+> | Popularité récente | trending news |
+>
+> Le système ne dit plus seulement « l'article A est bon », il dit :
+>
+> > « **Pour ce type d'utilisateur, à ce moment précis, dans ce contexte précis**, l'article A semble être le meilleur choix. »
+
+> **ℹ️ Remarque — Où est le RL dans tout ça ?**
+>
+> C'est bien du RL parce qu'on retrouve les 4 ingrédients classiques :
+>
+> ```
+> agent          → le système de recommandation MSN
+> action         → choisir quel article afficher
+> récompense     → clic / lecture / engagement
+> apprentissage  → améliorer les prochains choix
+> ```
+>
+> Mais **ce n'est pas du Deep RL complexe** avec beaucoup d'états, de transitions et de récompenses futures. Ici l'objectif est **direct** :
+>
+> ```
+> 1. Je montre un article
+> 2. L'utilisateur clique ou ne clique pas
+> 3. J'apprends
+> ```
+>
+> → Un RL **très pratique, très industriel, très rentable**.
+
+> **💡 Astuce — Pourquoi c'est rentable ?**
+>
+> Parce que la décision est **répétée des millions de fois par jour**. Même une **petite** amélioration produit un effet énorme :
+>
+> ```
+> Avant le bandit : taux de clic = 5,0 %
+> Après bandit    : taux de clic = 5,5 %
+> ```
+>
+> La différence semble minuscule. Mais à l'échelle de MSN.com :
+>
+> $$+0{,}5\% \text{ de clics} \times \text{millions de décisions/jour} = \text{beaucoup} + \text{de pages vues} = \text{plus de revenus publicitaires}$$
+>
+> C'est pour cela que les **bandits contextuels** dominent dans :
+>
+> - 📰 Recommandation de news (MSN, Yahoo!, LinkedIn)
+> - 🛒 Layout de pages produits (Amazon, Booking)
+> - 📧 Lignes d'objet d'emails marketing
+> - 🎯 Choix de créatifs publicitaires (Google Ads)
+> - 🎨 Variantes de bouton / image / titre
+
+> **⚠️ Attention — Pourquoi pas directement du Deep RL ?**
+>
+> Le Deep RL est souvent :
+>
+> | Deep RL (DQN, PPO...) | Bandit contextuel |
+> |---|---|
+> | ❌ Plus complexe | ✅ Plus simple |
+> | ❌ Plus coûteux à entraîner | ✅ Plus rapide |
+> | ❌ Plus difficile à stabiliser | ✅ Plus facile à déployer |
+> | ❌ Risqué en production | ✅ Facile à mesurer |
+> | ❌ Difficile à expliquer | ✅ Adapté aux décisions immédiates |
+>
+> Pour MSN.com, **pas besoin de planifier 50 actions dans le futur**. Il faut juste répondre à :
+>
+> > « Quel article dois-je montrer **maintenant** pour maximiser la probabilité de clic ? »
+>
+> → C'est exactement ce qu'un bandit contextuel fait, **mieux et moins cher** qu'un Deep RL.
+
+> **📌 À retenir — La phrase pédagogique**
+>
+> > Un **bandit contextuel** est une forme **simple** de RL utilisée pour prendre des **décisions personnalisées en temps réel**. Sur MSN.com, il sert à choisir quel article afficher à chaque utilisateur **selon son contexte**, puis apprend à partir des clics. C'est **moins spectaculaire** que le Deep RL, mais **souvent beaucoup plus rentable** en production.
+>
+> Encore plus court :
+>
+> > **Deep RL** résout des problèmes très complexes.
+> > **Bandits contextuels** résolvent des problèmes **simples mais répétés des millions de fois**.
+> > C'est là qu'est leur valeur industrielle.
 
 > **📌 À retenir**
 > Choisissez un bandit AVANT un Deep RL
@@ -643,7 +890,7 @@ Imagine restaurants ou investissements.
 > **Concrètement : qui utilise ça et pourquoi ?**
 >
 > **Q : MSN.com, Yahoo! et LinkedIn utilisent-ils effectivement des bandits pour la personnalisation de contenu ?**
-> R : Oui — Microsoft Research a publié en **2014** que MSN.com utilisait des **bandits contextuels** pour servir **plusieurs millions de décisions par jour**. C'est une stack RL **plus simple que le Deep RL**, mais **infiniment plus rentable à grande échelle** : on personnalise, on teste, on optimise en continu, et avec des millions d'utilisateurs **les gains s'accumulent vite**.
+> R : Oui — dès **2010**, **Yahoo! Labs** (Lihong Li et al.) a publié l'article fondateur _"A Contextual-Bandit Approach to Personalized News Article Recommendation"_, et **Microsoft Research** a depuis appliqué la même approche à **MSN.com** pour servir **plusieurs millions de décisions par jour**. C'est une stack RL **plus simple que le Deep RL**, mais **infiniment plus rentable à grande échelle** : on personnalise, on teste, on optimise en continu, et avec des millions d'utilisateurs **les gains s'accumulent vite**.
 >
 > **Q : Google Ads et Facebook Ads s'appuient-ils sur des bandits pour l'allocation budgétaire en temps réel ?**
 > R : Oui. Au lieu de répartir un budget publicitaire **à parts égales** entre plusieurs créations, le bandit **identifie celle qui marche le mieux** (taux de clic le plus élevé) et **réoriente automatiquement plus de budget dessus**. On **explore au début** (toutes les pubs sont testées un peu), puis on **exploite ce qui marche** (les pubs gagnantes reçoivent presque tout le budget).
@@ -678,6 +925,69 @@ Les **bandits remplacent les tests A/B** : le trafic est **réorienté dynamique
 | **Utilisé par** | Tout le monde (par défaut) | Google Ads, Microsoft, Optimizely |
 
 > _Économie typique : un bandit bien réglé fait gagner **20-30% de revenus supplémentaires** par rapport à un test A/B classique sur la même durée._
+
+> **ℹ️ Remarque — C'est quoi exactement un test A/B ?**
+>
+> Un **test A/B** est une méthode simple pour comparer **deux versions** d'une même chose afin de voir laquelle fonctionne le mieux.
+>
+> **Exemple — quel bouton donne plus de clics ?**
+>
+> ```
+> Version A : bouton bleu    « Commencer »
+> Version B : bouton orange  « Télécharger gratuitement »
+> ```
+>
+> On montre **A** à une partie des utilisateurs, **B** à une autre partie. Puis on mesure :
+>
+> ```
+> Version A : 1 000 visiteurs →  80 clics  →  8 %
+> Version B : 1 000 visiteurs → 120 clics  → 12 %
+> ```
+>
+> → La version B est meilleure car elle obtient plus de clics.
+>
+> **Autre exemple — un PDF gratuit avec 2 titres :**
+>
+> ```
+> Titre A : "Download the free AI guide"
+> Titre B : "Learn AI faster with this free guide"
+> ```
+>
+> Après un certain temps :
+>
+> ```
+> Titre A → 5 % des visiteurs donnent leur courriel
+> Titre B → 9 % des visiteurs donnent leur courriel
+> ```
+>
+> → On garde le titre B.
+>
+> **À quoi ça sert ?** À améliorer un **titre**, un **bouton**, une **image**, une **publicité**, une **page d'inscription**, un **email marketing**, une **page de vente**, une **recommandation de produit**, etc.
+>
+> > L'idée centrale : **ne pas deviner, tester avec des données réelles**.
+
+> **💡 Astuce — Test A/B vs Bandit : la vraie différence**
+>
+> Un **test A/B classique** sépare les utilisateurs de manière **fixe** :
+>
+> ```
+> 50 % voient A
+> 50 % voient B
+> ```
+>
+> Même si **B devient clairement meilleur** au bout de 2 jours, on continue souvent **jusqu'à la fin du test** (par exemple 2 semaines). → **Trafic gaspillé sur la version perdante.**
+>
+> Un **bandit** est plus malin :
+>
+> 1. Au début, il teste A et B équitablement.
+> 2. Dès qu'il voit que **B marche mieux**, il **montre B plus souvent** automatiquement.
+>
+> | Méthode | Idée centrale |
+> |---|---|
+> | **Test A/B** | Comparer 2 versions avec une **répartition fixe** |
+> | **Bandit** | Tester plusieurs options, puis **favoriser progressivement la meilleure** |
+>
+> > **Phrase simple pour étudiants :** _Un test A/B montre 2 versions à 2 groupes pour mesurer laquelle marche le mieux. C'est une **décision basée sur des données réelles** plutôt que sur l'intuition. Un bandit fait pareil, mais s'adapte en temps réel et ne gaspille pas de trafic._
 
 > **💡 Astuce**
 > **Vie réelle — Pourquoi votre boutique en ligne préférée vous propose toujours « le bon produit ».**
@@ -804,6 +1114,35 @@ flowchart TD
 > | **Optimistic** | « Je suppose que **tout est super** au début, j'ajuste après essai » | L'optimiste naïf : **donne sa chance à tout le monde** |
 > | **UCB** | « Je joue ce qui est prometteur **ET incertain** (bonus d'exploration calculé)» | Le **manager rationnel** : « ce candidat est bon **et je le connais peu** → essayons-le » |
 > | **Thompson Sampling** | « Je tire **au hasard intelligemment** selon mes croyances bayésiennes » | Le **joueur intuitif** qui parie selon sa **confiance probabiliste** |
+>
+> **Version encore plus pédagogique — idée détaillée :**
+>
+> | Algorithme | Idée simple (en mots) | Métaphore humaine |
+> |---|---|---|
+> | **ε-greedy** | La plupart du temps je choisis la **meilleure action connue**. Mais parfois, avec une petite probabilité $\varepsilon$, je choisis **au hasard** pour continuer à explorer. | Le **pragmatique** : il a ses habitudes, mais garde un peu de curiosité. |
+> | **Optimistic Init** | Au début, je donne une **très bonne note artificielle** à toutes les actions. Comme elles semblent toutes prometteuses, je suis **obligé** de les tester. | L'**optimiste naïf** : il croit que tout le monde est excellent jusqu'à preuve du contraire. |
+> | **UCB** | Je choisis l'action qui combine **bonne performance connue** + **forte incertitude**. Plus une action est peu testée, plus je lui donne un **bonus d'exploration**. | Le **manager rationnel** : « ce candidat semble bon mais je ne l'ai pas assez testé, je lui donne sa chance ». |
+> | **Thompson Sampling** | Je maintiens une **croyance probabiliste** sur chaque action, puis je **tire au hasard** une option selon ces croyances. Les actions prometteuses ont plus de chances d'être choisies. | Le **joueur intuitif** : il parie selon sa confiance, mais accepte l'incertitude. |
+>
+> **La nuance subtile entre les 4 :**
+>
+> - **ε-greedy** explore de manière **simple, parfois presque bête** : avec proba $\varepsilon$, il choisit **n'importe quoi au hasard** — y compris une action manifestement mauvaise.
+> - **Optimistic Init** **force l'exploration au début** car toutes les actions commencent avec une valeur trop élevée. Après quelques essais, les valeurs deviennent réalistes — **l'exploration s'éteint d'elle-même**.
+> - **UCB** explore de manière **intelligente et déterministe** : il ne choisit **jamais au hasard**, il choisit les actions **intéressantes ET encore mal connues**.
+> - **Thompson Sampling** est **encore plus probabiliste** : il raisonne avec des **croyances bayésiennes**. Il se dit : « je ne suis pas certain que cette action soit la meilleure, mais selon mes données actuelles, elle a une bonne probabilité de l'être ».
+>
+> **Phrase à donner aux étudiants :**
+>
+> > Ces 4 algorithmes sont **différentes façons de répondre à la même question** : _dois-je choisir l'action que je crois déjà meilleure, ou tester une autre action pour apprendre davantage ?_
+>
+> **Version ultra-courte (mémo) :**
+>
+> ```
+> ε-greedy     →  explore parfois au hasard
+> Optimistic   →  force l'exploration au début
+> UCB          →  explore ce qui est prometteur mais incertain
+> Thompson     →  explore selon des probabilités de confiance
+> ```
 >
 > **Q : Quelles sont les performances comparées de ces algorithmes sur le 10-armed testbed standard ?**
 > R : Sur le **10-armed testbed standard** (Sutton & Barto), après **1000 pas** :
