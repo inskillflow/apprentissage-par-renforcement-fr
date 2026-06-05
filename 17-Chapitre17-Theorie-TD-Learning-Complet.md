@@ -1437,7 +1437,7 @@ d) Dans des environnements statiques avec peu de variations
 
 ### Notebook 1 — Quiz final interactif
 
-**Fichier :** `05-Quiz-final.ipynb`
+**Fichier :** `17.1-Quiz-final.ipynb` *(dossier `Materials/`)*
 
 Ce notebook regroupe toutes les questions des Quiz 1 et 2 de manière interactive. **Vous allez** :
 
@@ -1449,7 +1449,7 @@ Ce notebook regroupe toutes les questions des Quiz 1 et 2 de manière interactiv
 
 ### Notebook 2 — Coder Monte Carlo de zéro
 
-**Fichier :** `06-Revision-et-coder-Monte_Carlo.ipynb`
+**Fichier :** `17.2-Revision-et-coder-Monte_Carlo.ipynb` *(dossier `Materials/`)*
 
 **Vous allez** implémenter pas à pas :
 
@@ -1462,7 +1462,7 @@ Ce notebook regroupe toutes les questions des Quiz 1 et 2 de manière interactiv
 
 ### Notebook 3 — Coder TD-Learning de zéro
 
-**Fichier :** `07-Revision-et-coder-Temporal_Difference.ipynb`
+**Fichier :** `17.3-Revision-et-coder-Temporal_Difference.ipynb` *(dossier `Materials/`)*
 
 **Vous allez** implémenter :
 
