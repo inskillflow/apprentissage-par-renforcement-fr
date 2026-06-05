@@ -1611,7 +1611,13 @@ flowchart TD
 
 <br/>
 
-Cette section fournit une **implémentation complète et exécutable** d'un environnement de bandit multi-bras et de **5 algorithmes apprenants**. Vous pouvez **copier-coller le code dans un notebook Jupyter** ou exécuter le fichier `bandits.py` fourni dans ce dossier.
+Cette section fournit une **implémentation complète et exécutable** d'un environnement de bandit multi-bras et de **6 agents apprenants**. Vous pouvez **copier-coller le code dans un notebook Jupyter** ou exécuter le fichier `22.3-bandits.py` *(dossier `Materials/`)*.
+
+> **📓 Matériel fourni** *(dossier `Materials/` du dépôt GitHub)* :
+>
+> - `22.1-Quiz-Bandits.ipynb` — quiz interactif (QCM + questions de réflexion corrigées) de la [section 12](#section-12).
+> - `22.2-Revision-et-coder-Bandits.ipynb` — version notebook : coder et comparer les **6 agents** sur le 10-armed testbed de Sutton & Barto, avec exercices sur les hyperparamètres.
+> - `22.3-bandits.py` — script exécutable (`python 22.3-bandits.py`) qui génère `bandits_comparison.png`.
 
 #### Prérequis
 
@@ -2363,6 +2369,8 @@ flowchart TD
 <br/>
 
 Ce quiz évalue votre compréhension complète des problèmes de bandits — du concept de base aux variantes complexes. Répondez à chaque question, puis cliquez sur **💡 Voir la solution** pour vérifier.
+
+> **📓 Version interactive :** ce quiz est aussi disponible en notebook Colab — `22.1-Quiz-Bandits.ipynb` *(dossier `Materials/`)* — avec correction automatique et score.
 
 ---
 
