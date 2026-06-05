@@ -10,6 +10,8 @@ Ce dossier contient le chapitre complet sur les **problèmes de bandits multi-br
 | `22.1-Quiz-Bandits.ipynb` | Quiz interactif (QCM corrigés + questions de réflexion) — dossier `Materials/` |
 | `22.2-Revision-et-coder-Bandits.ipynb` | Notebook : coder et comparer les 6 agents (10-armed testbed) — dossier `Materials/` |
 | `22.3-bandits.py` | Implémentation Python exécutable des 6 algorithmes de bandits — dossier `Materials/` |
+| `22.4-Annexe-Comprendre-les-Bandits.ipynb` | Annexe pédagogique (vulgarisation) : `|S|=1`, formule `Q_t(a)`, `Q(a)` vs `Q(s,a)`, MSN.com / bandits contextuels, tests A/B, métaphores des 4 algorithmes — dossier `Materials/` |
+| `22.5-Annexe-Comprendre-les-Bandits.md` | Même annexe en version Markdown (lecture directe, sans notebook) — dossier `Materials/` |
 | `requirements.txt` | Dépendances Python (numpy, matplotlib) |
 | `README.md` | Ce fichier |
 
